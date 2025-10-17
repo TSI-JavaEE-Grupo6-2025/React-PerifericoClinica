@@ -1,0 +1,1 @@
+export {default as AdminLoginPage} from './login/Page';
