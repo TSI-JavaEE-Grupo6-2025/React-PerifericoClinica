@@ -12,11 +12,11 @@ const AUTH_ENDPOINTS = {
  * @param userCredentials: Credenciales de usuario para autenticación.
  * @returns: Promise que resuelve con los datos del usuario autenticado o rechaza con el error
  */
-export const login = async (userCredentials: UserCredentials): Promise<string> => {
+export const login = async (userCredentials: UserCredentials) => {
     try{
         const response = await API.post(AUTH_ENDPOINTS.LOGIN, userCredentials.toBackendPayLoad());
         // por ahora .
-        return Promise.resolve(response.data) 
+        return Promise.resolve(response) 
     }catch(error){
         console.error('Error al iniciar sesión: ', error);
         return Promise.reject(error);

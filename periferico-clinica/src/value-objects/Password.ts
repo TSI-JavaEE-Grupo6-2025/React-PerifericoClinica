@@ -4,8 +4,10 @@ export class Password {
     private readonly password: string;
 
     constructor(value: string) {
-        this.validate(value);
+        
         this.password = value;
+        this.validate(value);
+        
     }
 
     private validate(password: string): void {

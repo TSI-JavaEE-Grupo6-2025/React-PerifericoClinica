@@ -4,6 +4,7 @@ import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Inpu
 import { Stethoscope } from '../../../components/icons';
 import { ROUTES } from '../../../routes/constants/routes';
 import { ArrowLeft, User, Lock } from 'lucide-react';
+import { GlobalStyles } from '../../../styles/styles';
 
 export const ProfesionalLoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -37,20 +38,20 @@ export const ProfesionalLoginPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f4f7fa] p-4">
-            <Button onClick={handleGoBack} className="absolute top-4 left-4 flex items-center gap-2 text-[#2980b9] transition-colors mb-4 cursor-pointer">
+        <div className={GlobalStyles.layout.main}>
+            <Button onClick={handleGoBack} className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 text-[${GlobalStyles.colors.primary}] ${GlobalStyles.animations.transition} cursor-pointer`}>
                 <ArrowLeft className="w-4 h-4" />
-                <span className='text-sm'>Volver al inicio</span>
+                <span className={GlobalStyles.typography.sm}>Volver al inicio</span>
             </Button>
 
             <Card className="w-full max-w-md">
-                <CardHeader className="space-y-1 text-center">
+                <CardHeader className={`${GlobalStyles.spacing.space.xs_1} text-center`}>
                     <div className="flex justify-center mb-4">
-                        <div className="w-16 h-16 bg-[#2980b9] rounded-full flex items-center justify-center">
+                        <div className={`w-16 h-16 bg-[${GlobalStyles.colors.primary}] rounded-full flex items-center justify-center`}>
                             <Stethoscope className="w-8 h-8 text-white" />
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold text-[#2c3e50]">
+                    <CardTitle className={`${GlobalStyles.typography['2xl']} ${GlobalStyles.typography.bold} text-[${GlobalStyles.colors.sidebarBg}]`}>
                         Portal Profesional de Salud
                     </CardTitle>
                     <CardDescription>
@@ -58,8 +59,8 @@ export const ProfesionalLoginPage: React.FC = () => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div className="space-y-2">
+                    <form onSubmit={handleLogin} className={GlobalStyles.spacing.space.md_4}>
+                        <div className={GlobalStyles.spacing.space.sm_2}>
                             <Label htmlFor="email">Correo electrónico</Label>
                             <div className="relative">
                                 <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -91,12 +92,12 @@ export const ProfesionalLoginPage: React.FC = () => {
                         </div>
                         <Button
                             type="submit"
-                            className="w-full bg-[#2980b9] hover:bg-[#2471a3] cursor-pointer"
+                            className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
                             disabled={loading}
                         >
                             {loading ? "Ingresando..." : "Ingresar como Profesional"}
                         </Button>
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {error && <p className={`text-red-500 ${GlobalStyles.typography.sm}`}>{error}</p>}
                     </form>
                 </CardContent>
             </Card>

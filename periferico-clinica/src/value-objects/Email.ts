@@ -24,8 +24,11 @@ export class Email {
     private readonly value: string;
 
     constructor(value: string){
-        this.validate(value);
+        if (!value || value.trim() === '') {
+            throw new Error('Email cannot be empty');
+        }
         this.value = value;
+        this.validate(value);
     }
     private validate(value: string): void {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -13,7 +13,7 @@ export const AuthAdapter = {
     login: async (userCredentials: UserCredentials): Promise<string> => {
         try{
             const responseAuthData = await login(userCredentials);
-            return responseAuthData;
+            return Promise.resolve(responseAuthData.data);
         }catch(error){
             console.error('Error al iniciar sesión: ', error);
             return Promise.reject(error);

@@ -13,6 +13,7 @@ import {
     Label,
     Button
 } from '../../../components';
+import { GlobalStyles } from '../../../styles/styles';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -21,64 +22,56 @@ import { useState } from 'react';
 import { ArrowLeft, Building2, Lock, User } from 'lucide-react';
 import { ROUTES } from '../../../routes/constants/routes';
 
-
+// llamo al hook de useLogin
+import { useLogin } from '../../../hooks/use-login';
 
 export default function AdminLoginPage(){
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false);
-    // estado global para almacenar la autenticación del usuario
-    // -> aqui
-    const [error, setError] = useState<string | null>('');
+    const { handleLogin, error, loading } = useLogin();
 
     const handleGoBack = () => {
         navigate(ROUTES.HOME)
     };
-
-
-    const handleLogin = async (e: React.FormEvent) => {
+    
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-
-        // simulamos la autenticación
-        setTimeout(() => {
-            setLoading(false);
-            if(email === 'admin@clinica.com' && password === '123456'){
-                alert('Autenticación exitosa');
-                setError(null);
-                
-            }else{
-                const errorMessage: string = 'Credenciales incorrectas';
-                alert(errorMessage);
-                setError(errorMessage);
-            }
-            navigate('/'); // -> luego colocar la ruta del dashboard
-        }, 1000);
+        
+        try {
+            console.log('Email enviado a handleSubmit: ', email)
+            console.log('Password enviado a handleSubmit: ', password)
+            await handleLogin(email, password); 
+        } catch (error) {
+            // El error ya se maneja en el hook
+            console.error('Error en login:', error);
+        }
     }
+
+    
 
     return (
         
-        <div className="min-h-screen flex items-center justify-center bg-[#f4f7fa] p-4">
-            <Button onClick={handleGoBack} className="absolute top-4 left-4 flex items-center gap-2 text-[#2980b9] transition-colors mb-4 cursor-pointer">
+        <div className={GlobalStyles.layout.main}>
+            <Button onClick={handleGoBack} className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 text-[${GlobalStyles.colors.primary}] ${GlobalStyles.animations.transition} cursor-pointer`}>
                 <ArrowLeft className="w-4 h-4" />
-                <span className='text-sm'>Volver al inicio</span>
+                <span className={GlobalStyles.typography.sm}>Volver al inicio</span>
             </Button>
             <Card className="w-full max-w-md">
-                <CardHeader className="space-y-1 text-center">
+                <CardHeader className={`${GlobalStyles.spacing.space.xs_1} text-center`}>
                     <div className="flex justify-center mb-4">
-                        <div className='w-16 h-16 bg-[#2980b9] rounded-full flex items-center justify-center'>
+                        <div className={`w-16 h-16 bg-[${GlobalStyles.colors.primary}] rounded-full flex items-center justify-center`}>
                             <Building2 className="w-8 h-8 text-white" />
                         </div>
                     </div>
 
-                    <CardTitle className="text-2xl font-bold text-[#2c3e50]">Portal Admin Clínica</CardTitle>
+                    <CardTitle className={`${GlobalStyles.typography['2xl']} ${GlobalStyles.typography.bold} text-[${GlobalStyles.colors.sidebarBg}]`}>Portal Admin Clínica</CardTitle>
                     <CardDescription>Ingrese sus credenciales para acceder al sistema</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={(e: React.FormEvent) => handleLogin(e)} className="space-y-4">
-                        <div className="space-y-2">
+                    <form onSubmit={(e: React.FormEvent) => handleSubmit(e)} className={GlobalStyles.spacing.space.md_4}>
+                        <div className={GlobalStyles.spacing.space.sm_2}>
                             <Label htmlFor='email'>Correo electrónico</Label>
                             <div className="relative">
                          
@@ -110,10 +103,10 @@ export default function AdminLoginPage(){
                                 />
                             </div>
                         </div>
-                        <Button type="submit" className="w-full bg-[#2980b9] hover:bg-[#2471a3] cursor-pointer" disabled={loading}>
+                        <Button type="submit" className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`} disabled={loading}>
                             {loading ? "Ingresando..." : "Ingresar como Administrador"}
                         </Button>
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {error && <p className={`text-red-500 ${GlobalStyles.typography.sm}`}>{error}</p>}
                     </form>
                 </CardContent>
             </Card>
