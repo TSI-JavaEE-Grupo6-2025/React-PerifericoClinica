@@ -332,25 +332,3 @@ export const GlobalStyles = {
     }
 } as const;
 
-/**
- * Tipos TypeScript para autocompletado y type safety
- * 
- * Proporciona tipos para todas las propiedades del objeto GlobalStyles,
- * permitiendo autocompletado en el IDE y verificación de tipos en tiempo de compilación.
- * 
- * @example
- * ```typescript
- * // Autocompletado disponible
- * const color: ColorKey = 'primary'; // ✅ Válido
- * const invalidColor: ColorKey = 'invalid'; // ❌ Error de TypeScript
- * 
- * // Uso en componentes
- * const buttonClass: ComponentVariant = 'primary'; // ✅ Válido
- * ```
- */
-export type ColorKey = keyof typeof GlobalStyles.colors;
-export type TypographySize = keyof typeof GlobalStyles.typography;
-export type SpacingSize = keyof typeof GlobalStyles.spacing;
-export type ComponentVariant = keyof typeof GlobalStyles.components.button;
-export type LayoutKey = keyof typeof GlobalStyles.layout;
-export type AnimationKey = keyof typeof GlobalStyles.animations;

@@ -9,5 +9,10 @@ export default defineConfig({
         '@': path.resolve(__dirname, 'src'),
       },
     },
+  server: {
+    host: true, // Escuchar en todas las interfaces
+    port: 5173,
+    strictPort: true,
+  },
   plugins: [react()],
 })

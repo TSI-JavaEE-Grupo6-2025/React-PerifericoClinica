@@ -149,7 +149,37 @@ src/
 - [ ] Historia clínica electrónica
 - [ ] Sincronización con INUS y RNDC
 
-## 🚦 Scripts
+## 🚀 Instalación y Configuración Local
+
+### 📋 Prerrequisitos
+- Node.js 18+ 
+- pnpm (recomendado) o npm
+- Git
+
+### 🔧 Pasos para levantar el frontend
+
+1. **Clonar el repositorio**
+```bash
+git clone <url-del-repositorio>
+cd periferico-clinica
+```
+
+2. **Instalar dependencias**
+```bash
+pnpm install
+```
+
+3. **Levantar el servidor de desarrollo**
+```bash
+pnpm dev
+```
+
+4. **Acceder a la aplicación**
+- Abrir navegador en: `http://localhost`
+- La aplicación estará disponible en modo desarrollo
+- **Nota**: El puerto 5173 se maneja automáticamente por Vite
+
+### 🏗️ Scripts Disponibles
 
 ```bash
 # Desarrollo
@@ -167,6 +197,111 @@ pnpm lint
 # Formateo
 pnpm format
 ```
+
+## 🌐 Configuración Multi-Tenant para Desarrollo Local
+
+### 🎯 Objetivo
+Configurar el sistema para que detecte diferentes dominios de clínicas desde localhost durante las pruebas, simulando el comportamiento de producción donde cada clínica tiene su propio dominio.
+
+### 📝 Configuración del Sistema de Archivos Hosts
+
+1. **Editar archivo hosts del sistema**
+```bash
+# En macOS/Linux
+sudo nano /etc/hosts
+
+# En Windows (como administrador)
+notepad C:\Windows\System32\drivers\etc\hosts
+```
+
+2. **Agregar entradas para clínicas de prueba**
+```bash
+# Agregar al final del archivo hosts:
+127.0.0.1 localhost
+127.0.0.1 clinica-a.localhost
+127.0.0.1 clinica-b.localhost
+127.0.0.1 clinica-c.localhost
+127.0.0.1 admin.clinica-a.localhost
+127.0.0.1 admin.clinica-b.localhost
+255.255.255.255 broadcasthost
+```
+
+3. **Configurar Vite para múltiples dominios**
+```bash
+# En el archivo vite.config.ts, debe tener:
+server: {
+  host: true,        // Escuchar en todas las interfaces
+  port: 5173,        // Puerto único
+  strictPort: true,  // Forzar el puerto 5173
+}
+```
+
+### 🔄 Flujo de Pruebas Multi-Tenant
+
+1. **Crear clínica desde Panel Admin HCEN**
+   - Acceder al panel administrativo HCEN
+   - Crear nueva clínica (ej: "Clínica A")
+   - El sistema genera URL: `clinica-a.localhost`
+
+2. **Probar detección de dominio**
+   - Navegar a: `http://clinica-a.localhost`
+   - El sistema debe detectar automáticamente el dominio
+   - Mostrar logo/configuración específica de "Clínica A"
+
+3. **Verificar aislamiento de datos**
+   - Crear otra clínica: "Clínica B"
+   - Navegar a: `http://clinica-b.localhost`
+   - Verificar que los datos están aislados por clínica
+
+### 🛠️ Configuración de Desarrollo
+
+1. **Variables de entorno**
+```bash
+# Crear archivo .env.local
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_TENANT_SERVICE_URL=http://localhost:3000/api/tenant
+```
+
+2. **Configuración de tenant para desarrollo**
+```typescript
+// En src/config/tenant-config.ts
+export const TENANT_CONFIG = {
+  development: {
+    isSubdomain: false,
+    fallbackForLocalhost: 'dev-tenant',
+    // Configuración para dominios locales
+    localDomains: {
+      'localhost': 'dev-tenant',
+      'clinica-a.localhost': 'tenant-clinica-a',
+      'clinica-b.localhost': 'tenant-clinica-b',
+      'clinica-c.localhost': 'tenant-clinica-c',
+      'admin.clinica-a.localhost': 'tenant-clinica-a',
+      'admin.clinica-b.localhost': 'tenant-clinica-b'
+    }
+  }
+}
+```
+
+### 🧪 Casos de Prueba
+
+1. **Prueba básica de dominio**
+   - `http://localhost` → Debe usar tenant por defecto
+   - `http://clinica-a.localhost` → Debe detectar "Clínica A"
+
+2. **Prueba de login multi-tenant**
+   - Login en `clinica-a.localhost` → Usuario debe estar asociado a Clínica A
+   - Login en `clinica-b.localhost` → Usuario debe estar asociado a Clínica B
+
+3. **Prueba de aislamiento**
+   - Datos de Clínica A no deben aparecer en Clínica B
+   - Sesiones independientes por dominio
+
+### ⚠️ Notas Importantes
+
+- **Solo para desarrollo**: Esta configuración es únicamente para pruebas locales
+- **Producción**: En producción cada clínica tendrá su dominio real
+- **Backend**: Asegurar que el backend esté configurado para manejar múltiples tenants
+- **SSL**: En producción se requerirá HTTPS para dominios personalizados
 
 ## 🎨 Paleta de Colores
 

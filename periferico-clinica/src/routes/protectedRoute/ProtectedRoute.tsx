@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
-import { useAuthStore, type UserRole } from '../../store/AuthStore';
+import { useAuthStore} from '../../store/AuthStore';
+import type { UserRole } from '../../types';
 
 interface ProtectedRouteProps {
   children?: React.ReactNode;

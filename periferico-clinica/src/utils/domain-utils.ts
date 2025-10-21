@@ -72,13 +72,15 @@ export const extractTenantFromDomain = (
         subdomainIndex?: number;
         fallbackForLocalhost?: string;
         allDomain?: boolean;
+        localDomains?: Record<string, string>;
     }
 ): string => {
     const {
         isSubdomain = false,
         subdomainIndex = 1,
-        fallbackForLocalhost = 'localhost-xd',
-        allDomain = false
+        fallbackForLocalhost = 'dev-tenant',
+        allDomain = false,
+        localDomains = {}
     } = options || {};
 
     // Si allDomain está activado, retornar el hostname completo
@@ -86,9 +88,17 @@ export const extractTenantFromDomain = (
         return hostname;
     }
 
-    if(hostname === 'localhost' || hostname.startsWith('127.0.0.1')){
-        return fallbackForLocalhost
+    // Verificar si el hostname está en localDomains (desarrollo local)
+    if (localDomains && localDomains[hostname]) {
+        return localDomains[hostname];
     }
+
+    // Manejo para localhost e IPs locales
+    if(hostname === 'localhost' || hostname.startsWith('127.0.0.1')){
+        return fallbackForLocalhost;
+    }
+
+    // Lógica para subdominios y dominios normales
     const parts = hostname.split('.');
     
     if(isSubdomain){

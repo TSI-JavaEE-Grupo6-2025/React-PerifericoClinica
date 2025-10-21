@@ -1,16 +1,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { UserRole, User } from '../types';
 
-// Tipos
-export type UserRole = 'admin' | 'profesional';
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-  // otros campos para agregar más adelante
-}
+
 
 interface AuthState {
   // Estado actual

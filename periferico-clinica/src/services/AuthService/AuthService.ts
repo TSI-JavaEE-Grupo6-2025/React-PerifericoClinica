@@ -1,11 +1,9 @@
 // src/services/AuthService/AuthService.ts
 import type { UserCredentials } from "../../value-objects/UserCredentials";
-import API from "../Api";
+import API from "../constants/Api";
+import { ENDPOINTS_SERVICES } from "../constants/Endpoints";
 
-const AUTH_ENDPOINTS = {
-    LOGIN: '/auth/login',
-    LOGOUT: '/auth/logout',
-}
+
 /**
  * Servicio de autenticación para usuarios administradores y profesionales de salud
  * @description: Realiza una solicitud de autenticación al backend.
@@ -14,7 +12,7 @@ const AUTH_ENDPOINTS = {
  */
 export const login = async (userCredentials: UserCredentials) => {
     try{
-        const response = await API.post(AUTH_ENDPOINTS.LOGIN, userCredentials.toBackendPayLoad());
+        const response = await API.post(ENDPOINTS_SERVICES.AUTH.LOGIN, userCredentials.toBackendPayLoad());
         // por ahora .
         return Promise.resolve(response) 
     }catch(error){
@@ -29,7 +27,7 @@ export const login = async (userCredentials: UserCredentials) => {
 
 export const logout = async (): Promise<void> => {
     try{
-        await API.post(AUTH_ENDPOINTS.LOGOUT);
+        await API.post(ENDPOINTS_SERVICES.AUTH.LOGOUT);
         return Promise.resolve();
     }catch(error){
         console.error('Error al cerrar sesión: ', error);

@@ -1,4 +1,4 @@
-import type { UserHcen } from "../types/userHcen";
+import type { UserHcen } from "../types";
 import { Email } from "./Email";
 import { Password } from "./Password";
 

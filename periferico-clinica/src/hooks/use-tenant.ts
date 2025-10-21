@@ -1,6 +1,7 @@
 import { TenantAdapter } from '../adapters/TenantAdapter';
 import { useTenantStore } from '../store/TenantStore';
 import { extractTenantFromDomain } from '../utils/domain-utils';
+import { TENANT_CONFIG } from '../config/tenant-config';
 
 /**
  * Hook personalizado para obtener el tenantId actual
@@ -43,15 +44,22 @@ export const useIsTenantLoaded = (): boolean => {
 
 
 
-export const useTenantFetcher = async () => {
-
+export const useTenantFetcher = () => {
   const { setTenant, setLoading, setError } = useTenantStore();
+
+  const fetchTenant = async () => {
 
   setLoading(true);
   setError(null); // reseteamos los errores
   try {
-    const fullHostname = window.location.hostname
-    const currentDomain = extractTenantFromDomain(fullHostname)
+    const fullHostname = window.location.hostname;
+    
+    // Usar configuración según el ambiente
+    const config = import.meta.env.MODE === 'production' 
+        ? TENANT_CONFIG.production 
+        : TENANT_CONFIG.development;
+
+    const currentDomain = extractTenantFromDomain(fullHostname, config);
     if (!currentDomain) {
       return Promise.reject(new Error('No se pudo obtener el dominio del tenant'))
     }
@@ -69,5 +77,7 @@ export const useTenantFetcher = async () => {
   }finally{
     setLoading(false);
   }
+  };
 
-}
+  return { fetchTenant };
+};

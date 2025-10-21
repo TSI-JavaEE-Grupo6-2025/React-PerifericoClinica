@@ -5,36 +5,30 @@ import { Stethoscope } from '../../../components/icons';
 import { ROUTES } from '../../../routes/constants/routes';
 import { ArrowLeft, User, Lock } from 'lucide-react';
 import { GlobalStyles } from '../../../styles/styles';
+import { useLogin } from '../../../hooks/use-login';
 
 export const ProfesionalLoginPage: React.FC = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-
-    const [error, setError] = useState<string | null>(null);
-
+   
+    const { handleLogin, error, loading } = useLogin();
     const handleGoBack = () => {
         navigate(ROUTES.HOME);
     };
-
-    const handleLogin = async (e: React.FormEvent) => {
+    
+    
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-
-        // Simulate authentication
-        setTimeout(() => {
-            setLoading(false);
-            if(email === 'profesional@clinica.com' && password === '123456'){
-                alert('Autenticación como profesional de salud exitosa!');
-                setError(null);
-            }else{
-                const errorMessage: string = 'Credenciales incorrectas';
-                alert(errorMessage);
-                setError(errorMessage);
-            }
-            navigate('/'); // -> luego colocar la ruta del dashboard
-        }, 1000);
+        
+        try {
+            console.log('Email enviado a handleSubmit: ', email)
+            console.log('Password enviado a handleSubmit: ', password)
+            await handleLogin(email, password); 
+        } catch (error) {
+            // El error ya se maneja en el hook
+            console.error('Error en login:', error);
+        }
     };
 
     return (
@@ -59,7 +53,7 @@ export const ProfesionalLoginPage: React.FC = () => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleLogin} className={GlobalStyles.spacing.space.md_4}>
+                    <form onSubmit={handleSubmit} className={GlobalStyles.spacing.space.md_4}>
                         <div className={GlobalStyles.spacing.space.sm_2}>
                             <Label htmlFor="email">Correo electrónico</Label>
                             <div className="relative">

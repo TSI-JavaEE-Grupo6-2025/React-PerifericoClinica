@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import API from "./Api";
+import API from "./constants/Api";
 
 const TENANT_ENDPOINTS = {
     GET_TENANT_BY_DOMAIN: '/tenant/', // colocar la ruta correspondiente al servicio

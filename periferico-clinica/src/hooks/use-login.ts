@@ -40,9 +40,14 @@ export const useLogin = () => {
                 // const responseAuthData = await AuthAdapter.login(userCredentials);
                 // luego guardo el access token , tenantId y user Data en el store
                 // storeLogin(accessToken, userData, tenantId)
-                navigate(ROUTES.HOME)
-            }
-            else{
+                navigate(ROUTES.ADMIN_DASHBOARD)
+                return Promise.resolve();
+            }else if(userCredentials.email.equals(new Email('profesional@clinica.com')) && password === '12345678'){
+                  alert('Simulación de autenticación exitosa como profesional');
+                  setError(null);
+                  navigate(ROUTES.PROFESIONAL_DASHBOARD);
+                  return Promise.resolve();
+            }else{
                 const errorMessage: string = 'Credenciales incorrectas';
                 setError(errorMessage);
             }
