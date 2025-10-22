@@ -40,7 +40,9 @@ export class Email {
         }
     }
 
-    
+    toString(): string {
+        return this.value.toString()
+    }
 
     // obtenemos el dominio del email.
     getDomain(): string {

@@ -34,6 +34,10 @@ export class Password {
         // }
     }
 
+    toString(): string {
+        return this.password.toString()
+    }
+
     getValue(): string { return this.password;}
     equals(other: Password): boolean { return this.password === other.getValue();}
 }

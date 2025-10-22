@@ -102,8 +102,8 @@ export class UserCredentials {
      */
     toBackendPayLoad(): UserHcen {
         return {
-            email: this.email.getValue(),
-            password: this.password.getValue(),
+            email: this.email.toString(),
+            password: this.password.toString(),
             tenantId: this.tenantId
         }
     }
