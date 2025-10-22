@@ -22,7 +22,7 @@ export const ENDPOINTS_SERVICES = {
             // PUT
             CREATE_ADMIN_USER: '',
             CREATE_PROFESIONAL: '/health-professionals', // crea profesional de salud
-            CREATE_HEALTH_USER: '',
+            CREATE_HEALTH_USER: '',// alta de usuarios de salud 
             // GET
             GET_USERS: '',
             GET_PROFESIONALS: '',

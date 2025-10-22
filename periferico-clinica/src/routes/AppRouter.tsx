@@ -1,12 +1,13 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { HomePage, AdminLoginPage, ProfesionalLoginPage, AdminDashboardPage, ProfesionalDashboardPage } from '../pages';
+import {  AdminLoginPage, ProfesionalLoginPage, AdminDashboardPage, ProfesionalDashboardPage, NotFoundPage } from '../pages';
 
 import { ROUTES} from './constants/routes';
 
+import { ProtectedHome } from './protectedRoute/ProtectedHome';
 
 // Placeholder components para las rutas que aún no existen
-const Home = () => <HomePage />;
+
 const AdminLogin = () => <AdminLoginPage />;
 const ProfesionalLogin = () => <ProfesionalLoginPage />;
 const AdminDashboard = () => <AdminDashboardPage />;
@@ -16,7 +17,7 @@ const ProfesionalDashboard = () => <ProfesionalDashboardPage />;
 const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
-    element: <Home/>,
+    element: <ProtectedHome/>,
   },
   {
     path: ROUTES.ADMIN_DASHBOARD,
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     path: ROUTES.PROFESIONAL_DASHBOARD,
     element: <ProfesionalDashboard/>,
   },
+  {
+    path: "/404",
+    element: <NotFoundPage/>
+  }
 ]);
 
 export const AppRouter: React.FC = () => {

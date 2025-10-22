@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui';
 import { Building2, Stethoscope, ArrowRight } from '../../components/icons';
 import { GlobalStyles } from '../../styles/styles';
 
 
-
-import { useTenantFetcher } from '../../hooks/use-tenant';
 import { useTenantStore } from '../../store/TenantStore';
 import { useMemo } from 'react';
 
@@ -20,21 +18,9 @@ export const HomePage: React.FC = () => {
   const handleProfessionalAccess = () => {
     navigate('/profesional/login');
   };
-
-  const { fetchTenant } = useTenantFetcher({ allDomain: true });
-  const { tenant, loading } = useTenantStore();
-  const hasFetched = useRef(false); 
-
-  useEffect(() => {
-    if (!tenant && !loading && !hasFetched.current) {
-      hasFetched.current = true; 
-      fetchTenant().catch((error: Error) => {
-        console.error('Error al obtener el tenant de la clínica: ', error);
-        hasFetched.current = false; 
-        // mostrar mensaje de error en la UI con toastify acordarse
-      });
-    }
-  }, [tenant, loading, fetchTenant]); // Solo estas dependencias
+  const { tenant } = useTenantStore();
+  
+  // movi la logica de tenantFetch a ProtectedHome.tsx
 
   const tenantData = useMemo(() => {
     if (!tenant) return null;
