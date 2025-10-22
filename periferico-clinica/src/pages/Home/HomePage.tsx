@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui';
 import { Building2, Stethoscope, ArrowRight } from '../../components/icons';
@@ -23,12 +23,14 @@ export const HomePage: React.FC = () => {
 
   const { fetchTenant } = useTenantFetcher({ allDomain: true });
   const { tenant, loading } = useTenantStore();
-
+  const hasFetched = useRef(false); 
 
   useEffect(() => {
-    if (!tenant && !loading) {
+    if (!tenant && !loading && !hasFetched.current) {
+      hasFetched.current = true; 
       fetchTenant().catch((error: Error) => {
         console.error('Error al obtener el tenant de la clínica: ', error);
+        hasFetched.current = false; 
         // mostrar mensaje de error en la UI con toastify acordarse
       });
     }
@@ -49,7 +51,7 @@ export const HomePage: React.FC = () => {
 
   console.log('color de fondo: ', tenantData?.color?.background)
   console.log('🟦color de fondo default: ',backgroundColor)
-
+  console.log('Tenant data: ', JSON.stringify(tenantData, null, 2))
 
   console.log('✅ HomePage renderizado - Todo funcionando correctamente');
   // console.log('configuración de desarrollo: ', TENANT_CONFIG.development);

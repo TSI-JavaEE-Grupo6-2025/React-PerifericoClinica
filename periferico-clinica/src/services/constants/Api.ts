@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const apiString: string = 'http://localhost:3000/api'; // luego sera la url del backend
+const apiString: string = 'http://localhost:8081/api'; // luego sera la url del backend
 
 /**
  * API Instance 

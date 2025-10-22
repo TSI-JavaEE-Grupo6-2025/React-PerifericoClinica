@@ -8,11 +8,7 @@ import { ENDPOINTS_SERVICES } from "./constants/Endpoints";
 export const getTenantByDomain = async (domain: string): Promise<AxiosResponse> => {
     try{
         console.log('Obteniendo el tenant por dominio => ', domain);
-        const response = await API.get(ENDPOINTS_SERVICES.TENANT.GET_BY_DOMAIN,{
-            params: {
-                domain: domain
-            }
-        })
+        const response = await API.get(ENDPOINTS_SERVICES.TENANT.GET_BY_DOMAIN.replace(':domain', domain));
         return Promise.resolve(response)
 
     }catch(error){
