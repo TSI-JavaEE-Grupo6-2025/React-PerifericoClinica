@@ -1,6 +1,6 @@
 //src/hooks/use-register.ts
 import { useState } from "react"
-import { UserAdapter } from "../adapters/UserService/UserAdapter"
+import { AdminDashboardAdapter } from "../adapters/Dashboard/Admin/AdminDashboardAdapter"
 import type { HealthProfessionalRequest } from "../types/User"
 
 type RegisterAction = "health-user" | "health-professional" | "admin-user"
@@ -50,7 +50,7 @@ export const useRegister = ({ action, onSuccess, onError }: UseRegisterOptions):
     try {
       switch (action) {
         case "health-user":
-          await UserAdapter.createHealthProfessional(data as HealthProfessionalRequest);
+          await AdminDashboardAdapter.createHealthProfessional(data as HealthProfessionalRequest);
           break
         // case "health-professional":
         //   await registerHealthProfessional(data as HealthProfessional)

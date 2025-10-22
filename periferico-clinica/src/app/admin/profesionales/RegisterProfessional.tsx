@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, UserCog,  Mail, Award } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
-import { UserAdapter } from "../../../adapters/UserService/UserAdapter"
+import { AdminDashboardAdapter } from "../../../adapters/Dashboard/Admin/AdminDashboardAdapter"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
 import { useTenantId } from "../../../hooks/use-tenant"
 import { ROUTES } from "../../../routes"
@@ -44,7 +44,7 @@ export const RegisterProfessionalPage: React.FC = () => {
 
     try {
       alert(JSON.stringify(formData, null, 2))
-      await UserAdapter.createHealthProfessional(formData)
+      await AdminDashboardAdapter.createHealthProfessional(formData)
       setSuccess(true)
       setTimeout(() => {
         navigate(ROUTES.ADMIN_PROFESSIONALS)
