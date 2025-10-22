@@ -7,6 +7,7 @@ import { Button } from "../ui"
 import { LayoutDashboard, FileText, FilePlus, Search, LogOut, Menu, X, Stethoscope } from "lucide-react"
 import { ROUTES } from "../../routes"
 
+
 const navigation = [
   { name: "Dashboard", href: "/profesional/dashboard", icon: LayoutDashboard },
   { name: "Historia Clínica", href: "/profesional/historia-clinica", icon: Search },
@@ -17,6 +18,7 @@ const navigation = [
 export function ProfessionalLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   const navigate = useNavigate();
+  
   const pathname = location.pathname
   const [sidebarOpen, setSidebarOpen] = useState(false)
 

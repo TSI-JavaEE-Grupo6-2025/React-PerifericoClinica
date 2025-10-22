@@ -6,7 +6,8 @@ import {
   AdminDashboardPage, 
   ProfesionalDashboardPage, 
   NotFoundPage, 
-  RegisterProfessionalPage 
+  RegisterProfessionalPage,
+  ClinicSettingPage,
 } from '../pages';
 
 import { ROUTES} from './constants/routes';
@@ -21,6 +22,7 @@ const AdminDashboard = () => <AdminDashboardPage />;
 const ProfesionalDashboard = () => <ProfesionalDashboardPage />;
 
 const RegisterHealthProfessional = () => <RegisterProfessionalPage />;
+const AdminClinicSetting = () => <ClinicSettingPage />;
 
 
 const router = createBrowserRouter([
@@ -52,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: ROUTES.ADMIN_PROFESSIONALS,
     element: <RegisterHealthProfessional/>,
+  },
+  {
+    path: ROUTES.ADMIN_CLINIC_SETTING,
+    element: <AdminClinicSetting/>,
   }
   
 ]);

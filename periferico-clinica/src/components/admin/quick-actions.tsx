@@ -35,7 +35,7 @@ export const QuickActions: React.FC = () => {
     {
       label: "Configuración",
       icon: Settings,
-      onClick: () => navigate("/admin/configuracion"),
+      onClick: () => navigate(ROUTES.ADMIN_CLINIC_SETTING),
       color: "hover:bg-[#8e44ad]",
     },
   ]

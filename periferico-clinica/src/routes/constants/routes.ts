@@ -10,7 +10,9 @@ export const ROUTES = {
     ADMIN_USERS: '/admin/usuarios',
     ADMIN_PROFESSIONALS: '/admin/profesionales',
     ADMIN_SETTINGS: '/admin/configuracion',
+    ADMIN_CLINIC_SETTING: '/admin/configuracion/clinica',
 
     // privadas Profesional
     PROFESIONAL_DASHBOARD: '/profesional/dashboard',
+    
 } as const;

@@ -10,7 +10,7 @@ const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Usuarios de Salud", href: "/admin/usuarios", icon: Users },
   { name: "Profesionales", href: "/admin/profesionales", icon: UserCog },
-  { name: "Configuración", href: "/admin/configuracion", icon: Settings },
+  { name: "Configuración", href: "/admin/configuracion/clinica", icon: Settings },
 ]
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
