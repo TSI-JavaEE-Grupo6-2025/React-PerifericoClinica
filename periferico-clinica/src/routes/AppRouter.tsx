@@ -1,6 +1,13 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import {  AdminLoginPage, ProfesionalLoginPage, AdminDashboardPage, ProfesionalDashboardPage, NotFoundPage } from '../pages';
+import {  
+  AdminLoginPage, 
+  ProfesionalLoginPage, 
+  AdminDashboardPage, 
+  ProfesionalDashboardPage, 
+  NotFoundPage, 
+  RegisterProfessionalPage 
+} from '../pages';
 
 import { ROUTES} from './constants/routes';
 
@@ -13,11 +20,17 @@ const ProfesionalLogin = () => <ProfesionalLoginPage />;
 const AdminDashboard = () => <AdminDashboardPage />;
 const ProfesionalDashboard = () => <ProfesionalDashboardPage />;
 
+const RegisterHealthProfessional = () => <RegisterProfessionalPage />;
+
 
 const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
     element: <ProtectedHome/>,
+  },
+  {
+    path: "/404",
+    element: <NotFoundPage/>
   },
   {
     path: ROUTES.ADMIN_DASHBOARD,
@@ -35,10 +48,12 @@ const router = createBrowserRouter([
     path: ROUTES.PROFESIONAL_DASHBOARD,
     element: <ProfesionalDashboard/>,
   },
+
   {
-    path: "/404",
-    element: <NotFoundPage/>
+    path: ROUTES.ADMIN_PROFESSIONALS,
+    element: <RegisterHealthProfessional/>,
   }
+  
 ]);
 
 export const AppRouter: React.FC = () => {

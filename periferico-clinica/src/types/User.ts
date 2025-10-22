@@ -1,75 +1,45 @@
-/**
- * Tipos para gestión de usuarios del sistema
- *
- * HealthUser: Usuario de salud (paciente)
- * HealthProfessional: Profesional de salud
- * UserRegistrationData: Datos para registro de usuario
- */
 
-export interface HealthUser {
-    id?: string
+  // interface para el registro de profesional de salud usado para enviar los datos al backend
+  /**
+   * Interfaz para el request de registro de profesional de salud (frontend)
+   * @property {string} firstName - Nombre del profesional de salud
+   * @property {string} lastName - Apellido del profesional de salud
+   * @property {string} email - Email del profesional de salud
+   * @property {string} document - Documento de identidad del profesional de salud
+   * @property {string} specialty - Especialidad del profesional de salud
+   * @property {string} tenantId - ID del tenant (clínica)
+   */
+  export interface HealthProfessionalRequest {
     firstName: string
     lastName: string
     email: string
-    phone: string
-    documentType: "DNI" | "PASSPORT" | "OTHER"
-    documentNumber: string
-    dateOfBirth: string
-    gender: "M" | "F" | "OTHER"
-    address: string
-    city: string
-    province: string
-    postalCode: string
-    emergencyContact: {
-      name: string
-      phone: string
-      relationship: string
-    }
-    medicalHistory?: string
-    allergies?: string
-    currentMedications?: string
-    tenantId: string
+    document: string // documento de identidad del profesional (cédula)
+    specialty?: string
+    tenantId: string  
   }
   
-  export interface HealthProfessional {
-    id?: string
+  /**
+   * Interfaz para el respor de registro de profesional de salud (backend)
+   * @property {string} id - ID del profesional de salud
+   * @property {string} firstName - Nombre del profesional de salud
+   * @property {string} lastName - Apellido del profesional de salud
+   * @property {string} document - Documento de identidad del profesional de salud
+   * @property {string} specialty - Especialidad del profesional de salud
+   * @property {string} email - Email del profesional de salud
+   * @property {boolean} active - Estado del profesional de salud
+   * @property {Date} createdAt - Fecha de creación del profesional de salud
+   * @property {Date} updatedAt - Fecha de actualización del profesional de salud
+   */  
+  export interface HealthProfessionalRegisterResponse {
+    id: string
     firstName: string
     lastName: string
-    email: string
-    phone: string
-    documentType: "DNI" | "PASSPORT" | "OTHER"
-    documentNumber: string
+    document: string
     specialty: string
-    licenseNumber: string
-    licenseExpiry: string
-    tenantId: string
-  }
-  
-  export interface UserRegistrationData {
     email: string
-    password: string
-    firstName: string
-    lastName: string
-    role: "admin" | "profesional" | "health_user"
-    tenantId: string
+    active: boolean
+    createdAt: Date
+    updatedAt: Date
   }
   
-  // Response types
-  export interface UserRegistrationResponse {
-    success: boolean
-    message: string
-    userId?: string
-  }
-  
-  export interface HealthUserRegistrationResponse {
-    success: boolean
-    message: string
-    healthUserId?: string
-  }
-  
-  export interface HealthProfessionalRegistrationResponse {
-    success: boolean
-    message: string
-    professionalId?: string
-  }
-  
+ 
