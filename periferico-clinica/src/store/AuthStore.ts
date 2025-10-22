@@ -9,7 +9,7 @@ interface AuthState {
   // Estado actual
   token: string | null;           // JWT token de autenticación
   tenantId: string | null;        // ID del tenant (clínica)
-  user: User | null;              // Datos del usuario logueado
+  user: User | null;              // Datos del usuario logueado (incluye username, email, role)
   isAuthenticated: boolean;       // Si está autenticado o no
   
   // Acciones

@@ -14,34 +14,36 @@
 
 export const ENDPOINTS_SERVICES = {
     AUTH: {
-        LOGIN: '/auth/login',
-        LOGOUT: '/auth/logout',
+        LOGIN: '/auth/login', // ✅
+        LOGOUT: '/auth/logout', // 
     },
     DASHBOARD: {
         ADMIN: {
             // PUT
-            CREATE_ADMIN_USER: '/admin/users/create',
-            CREATE_PROFESIONAL: '/admin/professionals/create',
-            CREATE_HEALTH_USER: '/admin/health-users/create',
+            CREATE_ADMIN_USER: '',
+            CREATE_PROFESIONAL: '/health-professionals', // crea profesional de salud
+            CREATE_HEALTH_USER: '',
             // GET
-            GET_USERS: '/admin/users/get',
-            GET_PROFESIONALS: '/admin/professionals/get',
-            GET_HEALTH_USERS: '/admin/health-users/get',
+            GET_USERS: '',
+            GET_PROFESIONALS: '',
+            GET_HEALTH_USERS: '',
+
+            UPDATE_CLINIC: '/clinics/:tenantId', // actualiza datos de la clínica
             
         },
         PROFESIONAL: {
 
-            CREATE_DOCUMENT: '/profesional/documents/create',
+            CREATE_DOCUMENT: '',
            
             // GET
-            GET_DOCUMENTS: '/profesional/documents/get',
-            UPDATE_DOCUMENT: '/profesional/documents/update',
-            DELETE_DOCUMENT: '/profesional/documents/delete',
+            GET_DOCUMENTS: '',
+            UPDATE_DOCUMENT: '',
+            DELETE_DOCUMENT: '',
         },
         
     },
     TENANT: {
-        GET_BY_DOMAIN: '/tenant/get-by-domain'
+        GET_BY_DOMAIN: 'clinics/by-domain/:domain'
     }
 
 }

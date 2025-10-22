@@ -1,7 +1,8 @@
+import { useCallback } from 'react';
 import { TenantAdapter } from '../adapters/TenantAdapter';
 import { useTenantStore } from '../store/TenantStore';
 import { extractTenantFromDomain } from '../utils/domain-utils';
-import { TENANT_CONFIG } from '../config/tenant-config';
+import { TENANT_CONFIG, type TenantConfig } from '../config/tenant-config';
 
 /**
  * Hook personalizado para obtener el tenantId actual
@@ -20,7 +21,7 @@ import { TENANT_CONFIG } from '../config/tenant-config';
  */
 export const useTenantId = (): string | null => {
   const { tenant } = useTenantStore();
-  return tenant?.id || null;
+  return tenant?.tenantId || null;
 };
 
 /**
@@ -44,40 +45,41 @@ export const useIsTenantLoaded = (): boolean => {
 
 
 
-export const useTenantFetcher = () => {
+export const useTenantFetcher = (preConfig?: Partial<TenantConfig>) => {
   const { setTenant, setLoading, setError } = useTenantStore();
 
-  const fetchTenant = async () => {
+  const fetchTenant = useCallback(async () => {
+    setLoading(true);
+    setError(null); // reseteamos los errores
+    try {
+      const fullHostname = window.location.hostname;
+      
+      // Usar configuración según el ambiente
+      const config = preConfig || ( import.meta.env.MODE === 'production' 
+          ? TENANT_CONFIG.production 
+          : TENANT_CONFIG.development
+        );
+      
+      const currentDomain = extractTenantFromDomain(fullHostname, config);
+      if (!currentDomain) {
+        return Promise.reject(new Error('No se pudo obtener el dominio del tenant'))
+      }
+      const tenant = await TenantAdapter.getTenantByDomain(currentDomain);
+     
+      setTenant(tenant); // almacenamos el tenant en localStorage
+      if (!tenant) {
+        return Promise.reject(new Error('No se pudo obtener el tenant'))
+      }
+      return Promise.resolve(tenant);
 
-  setLoading(true);
-  setError(null); // reseteamos los errores
-  try {
-    const fullHostname = window.location.hostname;
-    
-    // Usar configuración según el ambiente
-    const config = import.meta.env.MODE === 'production' 
-        ? TENANT_CONFIG.production 
-        : TENANT_CONFIG.development;
-
-    const currentDomain = extractTenantFromDomain(fullHostname, config);
-    if (!currentDomain) {
-      return Promise.reject(new Error('No se pudo obtener el dominio del tenant'))
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error al obtener el tenant';
+      setError(errorMessage)
+      return Promise.reject(error);
+    }finally{
+      setLoading(false);
     }
-    const tenant = await TenantAdapter.getTenantByDomain(currentDomain);
-    setTenant(tenant); // almacenamos el tenant en localStorage
-    if (!tenant) {
-      return Promise.reject(new Error('No se pudo obtener el tenant'))
-    }
-    return Promise.resolve(tenant);
-
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Error al obtener el tenant';
-    setError(errorMessage)
-    return Promise.reject(error);
-  }finally{
-    setLoading(false);
-  }
-  };
+  }, [setTenant, setLoading, setError, preConfig]);
 
   return { fetchTenant };
 };

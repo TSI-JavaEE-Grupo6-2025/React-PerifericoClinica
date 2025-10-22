@@ -1,31 +1,23 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { TenantResponse } from '../types';
 
-/**
- * Tipos para el TenantStore
- */
-export interface Tenant {
-    id: string;
-    name: string;
-    domain: string;
-    logo?: string;
-    // Otros campos que pueda retornar el backend
-}
+
 
 interface TenantState {
     // Estado actual
-    tenant: Tenant | null;           // Datos del tenant actual
+    tenant: TenantResponse | null;           // Datos del tenant actual
     loading: boolean;                // Estado de carga
     error: string | null;            // Error si ocurre
 
     // Acciones
-    setTenant: (tenant: Tenant) => void;
+    setTenant: (tenant: TenantResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clearTenant: () => void;
 
-    getTenantId: () => Tenant;
-
+    getTenantId: () => string | null;
+    getTenant: () => TenantResponse | null;
 }
 
 /**
@@ -62,9 +54,9 @@ export const useTenantStore = create<TenantState>()(
             /**
              * Establece los datos del tenant actual
              * 
-             * @param {Tenant} tenant - Datos del tenant a establecer
+             * @param {TenantResponse} tenant - Datos del tenant a establecer
              */
-            setTenant: (tenant: Tenant) =>
+            setTenant: (tenant: TenantResponse) =>
                 set({
                     tenant,
                     error: null // Limpiar error al establecer tenant exitosamente
@@ -98,10 +90,15 @@ export const useTenantStore = create<TenantState>()(
                     error: null
                 }),
 
+            
+            getTenantId(): string | null {
+                return get().tenant?.tenantId || null;
+            },
+
             /**
              * Getter para obtener el objeto tenant completo
              * 
-             * @returns {Tenant | null} Objeto tenant completo o null si no está cargado
+             * @returns {TenantResponse | null} Objeto tenant completo o null si no está cargado
              * 
              * @example
              * ```typescript
@@ -116,8 +113,8 @@ export const useTenantStore = create<TenantState>()(
              * }
              * ```
             */
-            getTenantId(): Tenant {
-                return get().tenant as Tenant;
+            getTenant: (): TenantResponse | null => {
+                return get().tenant || null;
             },
 
         }),

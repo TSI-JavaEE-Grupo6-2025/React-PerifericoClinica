@@ -23,9 +23,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (requiredRole && !hasRole(requiredRole)) {
     // Redirigir según el rol del usuario actual
     switch (user?.role) {
-      case 'admin':
+      case 'ADMIN_CLINIC':
         return <Navigate to={ROUTES.ADMIN_DASHBOARD} replace />;
-      case 'profesional':
+      case 'PROFESSIONAL':
         return <Navigate to={ROUTES.PROFESIONAL_DASHBOARD} replace />;
       default:
         return <Navigate to={ROUTES.HOME} replace />;

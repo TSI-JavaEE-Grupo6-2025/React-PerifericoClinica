@@ -17,5 +17,15 @@ export const TENANT_CONFIG = {
     production: {
         isSubdomain: true,
         subdomainIndex: 0,
+        
     }
+}
+
+// Tipo simple para las opciones => mover a types/tenant.ts
+export type TenantConfig = {
+    isSubdomain?: boolean;
+    subdomainIndex?: number;
+    fallbackForLocalhost?: string;
+    allDomain?: boolean;
+    localDomains?: Record<string, string>;
 }

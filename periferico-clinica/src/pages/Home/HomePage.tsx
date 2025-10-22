@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui';
 import { Building2, Stethoscope, ArrowRight } from '../../components/icons';
 import { GlobalStyles } from '../../styles/styles';
 
-import { TENANT_CONFIG } from '../../config/tenant-config';
-import { extractTenantFromDomain } from '../../utils/domain-utils';
+
+
+import { useTenantFetcher } from '../../hooks/use-tenant';
+import { useTenantStore } from '../../store/TenantStore';
+import { useMemo } from 'react';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -17,25 +20,58 @@ export const HomePage: React.FC = () => {
   const handleProfessionalAccess = () => {
     navigate('/profesional/login');
   };
-   
-  // integrar useTenantFetcher para dibujar luego el logo de la clinica
-  //const config = TENANT_CONFIG.development; // aunque coloque en produccion , va detectar que estoy en localhost y retornara dev-tenant 
-  const domain = extractTenantFromDomain(window.location.hostname,{
-    allDomain: true
-  });
-  
-  console.log('configuración de desarrollo: ', TENANT_CONFIG.development);
-  console.log('Probando la captura del dominio en home page en entorno de development: ', domain);
+
+  const { fetchTenant } = useTenantFetcher({ allDomain: true });
+  const { tenant, loading } = useTenantStore();
+
+
+  useEffect(() => {
+    if (!tenant && !loading) {
+      fetchTenant().catch((error: Error) => {
+        console.error('Error al obtener el tenant de la clínica: ', error);
+        // mostrar mensaje de error en la UI con toastify acordarse
+      });
+    }
+  }, [tenant, loading, fetchTenant]); // Solo estas dependencias
+
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      id: tenant.tenantId,
+      name: tenant.name,
+      domain: tenant.domain,
+      logo: tenant.logo,
+      color: tenant.color 
+    }
+  }, [tenant]);
+
+  const backgroundColor = tenantData?.color?.background || '#2980b9';
+
+  console.log('color de fondo: ', tenantData?.color?.background)
+  console.log('🟦color de fondo default: ',backgroundColor)
+
+
+  console.log('✅ HomePage renderizado - Todo funcionando correctamente');
+  // console.log('configuración de desarrollo: ', TENANT_CONFIG.development);
+  // console.log('Probando la captura del dominio en home page en entorno de development: ', domain);
 
   return (
     <div className={GlobalStyles.layout.main}>
       <div className={GlobalStyles.layout.container}>
-        {/* logo de la clínica */}
-        {
-          domain && (
-            <span className='text-4xl text-center justify-center flex text-gray-500'>El dominio de la clínica es: {domain} - 👉Logo👈</span>
-          )
-        }
+        <div className='flex flex-col items-center justify-center mb-8'>
+          <div className={`w-24 h-24 rounded-full bg-[${backgroundColor}] flex items-center justify-center overflow-hidden shadow-lg`}>
+            {tenantData?.logo ? (
+              <img
+                src={tenantData.logo || "/placeholder.svg"}
+                alt={`Logo ${tenantData.name}`}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Building2 className="w-8 h-8 text-white" />
+            )}
+          </div>
+          {tenantData && <p className="mt-3 text-lg font-semibold text-[#2c3e50]">{tenantData.name}</p>}
+        </div>
         <div className={`text-center ${GlobalStyles.spacing.space.md_4}`}>
           <h1 className={`${GlobalStyles.typography['4xl']} ${GlobalStyles.typography.bold} text-[#2c3e50]`}>
             Sistema HCEN - Componente Periférico
@@ -60,7 +96,7 @@ export const HomePage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="mt-auto">
-              <Button 
+              <Button
                 className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
                 onClick={handleAdminAccess}
               >
@@ -84,7 +120,7 @@ export const HomePage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="mt-auto">
-              <Button 
+              <Button
                 className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
                 onClick={handleProfessionalAccess}
               >
@@ -103,7 +139,7 @@ export const HomePage: React.FC = () => {
               <div>
                 <p className={`${GlobalStyles.typography.medium} text-[${GlobalStyles.colors.sidebarBg}]`}>Sistema Integrado con HCEN</p>
                 <p className={`${GlobalStyles.typography.sm} text-gray-600`}>
-                  Conexión activa con el componente central. Todos los datos se sincronizan 
+                  Conexión activa con el componente central. Todos los datos se sincronizan
                   automáticamente con el INUS y RNDC.
                 </p>
               </div>
@@ -112,6 +148,6 @@ export const HomePage: React.FC = () => {
         </Card>
       </div>
     </div>
-    
+
   );
 };

@@ -1,16 +1,17 @@
 //src/adapters/Auth/AuthAdapter.ts
 import type { UserCredentials } from "../../value-objects/UserCredentials";
 import { login, logout } from "../../services/AuthService/AuthService";
+import type { LoginResponse } from "../../types"
 
 /**
  * Adaptador de autenticación para usuarios administradores y profesionales 
  * @description: Realiza la autenticación de usuarios y retorna los datos del usuario autenticado.
  * @property: login: Realiza la autenticación de un usuario y retorna los datos del usuario autenticado.
  * @property: logout: Realiza el cierre de sesión del usuario actual.
- * @returns: Promise que resuelve con los datos del usuario autenticado o rechaza con el error
+ * @returns: Devuelve una promesa con el formato de LoginResponse
  */
 export const AuthAdapter = {
-    login: async (userCredentials: UserCredentials): Promise<string> => {
+    login: async (userCredentials: UserCredentials): Promise<LoginResponse> => {
         try{
             const responseAuthData = await login(userCredentials);
             return Promise.resolve(responseAuthData.data);

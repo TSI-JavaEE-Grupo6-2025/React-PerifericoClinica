@@ -1,14 +1,14 @@
 import type { AxiosResponse } from "axios";
 import API from "./constants/Api";
+import { ENDPOINTS_SERVICES } from "./constants/Endpoints";
 
-const TENANT_ENDPOINTS = {
-    GET_TENANT_BY_DOMAIN: '/tenant/', // colocar la ruta correspondiente al servicio
-}
+
 
 
 export const getTenantByDomain = async (domain: string): Promise<AxiosResponse> => {
     try{
-        const response = await API.get(TENANT_ENDPOINTS.GET_TENANT_BY_DOMAIN,{
+        console.log('Obteniendo el tenant por dominio => ', domain);
+        const response = await API.get(ENDPOINTS_SERVICES.TENANT.GET_BY_DOMAIN,{
             params: {
                 domain: domain
             }

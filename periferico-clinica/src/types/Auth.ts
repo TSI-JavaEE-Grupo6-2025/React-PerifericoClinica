@@ -16,31 +16,29 @@ export interface UserHcen { // usado en UserCredentials Value Object
 }
 
 
-export type UserRole = 'admin' | 'profesional'; // usado en useAuthStore
+export type UserRole = 'ADMIN_CLINIC' | 'PROFESSIONAL'; // usado en useAuthStore
 
 
 export interface User { // usado en useAuthStore
-    id: string;
+    id?: string;
     email: string;
-    name: string;
+    username: string;
     role: UserRole;
     // otros campos para agregar más adelante
   }
 
 
 
-// interfaces para la respuestas del backend
-
+/**
+ * Interfaz de respuesta del adapter de autenticación 
+ * 
+ */
 export interface LoginResponse {
-    accessToken: string;
-    User: {
-        name: string;
-        email: string;
-    },
-    tenant: {
-        tenantId: string;
-        name: string;
-        logo: string; // url del logo de la clinica
-    },
+    token: string;
+    tenantId: string;
+    user: User;
+    expiresIn: number;
 }
+
+
 
