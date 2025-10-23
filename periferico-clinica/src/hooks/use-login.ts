@@ -25,9 +25,9 @@ export const useLogin = () => {
             console.log('userCredentials creado: ', JSON.stringify(userCredentials, null, 2))
             const responseAuthData = await AuthAdapter.login(userCredentials);
             console.log('Respuesta del adapter de autenticación: ', JSON.stringify(responseAuthData, null, 2))
-            const { token, tenantId, user } = responseAuthData;
+            const { accessToken, tenantId, user } = responseAuthData;
             // guardamos los datos en el store
-            storeLogin(token, tenantId, user);
+            storeLogin(accessToken, tenantId, user);
             // según el role del usuario, redireccionamos a la página correspondiente
             if(user.role === 'ADMIN_CLINIC'){
                 navigate(ROUTES.ADMIN_DASHBOARD);

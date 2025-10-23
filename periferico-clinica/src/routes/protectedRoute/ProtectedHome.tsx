@@ -1,9 +1,8 @@
 import { useTenantFetcher } from '../../hooks/use-tenant';
 import { useEffect, useRef } from 'react';
 import { useTenantStore } from '../../store/TenantStore';
-import { Navigate } from 'react-router-dom';
 import { Spinner } from '../../components/ui/Spinner';
-import { HomePage } from '../../pages';
+import { HomePage, NotFoundPage } from '../../pages';
 
 
 
@@ -35,10 +34,9 @@ export const ProtectedHome: React.FC<ProtectedHomeProps> = () => {
             <Spinner className="size-8 animate-spin" />
         </div>
     }
-    if (!tenant) return <Navigate to="/404" />
-
-
-
+    
+    // Si no hay tenant, renderizar directamente la página 404 sin cambiar la URL
+    if (!tenant) return <NotFoundPage />
 
     return <HomePage/>;
 }

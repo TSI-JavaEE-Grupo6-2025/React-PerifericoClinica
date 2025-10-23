@@ -12,10 +12,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requiredRole,
 }) => {
-  const { token, isAuthenticated, user, hasRole } = useAuthStore();
+  const { accessToken, isAuthenticated, user, hasRole } = useAuthStore();
 
   // Validación de autenticación global
-  if (!token || !isAuthenticated) {
+  if (!accessToken || !isAuthenticated) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
 

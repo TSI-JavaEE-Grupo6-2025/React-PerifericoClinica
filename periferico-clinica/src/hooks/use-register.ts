@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { AdminDashboardAdapter } from "../adapters/Dashboard/Admin/AdminDashboardAdapter"
 import type { HealthProfessionalRequest } from "../types/User"
-
+import { useAuthStore } from "../store/AuthStore"
 type RegisterAction = "health-user" | "health-professional" | "admin-user"
 
 interface UseRegisterOptions {
@@ -38,6 +38,7 @@ type RegisterData= HealthProfessionalRequest; // agregar luego healthUser y admi
  * ```
  */
 export const useRegister = ({ action, onSuccess, onError }: UseRegisterOptions): UseRegisterReturn => {
+  const { accessToken } = useAuthStore();
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -49,15 +50,9 @@ export const useRegister = ({ action, onSuccess, onError }: UseRegisterOptions):
 
     try {
       switch (action) {
-        case "health-user":
-          await AdminDashboardAdapter.createHealthProfessional(data as HealthProfessionalRequest);
+        case "health-professional":
+          await AdminDashboardAdapter.createHealthProfessional(data as HealthProfessionalRequest, accessToken || '');
           break
-        // case "health-professional":
-        //   await registerHealthProfessional(data as HealthProfessional)
-        //   break
-        // case "admin-user":
-        //   await registerAdminUser(data as AdminUser)
-        //   break
         default:
           throw new Error(`Acción de registro no válida: ${action}`)
       }

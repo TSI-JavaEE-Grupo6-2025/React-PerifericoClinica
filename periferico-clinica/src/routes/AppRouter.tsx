@@ -31,10 +31,6 @@ const router = createBrowserRouter([
     element: <ProtectedHome/>,
   },
   {
-    path: "/404",
-    element: <NotFoundPage/>
-  },
-  {
     path: ROUTES.ADMIN_DASHBOARD,
     element: <AdminDashboard />,
   },
@@ -50,7 +46,6 @@ const router = createBrowserRouter([
     path: ROUTES.PROFESIONAL_DASHBOARD,
     element: <ProfesionalDashboard/>,
   },
-
   {
     path: ROUTES.ADMIN_PROFESSIONALS,
     element: <RegisterHealthProfessional/>,
@@ -58,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: ROUTES.ADMIN_CLINIC_SETTING,
     element: <AdminClinicSetting/>,
+  },
+  {
+    path: "*", // Catch-all route - captura cualquier ruta no definida
+    element: <NotFoundPage/>
   }
   
 ]);

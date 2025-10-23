@@ -34,7 +34,7 @@ export interface User { // usado en useAuthStore
  * 
  */
 export interface LoginResponse {
-    token: string;
+    accessToken: string;
     tenantId: string;
     user: User;
     expiresIn: number;

@@ -6,9 +6,13 @@ import type { AxiosResponse } from "axios";
 
 
 
-export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest): Promise<AxiosResponse> => {
+export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string): Promise<AxiosResponse> => {
     try{
-        const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest);
+        const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest,{
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        });
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return Promise.resolve(response);
     }catch(error){

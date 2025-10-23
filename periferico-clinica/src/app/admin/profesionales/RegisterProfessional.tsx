@@ -5,20 +5,25 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, UserCog,  Mail, Award } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
-import { AdminDashboardAdapter } from "../../../adapters/Dashboard/Admin/AdminDashboardAdapter"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
 import { useTenantId } from "../../../hooks/use-tenant"
 import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
+import { useRegister } from "../../../hooks/use-register"
 import type { HealthProfessionalRequest } from "../../../types/User"
 
 
 export const RegisterProfessionalPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  
+  const { register, loading, error, success } = useRegister({
+    action: "health-professional",
+    onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD)
+  });
+
+
+  
 
   const [formData, setFormData] = useState<HealthProfessionalRequest>({
     firstName: "",
@@ -39,21 +44,13 @@ export const RegisterProfessionalPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError(null)
 
     try {
       alert(JSON.stringify(formData, null, 2))
-      await AdminDashboardAdapter.createHealthProfessional(formData)
-      setSuccess(true)
-      setTimeout(() => {
-        navigate(ROUTES.ADMIN_PROFESSIONALS)
-      }, 2000)
+      await register(formData)
+      
     } catch (err) {
-      setError("Error al registrar profesional de salud. Por favor, intente nuevamente.")
       console.error("Error:", err)
-    } finally {
-      setLoading(false)
     }
   }
 

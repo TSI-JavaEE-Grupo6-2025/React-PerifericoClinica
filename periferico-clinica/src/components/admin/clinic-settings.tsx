@@ -27,23 +27,13 @@ export function ClinicSettings() {
                 <Label htmlFor="clinic-name">Nombre de la Clínica</Label>
                 <Input id="clinic-name" defaultValue="Clínica Salud Integral" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="clinic-rut">RUT</Label>
-                <Input id="clinic-rut" defaultValue="21234567890123" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="clinic-phone">Teléfono</Label>
-                <Input id="clinic-phone" defaultValue="2123 4567" />
-              </div>
+             
               <div className="space-y-2">
                 <Label htmlFor="clinic-email">Email</Label>
                 <Input id="clinic-email" type="email" defaultValue="contacto@clinica.com" />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="clinic-address">Dirección</Label>
-              <Input id="clinic-address" defaultValue="Av. 18 de Julio 1234, Montevideo" />
-            </div>
+            
             <Button className="bg-[#2980b9] hover:bg-[#2471a3]">
               <Save className="mr-2 h-4 w-4" />
               Guardar Cambios
