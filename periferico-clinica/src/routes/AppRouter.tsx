@@ -43,14 +43,14 @@ const ProfesionalLogin = () => {
 };
 const AdminDashboard = () =>{
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole="ADMIN_CLINIC">
       <AdminDashboardPage />
     </ProtectedRoute>
   )
 } 
 const ProfesionalDashboard = () => {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole="PROFESSIONAL">
       <ProfesionalDashboardPage />
     </ProtectedRoute>
   )
@@ -58,7 +58,7 @@ const ProfesionalDashboard = () => {
 
 const RegisterHealthProfessional = () =>{
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole="ADMIN_CLINIC">
       <RegisterProfessionalPage />
     </ProtectedRoute>
   )
@@ -66,21 +66,21 @@ const RegisterHealthProfessional = () =>{
 const AdminClinicSetting = () => 
 {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole="ADMIN_CLINIC">
       <ClinicSettingPage />
     </ProtectedRoute>
   )
 }
 const RegisterHealthUser = () => {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole="ADMIN_CLINIC">
       <RegisterHealthUserPage />
     </ProtectedRoute>
   )
 }
 const RegisterAdminUser = () => {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole="ADMIN_CLINIC">
       <RegisterAdminUserPage />
     </ProtectedRoute>
   )
