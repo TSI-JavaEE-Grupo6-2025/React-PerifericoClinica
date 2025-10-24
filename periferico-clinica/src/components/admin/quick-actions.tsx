@@ -1,35 +1,34 @@
 
 import type React from "react"
 
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, Button } from "../ui"
 import { UserPlus, Users, Settings, Stethoscope } from "lucide-react"
 import { ROUTES } from "../../routes"
-import { QuickRegisterProfessionalModal } from  './QuickRegisterProfessionalModal'
+
 
 
 export const QuickActions: React.FC = () => {
   const navigate = useNavigate()
-  const [showProfessionalModal, setShowProfessionalModal] = useState(false)
+  
 
   const actions = [
     {
       label: "Nuevo Usuario Admin",
       icon: UserPlus,
-      onClick: () => navigate(ROUTES.ADMIN_USERS),
+      onClick: () => navigate(ROUTES.ADMIN_REGISTER_ADMIN_USERS),
       color: "hover:bg-[#2980b9]",
     },
     {
       label: "Nuevo Usuario Profesional",
       icon: Stethoscope,
-      onClick: () => navigate(ROUTES.ADMIN_PROFESSIONALS),
+      onClick: () => navigate(ROUTES.ADMIN_REGISTER_PROFESSIONALS),
       color: "hover:bg-[#27ae60]",
     },
     {
       label: "Nuevo Usuario de Salud",
       icon: Users,
-      onClick: () => setShowProfessionalModal(true),
+      onClick: () => navigate(ROUTES.ADMIN_REGISTER_USERS),
       color: "hover:bg-[#e67e22]",
     },
     {
@@ -60,8 +59,7 @@ export const QuickActions: React.FC = () => {
           ))}
         </CardContent>
       </Card>
-      {/* arreglar modal  */}
-      <QuickRegisterProfessionalModal isOpen={showProfessionalModal} onClose={() => setShowProfessionalModal(false)} />
+      
     </>
   )
 }

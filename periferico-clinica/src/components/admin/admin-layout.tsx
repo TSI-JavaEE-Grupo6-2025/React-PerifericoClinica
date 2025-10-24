@@ -4,12 +4,14 @@ import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { cn } from "../../utils"
 import { Button } from "../ui"
-import { LayoutDashboard, Users, UserCog, Settings, LogOut, Menu, X, Building2 } from "lucide-react"
+import { LayoutDashboard, Users, UserCog, Settings, LogOut, Menu, X, Building2, Stethoscope } from "lucide-react"
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Usuarios de Salud", href: "/admin/usuarios", icon: Users },
-  { name: "Profesionales", href: "/admin/profesionales", icon: UserCog },
+  { name: "Profesionales", href: "/admin/profesionales/alta", icon: Stethoscope },
+  { name: "Administradores", href: "/admin/administradores/alta", icon: UserCog },
+  { name: "Clínica", href: "/", icon: Building2 },
   { name: "Configuración", href: "/admin/configuracion/clinica", icon: Settings },
 ]
 

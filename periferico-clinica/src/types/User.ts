@@ -42,4 +42,92 @@
     updatedAt: Date
   }
   
+
+  /**
+   * Interfaz para el request de registro de usuario de salud
+   * @property {string} firstName - Nombre del usuario de salud
+   * @property {string} lastName - Apellido del usuario de salud
+   * @property {string} email - Email del usuario de salud
+   * @property {string} document - Documento de identidad del usuario de salud
+   * @property {string} phone - Teléfono del usuario de salud
+   * @property {string} birthDate - Fecha de nacimiento del usuario de salud
+   * @property {string} tenantId - ID del tenant (clínica)
+   */
+  export interface HealthUserRequest{
+    firstName: string
+    lastName: string
+    email: string
+    document: string
+    phone: string
+    birthDate: string
+    tenantId: string
+  }
+
+  /**
+   * Interfaz para el response de registro de usuario de salud
+   * @property {string} id - ID del usuario de salud
+   * @property {string} firstName - Nombre del usuario de salud
+   * @property {string} lastName - Apellido del usuario de salud
+   * @property {string} document - Documento de identidad del usuario de salud
+   * @property {string} email - Email del usuario de salud
+   * @property {string} phone - Teléfono del usuario de salud
+   * @property {string} birthDate - Fecha de nacimiento del usuario de salud
+   * @property {boolean} active - Estado del usuario de salud
+   * @property {Date} createdAt - Fecha de creación del usuario de salud
+   * @property {Date} updatedAt - Fecha de actualización del usuario de salud
+   */
+  export interface HealthUserRegisterResponse{
+    id: string
+    firstName: string
+    lastName: string
+    document: string
+    email: string
+    phone: string
+    birthDate: string
+    active: boolean
+    createdAt: Date
+    updatedAt: Date
+  }
+
+
+
+  /**
+   * Interfaz para el request de registro de usuario administrador
+   * @property {string} firstName - Nombre del usuario administrador
+   * @property {string} lastName - Apellido del usuario administrador
+   * @property {string} email - Email del usuario administrador
+   * @property {string} document - Documento de identidad del usuario administrador
+   * @property {string} tenantId - ID del tenant (clínica)
+   */
  
+  export interface AdminUserRequest {
+    firstName: string
+    lastName: string
+    email: string
+    document: string
+    tenantId: string
+  }
+
+
+  /**
+   * Interfaz para el response de registro de usuario administrador
+   * @property {string} id - ID del usuario administrador
+   * @property {string} firstName - Nombre del usuario administrador
+   * @property {string} lastName - Apellido del usuario administrador
+   * @property {string} document - Documento de identidad del usuario administrador
+   * @property {string} email - Email del usuario administrador
+   * @property {boolean} active - Estado del usuario administrador
+   * @property {Date} createdAt - Fecha de creación del usuario administrador
+   * @property {Date} updatedAt - Fecha de actualización del usuario administrador
+   * 
+   */
+  export interface AdminUserRegisterResponse {
+    id: string
+    firstName: string
+    lastName: string
+    document: string
+    email: string
+    active: boolean
+    createdAt: Date
+    updatedAt: Date
+  }

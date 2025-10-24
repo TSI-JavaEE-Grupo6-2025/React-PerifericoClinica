@@ -9,6 +9,8 @@ import {
   RegisterProfessionalPage,
   ClinicSettingPage,
   HomePage,
+  RegisterHealthUserPage,
+  RegisterAdminUserPage,
 } from '../pages';
 
 import { ROUTES} from './constants/routes';
@@ -69,6 +71,20 @@ const AdminClinicSetting = () =>
     </ProtectedRoute>
   )
 }
+const RegisterHealthUser = () => {
+  return (
+    <ProtectedRoute>
+      <RegisterHealthUserPage />
+    </ProtectedRoute>
+  )
+}
+const RegisterAdminUser = () => {
+  return (
+    <ProtectedRoute>
+      <RegisterAdminUserPage />
+    </ProtectedRoute>
+  )
+}
 
 
 const router = createBrowserRouter([
@@ -93,8 +109,16 @@ const router = createBrowserRouter([
     element: <ProfesionalDashboard/>,
   },
   {
-    path: ROUTES.ADMIN_PROFESSIONALS,
+    path: ROUTES.ADMIN_REGISTER_PROFESSIONALS,
     element: <RegisterHealthProfessional/>,
+  },
+  {
+    path: ROUTES.ADMIN_REGISTER_USERS,
+    element: <RegisterHealthUser/>,
+  },
+  {
+    path: ROUTES.ADMIN_REGISTER_ADMIN_USERS,
+    element: <RegisterAdminUser/>,
   },
   {
     path: ROUTES.ADMIN_CLINIC_SETTING,

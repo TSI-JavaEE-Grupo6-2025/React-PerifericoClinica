@@ -7,8 +7,9 @@ export const ROUTES = {
 
     // privadas Admin 
     ADMIN_DASHBOARD: '/admin/dashboard',
-    ADMIN_USERS: '/admin/usuarios',
-    ADMIN_PROFESSIONALS: '/admin/profesionales',
+    ADMIN_REGISTER_USERS: '/admin/usuarios/alta',
+    ADMIN_REGISTER_ADMIN_USERS: '/admin/administradores/alta',
+    ADMIN_REGISTER_PROFESSIONALS: '/admin/profesionales/alta',
     ADMIN_SETTINGS: '/admin/configuracion',
     ADMIN_CLINIC_SETTING: '/admin/configuracion/clinica',
 

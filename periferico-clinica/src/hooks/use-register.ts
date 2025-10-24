@@ -1,8 +1,11 @@
 //src/hooks/use-register.ts
 import { useState } from "react"
 import { AdminDashboardAdapter } from "../adapters/Dashboard/Admin/AdminDashboardAdapter"
-import type { HealthProfessionalRequest } from "../types/User"
+import type { AdminUserRequest, HealthProfessionalRequest, HealthUserRequest } from "../types/User"
 import { useAuthStore } from "../store/AuthStore"
+
+
+
 type RegisterAction = "health-user" | "health-professional" | "admin-user"
 
 interface UseRegisterOptions {
@@ -18,7 +21,7 @@ interface UseRegisterReturn {
   success: boolean
 }
 
-type RegisterData= HealthProfessionalRequest; // agregar luego healthUser y adminUser
+type RegisterData = HealthProfessionalRequest | HealthUserRequest | AdminUserRequest;
 /**
  * Hook flexible para registro de diferentes tipos de usuarios
  *
@@ -43,7 +46,7 @@ export const useRegister = ({ action, onSuccess, onError }: UseRegisterOptions):
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  const register = async (data: RegisterData) => { 
+  const register = async (data: RegisterData) => {
     setLoading(true)
     setError(null)
     setSuccess(false)
@@ -53,6 +56,12 @@ export const useRegister = ({ action, onSuccess, onError }: UseRegisterOptions):
         case "health-professional":
           await AdminDashboardAdapter.createHealthProfessional(data as HealthProfessionalRequest, accessToken || '');
           break
+        case "health-user":
+          console.log('Registro de usuario de salud No implementado aún.');
+          break;
+        case "admin-user":
+          console.log('Registro de usuario administrador No implementado aún.');
+          break;
         default:
           throw new Error(`Acción de registro no válida: ${action}`)
       }
