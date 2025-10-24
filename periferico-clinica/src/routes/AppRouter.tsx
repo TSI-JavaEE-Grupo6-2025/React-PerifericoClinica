@@ -8,27 +8,73 @@ import {
   NotFoundPage, 
   RegisterProfessionalPage,
   ClinicSettingPage,
+  HomePage,
 } from '../pages';
 
 import { ROUTES} from './constants/routes';
 
 import { ProtectedHome } from './protectedRoute/ProtectedHome';
+import { ProtectedRoute} from './protectedRoute/ProtectedRoute';
 
-// Placeholder components para las rutas que aún no existen
+// TODO:  Refactorizar las rutas protegidas para que no se repita el protectedRoute en cada ruta 
 
-const AdminLogin = () => <AdminLoginPage />;
-const ProfesionalLogin = () => <ProfesionalLoginPage />;
-const AdminDashboard = () => <AdminDashboardPage />;
-const ProfesionalDashboard = () => <ProfesionalDashboardPage />;
+const Home = () => {
+  return (
+    <ProtectedHome>
+      <HomePage/>
+    </ProtectedHome>
+  )
+}
+const AdminLogin = () =>{
+  return (
+    <ProtectedHome>
+      <AdminLoginPage />
+    </ProtectedHome>
+  )
+} 
+const ProfesionalLogin = () => {
+  return (
+    <ProtectedHome>
+      <ProfesionalLoginPage />
+    </ProtectedHome>
+  )
+};
+const AdminDashboard = () =>{
+  return (
+    <ProtectedRoute>
+      <AdminDashboardPage />
+    </ProtectedRoute>
+  )
+} 
+const ProfesionalDashboard = () => {
+  return (
+    <ProtectedRoute>
+      <ProfesionalDashboardPage />
+    </ProtectedRoute>
+  )
+}
 
-const RegisterHealthProfessional = () => <RegisterProfessionalPage />;
-const AdminClinicSetting = () => <ClinicSettingPage />;
+const RegisterHealthProfessional = () =>{
+  return (
+    <ProtectedRoute>
+      <RegisterProfessionalPage />
+    </ProtectedRoute>
+  )
+} 
+const AdminClinicSetting = () => 
+{
+  return (
+    <ProtectedRoute>
+      <ClinicSettingPage />
+    </ProtectedRoute>
+  )
+}
 
 
 const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
-    element: <ProtectedHome/>,
+    element: <Home/>,
   },
   {
     path: ROUTES.ADMIN_DASHBOARD,

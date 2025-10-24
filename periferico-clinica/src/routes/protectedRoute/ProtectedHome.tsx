@@ -2,7 +2,8 @@ import { useTenantFetcher } from '../../hooks/use-tenant';
 import { useEffect, useRef } from 'react';
 import { useTenantStore } from '../../store/TenantStore';
 import { Spinner } from '../../components/ui/Spinner';
-import { HomePage, NotFoundPage } from '../../pages';
+import {  NotFoundPage } from '../../pages';
+import { Outlet } from 'react-router-dom';
 
 
 
@@ -14,7 +15,9 @@ interface ProtectedHomeProps {
     children?: React.ReactNode;
 }
 
-export const ProtectedHome: React.FC<ProtectedHomeProps> = () => {
+export const ProtectedHome: React.FC<ProtectedHomeProps> = ({
+    children
+}) => {
     const { fetchTenant } = useTenantFetcher({allDomain: true});
     const { tenant, loading } = useTenantStore(); // obtenemos el tenant desde el store
     const hasFetched = useRef(false);
@@ -38,5 +41,5 @@ export const ProtectedHome: React.FC<ProtectedHomeProps> = () => {
     // Si no hay tenant, renderizar directamente la página 404 sin cambiar la URL
     if (!tenant) return <NotFoundPage />
 
-    return <HomePage/>;
+    return children ? <>{children}</> : <Outlet />;
 }
