@@ -12,7 +12,7 @@ export const ProfesionalLoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
    
-    const { handleLogin, error, loading } = useLogin();
+    const { handleLogin, error, loading } = useLogin('PROFESSIONAL');
     const handleGoBack = () => {
         navigate(ROUTES.HOME);
     };

@@ -30,7 +30,7 @@ export default function AdminLoginPage(){
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
-    const { handleLogin, error, loading } = useLogin();
+    const { handleLogin, error, loading } = useLogin('ADMIN_CLINIC');
 
     const handleGoBack = () => {
         navigate(ROUTES.HOME)
