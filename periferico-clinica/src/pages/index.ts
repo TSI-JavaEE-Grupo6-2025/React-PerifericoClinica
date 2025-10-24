@@ -8,3 +8,4 @@ export { NotFoundPage } from './NotFound/404Page';
 export { ClinicSettingPage } from './Admin/ClinicSettingPage';
 export { RegisterHealthUserPage } from './Admin/RegisterHealthUserPage';
 export { RegisterAdminUserPage } from './Admin/RegisterAdminUserPage';
+export { UnauthorizedPage } from './NotAuthorized/403Page';

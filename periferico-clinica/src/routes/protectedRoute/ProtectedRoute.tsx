@@ -1,37 +1,28 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { ROUTES } from '../constants/routes';
-import { useAuthStore} from '../../store/AuthStore';
-import type { UserRole } from '../../types';
+import type React from "react"
+
+import { Navigate, Outlet } from "react-router-dom"
+import { ROUTES } from "../constants/routes"
+import { useAuthStore } from "../../store/AuthStore"
+import type { UserRole } from "../../types"
+import { UnauthorizedPage } from "../../pages"
 
 interface ProtectedRouteProps {
-  children?: React.ReactNode;
-  requiredRole?: UserRole;
+  children?: React.ReactNode
+  requiredRole?: UserRole
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  requiredRole,
-}) => {
-  const { accessToken, isAuthenticated, user, hasRole } = useAuthStore();
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+  const { accessToken, isAuthenticated, hasRole } = useAuthStore()
 
   // Validación de autenticación global
   if (!accessToken || !isAuthenticated) {
-    return <Navigate to={ROUTES.HOME} replace />;
+    return <Navigate to={ROUTES.HOME} replace />
   }
 
-  // Validación de rol específico
   if (requiredRole && !hasRole(requiredRole)) {
-    // Redirigir según el rol del usuario actual
-    switch (user?.role) {
-      case 'ADMIN_CLINIC':
-        return <Navigate to={ROUTES.ADMIN_DASHBOARD} replace />;
-      case 'PROFESSIONAL':
-        return <Navigate to={ROUTES.PROFESIONAL_DASHBOARD} replace />;
-      default:
-        return <Navigate to={ROUTES.HOME} replace />;
-    }
+    return <UnauthorizedPage />
   }
 
   // Acceso permitido
-  return children ? <>{children}</> : <Outlet />;
-};
+  return children ? <>{children}</> : <Outlet />
+}
