@@ -10,3 +10,4 @@ export { RegisterHealthUserPage } from './Admin/RegisterHealthUserPage';
 export { RegisterAdminUserPage } from './Admin/RegisterAdminUserPage';
 export { UnauthorizedPage } from './NotAuthorized/403Page';
 export { HealthProfessionalListPage } from './Admin/HealthProfessionalListPage';
+export { HealthUserListPage } from './Admin/HealthUserListPage';

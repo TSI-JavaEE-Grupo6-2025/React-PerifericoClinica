@@ -8,7 +8,7 @@ import { LayoutDashboard, Users, UserCog, Settings, LogOut, Menu, X, Building2, 
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Usuarios de Salud", href: "/admin/usuarios", icon: Users },
+  { name: "Usuarios de Salud", href: "/admin/usuarios-salud/lista", icon: Users },
   { name: "Profesionales", href: "/admin/profesionales", icon: Stethoscope },
   { name: "Administradores", href: "/admin/administradores/alta", icon: UserCog },
   { name: "Clínica", href: "/", icon: Building2 },

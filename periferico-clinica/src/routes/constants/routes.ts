@@ -13,6 +13,7 @@ export const ROUTES = {
     ADMIN_SETTINGS: '/admin/configuracion',
     ADMIN_CLINIC_SETTING: '/admin/configuracion/clinica',
     ADMIN_PROFESSIONAL_LIST: '/admin/profesionales',
+    ADMIN_HEALTH_USER_LIST: '/admin/usuarios-salud/lista',
 
     // privadas Profesional
     PROFESIONAL_DASHBOARD: '/profesional/dashboard',
