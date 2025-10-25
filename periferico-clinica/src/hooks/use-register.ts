@@ -57,7 +57,7 @@ export const useRegister = ({ action, onSuccess, onError }: UseRegisterOptions):
           await AdminDashboardAdapter.createHealthProfessional(data as HealthProfessionalRequest, accessToken || '');
           break
         case "health-user":
-          console.log('Registro de usuario de salud No implementado aún.');
+          await AdminDashboardAdapter.createHealthUser(data as HealthUserRequest, accessToken || '')
           break;
         case "admin-user":
           console.log('Registro de usuario administrador No implementado aún.');

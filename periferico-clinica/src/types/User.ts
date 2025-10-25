@@ -51,6 +51,7 @@
    * @property {string} document - Documento de identidad del usuario de salud
    * @property {string} phone - Teléfono del usuario de salud
    * @property {string} birthDate - Fecha de nacimiento del usuario de salud
+   * @property {string} gender - Género del usuario (masculino/femenino)
    * @property {string} tenantId - ID del tenant (clínica)
    */
   export interface HealthUserRequest{
@@ -60,6 +61,7 @@
     document: string
     phone: string
     birthDate: string
+    gender: string
     tenantId: string
   }
 

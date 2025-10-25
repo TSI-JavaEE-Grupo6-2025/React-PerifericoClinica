@@ -27,10 +27,11 @@ export const RegisterHealthUserPage: React.FC = () => {
     document: "",
     phone: "",
     birthDate: "",
+    gender: "",
     tenantId: tenantId || "",
   })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
@@ -87,7 +88,7 @@ export const RegisterHealthUserPage: React.FC = () => {
               <h3 className="text-lg font-semibold mb-4 text-[#2c3e50]">Datos Personales</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">Nombre *</Label>
+                  <Label htmlFor="firstName">Nombres *</Label>
                   <Input
                     id="firstName"
                     name="firstName"
@@ -99,7 +100,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Apellido *</Label>
+                  <Label htmlFor="lastName">Apellidos *</Label>
                   <Input
                     id="lastName"
                     name="lastName"
@@ -122,6 +123,23 @@ export const RegisterHealthUserPage: React.FC = () => {
                     required
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Sexo *</Label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    required
+                  >
+                    <option value="">Seleccionar sexo</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                  </select>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="birthDate">Fecha de Nacimiento *</Label>
                   <div className="relative">

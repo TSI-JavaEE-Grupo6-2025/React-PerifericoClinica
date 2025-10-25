@@ -108,19 +108,19 @@ export const RegisterProfessionalPage: React.FC = () => {
               <h3 className="text-lg font-semibold mb-4 text-[#2c3e50]">Datos Personales</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">Nombre *</Label>
+                  <Label htmlFor="firstName">Nombres *</Label>
                   <Input
                     id="firstName"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    placeholder="Dr. Carlos"
+                    placeholder="Carlos"
                     className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Apellido *</Label>
+                  <Label htmlFor="lastName">Apellidos *</Label>
                   <Input
                     id="lastName"
                     name="lastName"
