@@ -7,3 +7,4 @@ export { RegisterAdminPage } from './administradores/RegisterAdmin';
 export { HealthProfessionalList } from './profesionales/HealthProfessionalList';
 export { HealthUsersList} from './usuarios/HealthUserList';
 export { AdminsList} from './administradores/AdminUserList';
+export { ClinicDetails} from './clinica/ClinicaDetail';

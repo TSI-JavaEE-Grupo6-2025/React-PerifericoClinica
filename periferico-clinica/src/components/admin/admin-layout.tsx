@@ -11,7 +11,7 @@ const navigation = [
   { name: "Usuarios de Salud", href: "/admin/usuarios-salud/lista", icon: Users },
   { name: "Profesionales", href: "/admin/profesionales", icon: Stethoscope },
   { name: "Administradores", href: "/admin/administradores/lista", icon: UserCog },
-  { name: "Clínica", href: "/", icon: Building2 },
+  { name: "Clínica", href: "/admin/clinica/detalle", icon: Building2 },
   { name: "Configuración", href: "/admin/configuracion/clinica", icon: Settings },
 ]
 
