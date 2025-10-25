@@ -11,3 +11,4 @@ export { RegisterAdminUserPage } from './Admin/RegisterAdminUserPage';
 export { UnauthorizedPage } from './NotAuthorized/403Page';
 export { HealthProfessionalListPage } from './Admin/HealthProfessionalListPage';
 export { HealthUserListPage } from './Admin/HealthUserListPage';
+export { AdminUserListPage } from './Admin/AdminUserListPage';

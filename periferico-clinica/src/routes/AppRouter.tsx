@@ -13,6 +13,7 @@ import {
   RegisterAdminUserPage,
   HealthProfessionalListPage,
   HealthUserListPage,
+  AdminUserListPage,
 } from '../pages';
 
 import { ROUTES} from './constants/routes';
@@ -102,6 +103,13 @@ const HealthUserList = () => {
     </ProtectedRoute>
   )
 }
+const AdminUserList = () => {
+  return (
+    <ProtectedRoute requiredRole="ADMIN_CLINIC">
+      <AdminUserListPage />
+    </ProtectedRoute>
+  )
+}
 
 
 const router = createBrowserRouter([
@@ -148,6 +156,10 @@ const router = createBrowserRouter([
   {
     path: ROUTES.ADMIN_HEALTH_USER_LIST,
     element: <HealthUserList/>,
+  },
+  {
+    path: ROUTES.ADMIN_ADMIN_USER_LIST,
+    element: <AdminUserList/>,
   },
   {
     path: "*", // Catch-all route - captura cualquier ruta no definida
