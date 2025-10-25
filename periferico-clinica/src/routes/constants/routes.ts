@@ -12,6 +12,7 @@ export const ROUTES = {
     ADMIN_REGISTER_PROFESSIONALS: '/admin/profesionales/alta',
     ADMIN_SETTINGS: '/admin/configuracion',
     ADMIN_CLINIC_SETTING: '/admin/configuracion/clinica',
+    ADMIN_PROFESSIONAL_LIST: '/admin/profesionales',
 
     // privadas Profesional
     PROFESIONAL_DASHBOARD: '/profesional/dashboard',

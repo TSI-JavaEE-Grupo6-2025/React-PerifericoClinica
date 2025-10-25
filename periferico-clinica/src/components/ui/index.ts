@@ -6,3 +6,5 @@ export { Textarea } from './Textarea';
 export { Avatar, AvatarImage, AvatarFallback } from './Avatar';
 export { Badge } from './Badge';
 export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs';
+export { Table, TableHeader, TableBody, TableFooter, TableRow, TableCell, TableHead } from './Table';
+export * from './DropdownMenu';

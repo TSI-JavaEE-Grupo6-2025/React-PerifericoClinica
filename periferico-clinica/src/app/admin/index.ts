@@ -4,3 +4,4 @@ export { RegisterProfessionalPage} from './profesionales/RegisterProfessional';
 export {default as ConfigurationPage} from './configuracion/Page';
 export { RegisterHealthUserPage } from './usuarios/RegisterHealthUser';
 export { RegisterAdminPage } from './administradores/RegisterAdmin';
+export { HealthProfessionalList } from './profesionales/HealthProfessionalList';
