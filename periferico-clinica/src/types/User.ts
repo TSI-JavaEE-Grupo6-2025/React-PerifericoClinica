@@ -6,7 +6,7 @@
    * @property {string} lastName - Apellido del profesional de salud
    * @property {string} email - Email del profesional de salud
    * @property {string} document - Documento de identidad del profesional de salud
-   * @property {string} specialty - Especialidad del profesional de salud
+   * @property {string[]} specialtyIds - Lista de códigos de especialidades del profesional de salud
    * @property {string} tenantId - ID del tenant (clínica)
    */
   export interface HealthProfessionalRequest {
@@ -14,7 +14,7 @@
     lastName: string
     email: string
     document: string // documento de identidad del profesional (cédula)
-    specialty?: string
+    specialtyIds?: string[] // lista de códigos de especialidades del profesional de salud
     tenantId: string  
   }
   
@@ -35,7 +35,7 @@
     firstName: string
     lastName: string
     document: string
-    specialty: string
+    specialtyIds?: string[] // lista de códigos de especialidades del profesional de salud
     email: string
     active: boolean
     createdAt: Date

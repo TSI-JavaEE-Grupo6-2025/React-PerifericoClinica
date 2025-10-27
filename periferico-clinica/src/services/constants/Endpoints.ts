@@ -28,6 +28,9 @@ export const ENDPOINTS_SERVICES = {
             GET_PROFESIONALS: '',
             GET_HEALTH_USERS: '',
 
+            // GET SPECIALTIES
+            GET_SPECIALTIES: '/specialties',
+
             UPDATE_CLINIC: '/clinics/:tenantId', // actualiza datos de la clínica
             
         },

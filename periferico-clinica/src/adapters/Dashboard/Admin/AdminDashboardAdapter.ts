@@ -1,8 +1,8 @@
 // src/adapters/Dashboard/Admin/AdminDashboardAdapter.ts
 
-import { createHealthProfessional, createHealthUser } from "../../../services/Dashboard";
+import { createHealthProfessional, createHealthUser, getSpecialities } from "../../../services/Dashboard";
 import type { HealthProfessionalRegisterResponse, HealthProfessionalRequest, HealthUserRegisterResponse, HealthUserRequest } from "../../../types/User";
-
+import type { SpecialityResponse } from "../../../types/Specialty";
 
 
 
@@ -30,6 +30,15 @@ export const AdminDashboardAdapter = {
             return Promise.resolve(response.data)
         }catch(error){
             console.error('Error al crear el usuario de salud: ', error);
+            return Promise.reject(error);
+        }
+    },
+    getSpecialities: async (accessToken: string): Promise<SpecialityResponse> => {
+        try{
+            const specialities = await getSpecialities(accessToken);
+            return Promise.resolve(specialities.data as SpecialityResponse);
+        }catch(error){
+            console.error('Error al obtener las especialidades: ', error);
             return Promise.reject(error);
         }
     }

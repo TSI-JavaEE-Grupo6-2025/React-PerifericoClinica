@@ -15,6 +15,7 @@ import type { AxiosResponse } from "axios";
 
 export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string): Promise<AxiosResponse> => {
     try{
+        console.log('HealthProfessionalRequest enviado al backend: ', JSON.stringify(healtProfessionalRequest, null, 2));
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest,{
             headers: {
                 'Authorization': `Bearer ${accessToken}`,

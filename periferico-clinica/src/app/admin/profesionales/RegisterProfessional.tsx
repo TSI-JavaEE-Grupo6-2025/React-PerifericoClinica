@@ -2,7 +2,7 @@
 import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, UserCog, Mail, Award } from "lucide-react"
+import { ArrowLeft, UserCog, Mail, Award, X } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
 import { useTenantId } from "../../../hooks/use-tenant"
@@ -10,28 +10,8 @@ import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
 import { useRegister } from "../../../hooks/use-register"
 import type { HealthProfessionalRequest } from "../../../types/User"
-
-const SPECIALTIES = [
-  "Cardiología",
-  "Dermatología",
-  "Endocrinología",
-  "Gastroenterología",
-  "Geriatría",
-  "Ginecología",
-  "Hematología",
-  "Medicina General",
-  "Nefrología",
-  "Neumología",
-  "Neurología",
-  "Oftalmología",
-  "Oncología",
-  "Ortopedia",
-  "Otorrinolaringología",
-  "Pediatría",
-  "Psiquiatría",
-  "Traumatología",
-  "Urología",
-]
+import { useSpecialities } from "../../../hooks/use-specialities"
+//import type { SpecialtyKeys } from "../../../types/Specialty"
 
 export const RegisterProfessionalPage: React.FC = () => {
   const navigate = useNavigate()
@@ -42,14 +22,18 @@ export const RegisterProfessionalPage: React.FC = () => {
     onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD),
   })
 
+  const { specialties, loading: loadingSpecialities, error: specialitiesError } = useSpecialities()
+
   const [formData, setFormData] = useState<HealthProfessionalRequest>({
     firstName: "",
     lastName: "",
     email: "",
     document: "",
-    specialty: "",
+    specialtyIds: [],
     tenantId: tenantId || "",
   })
+
+  const [selectedSpecialtyCode, setSelectedSpecialtyCode] = useState<string>("")
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -58,6 +42,27 @@ export const RegisterProfessionalPage: React.FC = () => {
       [name]: value,
     }))
   }
+
+  const handleAddSpecialty = () => {
+    if (selectedSpecialtyCode && !formData.specialtyIds?.includes(selectedSpecialtyCode)) {
+      setFormData((prev) => ({
+        ...prev,
+        specialtyIds: [...(prev.specialtyIds || []), selectedSpecialtyCode],
+      }))
+      setSelectedSpecialtyCode("")
+    }
+  }
+
+  const handleRemoveSpecialty = (specialtyCode: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      specialtyIds: prev.specialtyIds?.filter((code) => code !== specialtyCode) || [],
+    }))
+  }
+
+  const availableSpecialties = Object.entries(specialties).filter(([code]) => !formData.specialtyIds?.includes(code))
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -165,27 +170,67 @@ export const RegisterProfessionalPage: React.FC = () => {
             {/* Datos Profesionales */}
             <div>
               <h3 className="text-lg font-semibold mb-4 text-[#2c3e50]">Datos Profesionales</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="specialty">Especialidad *</Label>
-                  <div className="relative">
-                    <Award className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
-                    <select
-                      id="specialty"
-                      name="specialty"
-                      value={formData.specialty}
-                      onChange={handleInputChange}
-                      className="pl-10 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9] disabled:cursor-not-allowed disabled:opacity-50"
-                      required
-                    >
-                      <option value="">Seleccione una especialidad</option>
-                      {SPECIALTIES.map((specialty) => (
-                        <option key={specialty} value={specialty}>
-                          {specialty}
+                  <Label htmlFor="specialty">Especialidades *</Label>
+
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Award className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
+                      <select
+                        id="specialty"
+                        value={selectedSpecialtyCode}
+                        onChange={(e) => setSelectedSpecialtyCode(e.target.value)}
+                        className="pl-10 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9] disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={loadingSpecialities}
+                      >
+                        <option value="">
+                          {loadingSpecialities ? "Cargando especialidades..." : "Seleccionar especialidad"}
                         </option>
-                      ))}
-                    </select>
+                        {availableSpecialties.map(([code, name]) => (
+                          <option key={code} value={code}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleAddSpecialty}
+                      disabled={!selectedSpecialtyCode || loadingSpecialities}
+                      className="bg-[#2980b9] hover:bg-[#21618c] text-white px-4"
+                    >
+                      Agregar
+                    </Button>
                   </div>
+
+                  {specialitiesError && <p className="text-red-500 text-sm">{specialitiesError}</p>}
+
+                  {formData.specialtyIds && formData.specialtyIds.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3 p-3 bg-gray-50 rounded-md border border-gray-200">
+                      {formData.specialtyIds.map((code) => (
+                        <div
+                          key={code} 
+                          className="flex items-center gap-2 bg-[#2980b9] text-white px-3 py-1 rounded-full text-sm"
+                        >
+                          <span>{specialties?.[code as keyof typeof specialties] ?? code}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSpecialty(code)}
+                            className="hover:bg-[#21618c] rounded-full p-0.5 transition-colors"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {formData.specialtyIds && formData.specialtyIds.length === 0 && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      No hay especialidades seleccionadas. Agregue al menos una.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -207,7 +252,7 @@ export const RegisterProfessionalPage: React.FC = () => {
             <Button
               type="submit"
               className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
-              disabled={loading}
+              disabled={loading || !formData.specialtyIds || formData.specialtyIds.length === 0}
             >
               {loading ? "Registrando..." : "Registrar Profesional de Salud"}
             </Button>
