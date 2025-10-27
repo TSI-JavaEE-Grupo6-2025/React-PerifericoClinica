@@ -22,7 +22,7 @@ export const useLogin = (expectedRole?: UserRole) => {
         setLoading(true);
         setError(null);
         try {
-            const userCredentials = UserCredentials.fromForm(email, password, tenantIdStore); // acordarse de que tenantid viene del store
+            const userCredentials = UserCredentials.fromForm(email, password, tenantIdStore, expectedRole); // acordarse de que tenantid viene del store
             console.log('userCredentials creado: ', JSON.stringify(userCredentials, null, 2))
             const responseAuthData = await AuthAdapter.login(userCredentials);
             console.log('Respuesta del adapter de autenticación: ', JSON.stringify(responseAuthData, null, 2))
