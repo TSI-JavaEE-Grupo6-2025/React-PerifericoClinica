@@ -1,6 +1,7 @@
-import { ProfessionalLayout } from "../../../components/profesional"
+import { ProfessionalLayout, StatsCard } from "../../../components/profesional"
 import { ProfessionalQuickActions } from "../../../components/profesional/quick-actions"
 import { useAuthStore } from "../../../store/AuthStore";
+
 
 export default function ProfessionalDashboardPage() {
   const { user } = useAuthStore();
@@ -17,7 +18,7 @@ export default function ProfessionalDashboardPage() {
         </div>
 
         {/* <ProfessionalStats /> */}
-        <p>Tarjetas de estadisticas</p>
+        <StatsCard/>
         <div className="grid gap-6 md:grid-cols-2">
           <ProfessionalQuickActions/>
           <p>Actividades recientes</p>
