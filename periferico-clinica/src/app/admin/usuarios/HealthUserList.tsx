@@ -1,86 +1,63 @@
-import { useState } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { AdminLayout } from "../../../components/admin/admin-layout"
-import { Button, Input, Badge } from "../../../components/ui"
+import { Button, Input } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
 import { DropdownMenu, DropdownMenuItem } from "../../../components/ui/DropdownMenu"
-import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Eye, Edit, Trash2 } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Edit, Trash2, RefreshCw, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../../routes/constants/routes"
-
-// Mock data - reemplazar con datos reales del backend
-const mockHealthUsers = [
-  {
-    id: "1",
-    firstName: "Juan",
-    lastName: "Pérez",
-    document: "12345678",
-    email: "juan.perez@email.com",
-    phone: "099123456",
-    birthDate: "1990-05-15",
-    active: true,
-    createdAt: new Date("2024-01-15"),
-  },
-  {
-    id: "2",
-    firstName: "María",
-    lastName: "González",
-    document: "87654321",
-    email: "maria.gonzalez@email.com",
-    phone: "099654321",
-    birthDate: "1985-08-22",
-    active: true,
-    createdAt: new Date("2024-02-10"),
-  },
-  {
-    id: "3",
-    firstName: "Carlos",
-    lastName: "Rodríguez",
-    document: "11223344",
-    email: "carlos.rodriguez@email.com",
-    phone: "099112233",
-    birthDate: "1992-11-30",
-    active: false,
-    createdAt: new Date("2024-03-05"),
-  },
-]
+import { useHealthUsers } from "../../../hooks/use-healthUser"
+import type { HealthUserListResponse } from "../../../types/User"
 
 export function HealthUsersList() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
-  const itemsPerPage = 2
 
-  // Filtrar usuarios
-  const filteredUsers = mockHealthUsers.filter((user) => {
-    const matchesSearch =
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.document.includes(searchTerm) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const itemsPerPage = 1
 
-    const matchesStatus = statusFilter === "all" || (statusFilter === "active" ? user.active : !user.active)
-
-    return matchesSearch && matchesStatus
+  // Hook para obtener usuarios de salud
+  const { healthUsers: users, loading, error, refetch } = useHealthUsers({
+    autoFetch: true,
+    refetchOnMount: false
   })
+
+  // Filtrar usuarios de forma escalable
+  const filteredUsers = useMemo(() => {
+    if (!searchTerm.trim()) return users
+
+    const searchLower = searchTerm.toLowerCase()
+    return users.filter((user: HealthUserListResponse) => {
+      return (
+        user.firstName.toLowerCase().includes(searchLower) ||
+        user.lastName.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower)
+      )
+    })
+  }, [users, searchTerm])
 
   // Paginación
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleViewDetails = (id: string) => {
-    alert(`[👁️] Ver detalle del usuario de salud con id: ${id}`)
-    
+  // Reset página cuando cambia el filtro
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm])
+
+  
+
+  const handleEdit = (email: string) => {
+    alert(`[✏️] Editar usuario de salud con email: ${email}`)
   }
 
-  const handleEdit = (id: string) => {
-    alert(`[✏️] Editar usuario de salud con id: ${id}`)
-
+  const handleDelete = (email: string) => {
+    alert(`[❌] Eliminar usuario de salud con email: ${email}`)
   }
 
-  const handleDelete = (id: string) => {
-    alert(`[❌] Eliminar usuario de salud con id: ${id}`)
+  const handleRefresh = () => {
+    refetch()
   }
 
   return (
@@ -90,15 +67,29 @@ export function HealthUsersList() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Usuarios de Salud</h1>
-            <p className="text-gray-600 mt-1">Gestiona los usuarios de salud de la clínica</p>
+            <p className="text-gray-600 mt-1">
+              Gestiona los usuarios de salud de la clínica
+              {users.length > 0 && ` (${users.length} usuarios)`}
+            </p>
           </div>
-          <Button
-            onClick={() => navigate(ROUTES.ADMIN_REGISTER_USERS)}
-            className="bg-[#2980b9] hover:bg-[#21618c] text-white"
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            Nuevo Usuario
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              disabled={loading}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''} ` } />
+              Actualizar
+            </Button>
+            <Button
+              onClick={() => navigate(ROUTES.ADMIN_REGISTER_USERS)}
+              className="bg-[#2980b9] hover:bg-[#21618c] text-white cursor-pointer"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Nuevo Usuario
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -116,137 +107,128 @@ export function HealthUsersList() {
               />
             </div>
 
-            {/* Status Filter */}
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === "all" ? "default" : "outline"}
-                onClick={() => setStatusFilter("all")}
-                className={statusFilter === "all" ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-              >
-                Todos
-              </Button>
-              <Button
-                variant={statusFilter === "active" ? "default" : "outline"}
-                onClick={() => setStatusFilter("active")}
-                className={statusFilter === "active" ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-              >
-                Activos
-              </Button>
-              <Button
-                variant={statusFilter === "inactive" ? "default" : "outline"}
-                onClick={() => setStatusFilter("inactive")}
-                className={statusFilter === "inactive" ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-              >
-                Inactivos
-              </Button>
-            </div>
+           
           </div>
         </div>
 
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500" />
+            <div>
+              <p className="text-red-800 font-medium">Error al cargar usuarios</p>
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+            >
+              Reintentar
+            </Button>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex items-center justify-center">
+              <RefreshCw className="w-6 h-6 animate-spin text-[#2980b9] mr-3" />
+              <span className="text-gray-600">Cargando usuarios...</span>
+            </div>
+          </div>
+        )}
+
         {/* Table */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Documento</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Teléfono</TableHead>
-                <TableHead>Fecha de Nacimiento</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Fecha de Registro</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedUsers.length === 0 ? (
+        {!loading && !error && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-visible  ">
+            <Table className="overflow-visible">
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                    No se encontraron usuarios
-                  </TableCell>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
-              ) : (
-                paginatedUsers.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="font-medium">
-                      {user.firstName} {user.lastName}
-                    </TableCell>
-                    <TableCell>{user.document}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone}</TableCell>
-                    <TableCell>{new Date(user.birthDate).toLocaleDateString("es-UY")}</TableCell>
-                    <TableCell>
-                      <Badge variant={user.active ? "default" : "secondary"}>
-                        {user.active ? "Activo" : "Inactivo"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{user.createdAt.toLocaleDateString("es-UY")}</TableCell>
-                    <TableCell>
-                      <DropdownMenu
-                        trigger={
-                          <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
-                            <MoreVertical className="w-4 h-4 text-gray-600" />
-                          </button>
-                        }
-                      >
-                        <DropdownMenuItem icon={<Eye />} onClick={() => handleViewDetails(user.id)}>
-                          Ver Detalle
-                        </DropdownMenuItem>
-                        <DropdownMenuItem icon={<Edit />} onClick={() => handleEdit(user.id)}>
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem icon={<Trash2 />} variant="danger" onClick={() => handleDelete(user.id)}>
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenu>
+              </TableHeader>
+              <TableBody>
+                {paginatedUsers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center py-8 text-gray-500">
+                      {searchTerm ? 'No se encontraron usuarios con ese criterio de búsqueda' : 'No hay usuarios registrados'}
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  paginatedUsers.map((user: HealthUserListResponse) => (
+                    <TableRow key={user.email}>
+                      <TableCell className="font-medium">
+                        {user.firstName} {user.lastName}
+                      </TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <DropdownMenu
+                          trigger={
+                            <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
+                              <MoreVertical className="w-4 h-4 text-gray-600" />
+                            </button>
+                          }
+                        >
+                          <DropdownMenuItem icon={<Edit />} onClick={() => handleEdit(user.email)}>
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem icon={<Trash2 />} variant="danger" onClick={() => handleDelete(user.email)}>
+                            Eliminar
+                          </DropdownMenuItem>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
-              <div className="text-sm text-gray-600">
-                Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredUsers.length)} de{" "}
-                {filteredUsers.length} usuarios
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className={currentPage === page ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-                    >
-                      {page}
-                    </Button>
-                  ))}
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
+                <div className="text-sm text-gray-600">
+                  Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredUsers.length)} de{" "}
+                  {filteredUsers.length} usuarios
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                        className={currentPage === page ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </AdminLayout>
   )

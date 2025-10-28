@@ -9,6 +9,7 @@ interface DropdownMenuProps {
 
 export function DropdownMenu({ trigger, children, align = "end" }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const [position, setPosition] = React.useState({ top: 0, left: 0 })
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
@@ -20,24 +21,33 @@ export function DropdownMenu({ trigger, children, align = "end" }: DropdownMenuP
 
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside)
+      // Calcular posición cuando se abre
+      if (dropdownRef.current) {
+        const rect = dropdownRef.current.getBoundingClientRect()
+        setPosition({
+          top: rect.bottom + window.scrollY + 8,
+          left: align === "end" ? rect.right - 192 : rect.left
+        })
+      }
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [isOpen])
+  }, [isOpen, align])
 
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
       {isOpen && (
         <div
-          className={cn(
-            "absolute z-50 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
-            align === "end" ? "right-0" : "left-0",
-          )}
+          className="fixed z-[9999] -mt-10 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          style={{
+            top: position.top,
+            left: position.left
+          }}
         >
-          <div className="py-1" onClick={() => setIsOpen(false)}>
+          <div className="py-1">
             {children}
           </div>
         </div>

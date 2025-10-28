@@ -78,3 +78,31 @@ export const createAdminUser = async (adminUserRequest: AdminUserRequest, access
         return Promise.reject(error);
     }
 }
+
+import axios from "axios";
+/**
+ * Servicio para obtener los usuarios de salud
+ * @description: Realiza una solicitud para obtener los usuarios de salud en el backend.
+ * @param accessToken: Token de autenticación.
+ * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
+ */
+
+export const getHealthUsers = async (accessToken: string): Promise<AxiosResponse> => {
+   
+   try{
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+      
+      // URL temporal directa para probar
+      const response = await axios.get('http://localhost:8081/admin/health-users', {
+        headers,
+      });
+        return Promise.resolve(response);
+   }catch(error){
+        console.error('Error al obtener los usuarios de salud: ', error);
+        return Promise.reject(error);
+   }
+}
+
+
