@@ -1,5 +1,8 @@
 
   // interface para el registro de profesional de salud usado para enviar los datos al backend
+
+import type { UserRole } from "./Auth"
+
   /**
    * Interfaz para el request de registro de profesional de salud (frontend)
    * @property {string} firstName - Nombre del profesional de salud
@@ -48,9 +51,12 @@
    * @property {string} firstName - Nombre del usuario de salud
    * @property {string} lastName - Apellido del usuario de salud
    * @property {string} email - Email del usuario de salud
-   * @property {string} document - Documento de identidad del usuario de salud
-   * @property {string} phone - Teléfono del usuario de salud
-   * @property {string} birthDate - Fecha de nacimiento del usuario de salud
+   * @property {string} documentType - Tipo de documento de identidad (por ahora solo CI)
+   * @property {string} documentNumber - Número de documento de identidad
+   * @property {string} nationality - Nacionalidad del usuario
+   * @property {string} phone - Teléfono del usuario
+   * @property {string} address - Dirección del usuario
+   * @property {string} birthDate - Fecha de nacimiento del usuario
    * @property {string} gender - Género del usuario (masculino/femenino)
    * @property {string} tenantId - ID del tenant (clínica)
    */
@@ -58,8 +64,11 @@
     firstName: string
     lastName: string
     email: string
-    document: string
+    documentType?: string // por ahora solo CI
+    documentNumber: string
+    nationality: string 
     phone: string
+    address?: string
     birthDate: string
     gender: string
     tenantId: string
@@ -70,25 +79,13 @@
    * @property {string} id - ID del usuario de salud
    * @property {string} firstName - Nombre del usuario de salud
    * @property {string} lastName - Apellido del usuario de salud
-   * @property {string} document - Documento de identidad del usuario de salud
    * @property {string} email - Email del usuario de salud
-   * @property {string} phone - Teléfono del usuario de salud
-   * @property {string} birthDate - Fecha de nacimiento del usuario de salud
-   * @property {boolean} active - Estado del usuario de salud
-   * @property {Date} createdAt - Fecha de creación del usuario de salud
-   * @property {Date} updatedAt - Fecha de actualización del usuario de salud
    */
   export interface HealthUserRegisterResponse{
     id: string
     firstName: string
     lastName: string
-    document: string
     email: string
-    phone: string
-    birthDate: string
-    active: boolean
-    createdAt: Date
-    updatedAt: Date
   }
 
 
@@ -107,29 +104,20 @@
     lastName: string
     email: string
     document: string
-    tenantId: string
+  
   }
 
 
   /**
    * Interfaz para el response de registro de usuario administrador
    * @property {string} id - ID del usuario administrador
-   * @property {string} firstName - Nombre del usuario administrador
-   * @property {string} lastName - Apellido del usuario administrador
-   * @property {string} document - Documento de identidad del usuario administrador
+   * @property {string} tenantId - ID del tenant (clínica)
    * @property {string} email - Email del usuario administrador
-   * @property {boolean} active - Estado del usuario administrador
-   * @property {Date} createdAt - Fecha de creación del usuario administrador
-   * @property {Date} updatedAt - Fecha de actualización del usuario administrador
-   * 
+   * @property {UserRole} role - Rol del usuario administrador
    */
   export interface AdminUserRegisterResponse {
     id: string
-    firstName: string
-    lastName: string
-    document: string
+    tenantId: string
     email: string
-    active: boolean
-    createdAt: Date
-    updatedAt: Date
+    role: UserRole
   }

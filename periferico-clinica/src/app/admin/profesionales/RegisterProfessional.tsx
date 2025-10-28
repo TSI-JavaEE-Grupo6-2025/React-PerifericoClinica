@@ -8,19 +8,17 @@ import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Inpu
 import { useTenantId } from "../../../hooks/use-tenant"
 import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
-import { useRegister } from "../../../hooks/use-register"
+import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { HealthProfessionalRequest } from "../../../types/User"
 import { useSpecialities } from "../../../hooks/use-specialities"
-//import type { SpecialtyKeys } from "../../../types/Specialty"
 
 export const RegisterProfessionalPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
 
-  const { register, loading, error, success } = useRegister({
-    action: "health-professional",
+  const { registerProfessional, loading, error, success } = useRegisterFactory('health-professional',{
     onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD),
-  })
+  }) 
 
   const { specialties, loading: loadingSpecialities, error: specialitiesError } = useSpecialities()
 
@@ -69,7 +67,7 @@ export const RegisterProfessionalPage: React.FC = () => {
 
     try {
       alert(JSON.stringify(formData, null, 2))
-      await register(formData)
+      await registerProfessional(formData)
     } catch (err) {
       console.error("Error:", err)
     }

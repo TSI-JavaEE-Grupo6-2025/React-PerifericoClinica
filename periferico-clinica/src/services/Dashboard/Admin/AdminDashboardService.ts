@@ -1,6 +1,6 @@
 import API from "../../constants/Api";
 import { ENDPOINTS_SERVICES } from "../../constants/Endpoints";
-import type { HealthProfessionalRequest, HealthUserRequest } from "../../../types/User";
+import type { AdminUserRequest, HealthProfessionalRequest, HealthUserRequest } from "../../../types/User";
 import type { AxiosResponse } from "axios";
 
 
@@ -54,4 +54,27 @@ export const createHealthUser = async (healthUserRequest: HealthUserRequest, acc
         return Promise.reject(error);
     }
     
+}
+
+/**
+ * Servicio para crear un usuario administrador en el backend
+ * @param adminUserRequest: Datos del usuario administrador.
+ * @param accessToken: Token de autenticación.
+ * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
+ */
+
+export const createAdminUser = async (adminUserRequest: AdminUserRequest, accessToken: string): Promise<AxiosResponse> => {
+    try{
+        console.log(`Datos del usuario administrador enviados al backend: ${JSON.stringify(adminUserRequest, null, 2)}`);
+        const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_ADMIN_USER, adminUserRequest, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        })
+        console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
+        return Promise.resolve(response);
+    }catch(error){
+        console.error('Error al crear el usuario administrador: ', error);
+        return Promise.reject(error);
+    }
 }

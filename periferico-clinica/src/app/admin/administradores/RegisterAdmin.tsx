@@ -5,18 +5,16 @@ import { useNavigate } from "react-router-dom"
 import { ArrowLeft, Shield, Mail } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
-import { useTenantId } from "../../../hooks/use-tenant"
 import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
-import { useRegister } from "../../../hooks/use-register"
+import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { AdminUserRequest } from "../../../types/User"
 
 export const RegisterAdminPage: React.FC = () => {
   const navigate = useNavigate()
-  const tenantId = useTenantId()
 
-  const { register, loading, error, success } = useRegister({
-    action: "admin-user",
+
+  const { registerAdmin, loading, error, success } = useRegisterFactory('admin-user', {
     onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD),
   })
 
@@ -25,7 +23,6 @@ export const RegisterAdminPage: React.FC = () => {
     lastName: "",
     email: "",
     document: "",
-    tenantId: tenantId || "",
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +38,7 @@ export const RegisterAdminPage: React.FC = () => {
 
     try {
       alert(JSON.stringify(formData, null, 2))
-      await register(formData)
+      await registerAdmin(formData)
     } catch (err) {
       console.error("Error:", err)
     }
@@ -85,7 +82,7 @@ export const RegisterAdminPage: React.FC = () => {
               <h3 className="text-lg font-semibold mb-4 text-[#2c3e50]">Datos del Administrador</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">Nombre *</Label>
+                  <Label htmlFor="firstName">Nombres *</Label>
                   <Input
                     id="firstName"
                     name="firstName"
@@ -97,7 +94,7 @@ export const RegisterAdminPage: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Apellido *</Label>
+                  <Label htmlFor="lastName">Apellidos *</Label>
                   <Input
                     id="lastName"
                     name="lastName"

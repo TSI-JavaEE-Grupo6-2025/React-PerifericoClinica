@@ -20,13 +20,13 @@ export const ENDPOINTS_SERVICES = {
     DASHBOARD: {
         ADMIN: {
             // PUT
-            CREATE_ADMIN_USER: '',
+            CREATE_ADMIN_USER: '/admin-users',
             CREATE_PROFESIONAL: '/health-professionals', // crea profesional de salud
-            CREATE_HEALTH_USER: '/health-users',// alta de usuarios de salud 
+            CREATE_HEALTH_USER: '/admin/health-users',// alta de usuarios de salud 
             // GET
-            GET_USERS: '',
-            GET_PROFESIONALS: '',
-            GET_HEALTH_USERS: '',
+            GET_USERS: '/admin-users', 
+            GET_PROFESIONALS: '/health-professionals', // listar profesionales de salud
+            GET_HEALTH_USERS: '/admin/health-users', // listar usuarios de salud
 
             // GET SPECIALTIES
             GET_SPECIALTIES: '/specialties',

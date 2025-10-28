@@ -2,30 +2,32 @@
 import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, Users, Mail, Phone, Calendar } from "lucide-react"
+import { ArrowLeft, Users, Mail, Phone, Calendar, Globe, FileText, MapPin } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
 import { useTenantId } from "../../../hooks/use-tenant"
 import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
-import { useRegister } from "../../../hooks/use-register"
+import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { HealthUserRequest } from "../../../types/User"
 
 export const RegisterHealthUserPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
 
-  const { register, loading, error, success } = useRegister({
-    action: "health-user",
-    onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD),
+  const { registerHealthUser, loading, error, success } = useRegisterFactory('health-user', {
+    onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD)
   })
 
   const [formData, setFormData] = useState<HealthUserRequest>({
     firstName: "",
     lastName: "",
     email: "",
-    document: "",
+    documentType: "CI",
+    documentNumber: "",
+    nationality: "Uruguay",
     phone: "",
+    address: "",
     birthDate: "",
     gender: "",
     tenantId: tenantId || "",
@@ -44,7 +46,7 @@ export const RegisterHealthUserPage: React.FC = () => {
 
     try {
       alert(JSON.stringify(formData, null, 2))
-      await register(formData)
+      await registerHealthUser(formData)
     } catch (err) {
       console.error("Error:", err)
     }
@@ -111,12 +113,54 @@ export const RegisterHealthUserPage: React.FC = () => {
                     required
                   />
                 </div>
+
+                {/* Nacionalidad */}
                 <div className="space-y-2">
-                  <Label htmlFor="document">Número de Documento *</Label>
+                  <Label htmlFor="nationality">Nacionalidad *</Label>
+                  <div className="relative">
+                    <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="nationality"
+                      name="nationality"
+                      value={formData.nationality}
+                      onChange={handleInputChange}
+                      placeholder="Uruguay"
+                      className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Tipo de Documento */}
+                <div className="space-y-2">
+                  <Label htmlFor="documentType">Tipo de Documento *</Label>
+                  <div className="relative">
+                    <FileText className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10"/>
+                    <select
+                      id="documentType"
+                      name="documentType"
+                      value={formData.documentType}
+                      onChange={handleInputChange}
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent pl-10 pr-3 py-1 text-base shadow-xs 
+                      transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground 
+                      placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring 
+                      disabled:cursor-not-allowed disabled:opacity-50 md:text-sm 
+                      focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                      required
+                    >
+                      <option value="CI">CI - Cédula de Identidad</option>
+                    </select>
+
+                  </div>
+                </div>
+
+
+                <div className="space-y-2">
+                  <Label htmlFor="documentNumber">Número de Documento *</Label>
                   <Input
-                    id="document"
-                    name="document"
-                    value={formData.document}
+                    id="documentNumber"
+                    name="documentNumber"
+                    value={formData.documentNumber}
                     onChange={handleInputChange}
                     placeholder="12345678"
                     className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
@@ -191,6 +235,22 @@ export const RegisterHealthUserPage: React.FC = () => {
                       placeholder="099123456"
                       className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
                       required
+                    />
+                  </div>
+                </div>
+                {/* Dirección */}
+                <div className="space-y-2">
+                  <Label htmlFor="address">Dirección</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10"/>
+                    <Input
+                      id="address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      placeholder="Av. Principal 123"
+                      className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b4]"
+
                     />
                   </div>
                 </div>
