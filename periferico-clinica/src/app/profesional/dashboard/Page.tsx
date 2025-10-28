@@ -1,4 +1,4 @@
-import { ProfessionalLayout, StatsCard } from "../../../components/profesional"
+import { ProfessionalLayout, StatsCard, RecentActivity } from "../../../components/profesional"
 import { ProfessionalQuickActions } from "../../../components/profesional/quick-actions"
 import { useAuthStore } from "../../../store/AuthStore";
 
@@ -21,7 +21,7 @@ export default function ProfessionalDashboardPage() {
         <StatsCard/>
         <div className="grid gap-6 md:grid-cols-2">
           <ProfessionalQuickActions/>
-          <p>Actividades recientes</p>
+          <RecentActivity/>
         </div>
       </div>
     </ProfessionalLayout>
