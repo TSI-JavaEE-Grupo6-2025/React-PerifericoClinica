@@ -1,11 +1,11 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Link,  useLocation, useNavigate } from "react-router-dom"
+import { Link,  useLocation } from "react-router-dom"
 import { cn } from "../../utils"
 import { Button } from "../ui"
-import { LayoutDashboard, FileText, FilePlus, Search, LogOut, Menu, X, Stethoscope } from "lucide-react"
-import { ROUTES } from "../../routes"
+import { LayoutDashboard, FileText, FilePlus, Search, LogOut, Menu, X, Stethoscope, Loader2 } from "lucide-react"
+import { useLogout } from "../../hooks/use-logout"
 
 
 const navigation = [
@@ -17,16 +17,14 @@ const navigation = [
 
 export function ProfessionalLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
-  const navigate = useNavigate();
-  
+
+  const { handleLogout: handleLogoutHook , loading: loadingLogout } = useLogout();
   const pathname = location.pathname
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
 
   const handleLogout = () => {
-    setSidebarOpen(true)
-    navigate(ROUTES.HOME);
-    // usamos useLogin para cerrar sesión y eliminar el sessionStorage
+    handleLogoutHook();
   }
 
   return (
@@ -77,9 +75,10 @@ export function ProfessionalLayout({ children }: { children: React.ReactNode }) 
           </nav>
 
           <div className="p-4 border-t border-[#34495e]">
-            <Button variant="ghost" className="w-full justify-start text-[#ecf0f1] hover:bg-[#34495e] hover:text-[black] cursor-pointer" onClick={handleLogout}>
+            <Button className="w-full justify-start text-[#ecf0f1] hover:bg-[#34495e]  cursor-pointer" onClick={handleLogout}>
               <LogOut className="w-5 h-5 mr-3" />
               Cerrar Sesión
+              {loadingLogout && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
             </Button>
           </div>
         </div>
