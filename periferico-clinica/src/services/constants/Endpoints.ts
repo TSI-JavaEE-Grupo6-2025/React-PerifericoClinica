@@ -22,11 +22,11 @@ export const ENDPOINTS_SERVICES = {
             // PUT
             CREATE_ADMIN_USER: '/admin-users',
             CREATE_PROFESIONAL: '/health-professionals', // crea profesional de salud
-            CREATE_HEALTH_USER: '/admin/health-users',// alta de usuarios de salud 
+            CREATE_HEALTH_USER: '/health-users',// alta de usuarios de salud 
             // GET
             GET_USERS: '/admin-users', 
             GET_PROFESIONALS: '/health-professionals', // listar profesionales de salud
-            GET_HEALTH_USERS: '/admin/health-users', // listar usuarios de salud
+            GET_HEALTH_USERS: '/health-users', // listar usuarios de salud
 
             // GET SPECIALTIES
             GET_SPECIALTIES: '/specialties',

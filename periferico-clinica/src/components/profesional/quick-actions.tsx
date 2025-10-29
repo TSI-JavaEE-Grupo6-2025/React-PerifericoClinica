@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components"
 import { Button } from "../../components"
-import { FilePlus, Search, FileText, Clock } from "lucide-react"
+import { FilePlus, Search, FileText, ClipboardList } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../routes"
 
@@ -13,7 +13,7 @@ export function ProfessionalQuickActions() {
       title: "Nuevo Documento",
       description: "Crear documento clínico",
       icon: FilePlus,
-      onClick: () => navigate(ROUTES.PROFESIONAL_DASHBOARD),
+      onClick: () => navigate(ROUTES.PROFESSIONAL_NEW_DOCUMENT),
       color: "text-blue-600",
       bgColor: "bg-blue-50",
     },
@@ -21,7 +21,7 @@ export function ProfessionalQuickActions() {
       title: "Buscar Paciente",
       description: "Consultar historia clínica",
       icon: Search,
-      onClick: () => navigate(ROUTES.PROFESIONAL_DASHBOARD),
+      onClick: () => navigate(ROUTES.PROFESSIONAL_SEARCH_PATIENT),
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
@@ -29,15 +29,15 @@ export function ProfessionalQuickActions() {
       title: "Mis Documentos",
       description: "Ver documentos creados",
       icon: FileText,
-      onClick: () => navigate(ROUTES.PROFESIONAL_DASHBOARD),
+      onClick: () => navigate(ROUTES.PROFESSIONAL_MY_DOCUMENTS),
       color: "text-purple-600",
       bgColor: "bg-purple-50",
     },
     {
-      title: "Solicitudes Pendientes",
-      description: "Accesos solicitados",
-      icon: Clock,
-      onClick: () => navigate(ROUTES.PROFESIONAL_DASHBOARD),
+      title: "Historia Clínica",
+      description: "Ver historias clínicas",
+      icon: ClipboardList,
+      onClick: () => navigate(ROUTES.PROFESSIONAL_HISTORY_CLINIC),
       color: "text-orange-600",
       bgColor: "bg-orange-50",
     },
@@ -55,7 +55,7 @@ export function ProfessionalQuickActions() {
             <Button
               key={action.title}
               variant="outline"
-              className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-accent bg-transparent"
+              className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-accent bg-transparent cursor-pointer"
               onClick={action.onClick}
             >
               <div className={`p-2 rounded-lg ${action.bgColor}`}>

@@ -19,5 +19,10 @@ export const ROUTES = {
 
     // privadas Profesional
     PROFESIONAL_DASHBOARD: '/profesional/dashboard',
+    PROFESSIONAL_NEW_DOCUMENT: '/profesional/nuevo-documento',
+    PROFESSIONAL_SEARCH_PATIENT: '/profesional/buscar-paciente',
+    PROFESSIONAL_HISTORY_CLINIC: '/profesional/historia-clinica',
+    PROFESSIONAL_MY_DOCUMENTS: '/profesional/mis-documentos',
+
     
 } as const;

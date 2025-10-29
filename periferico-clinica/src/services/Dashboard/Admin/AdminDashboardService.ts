@@ -15,7 +15,7 @@ import type { AxiosResponse } from "axios";
 
 export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string): Promise<AxiosResponse> => {
     try{
-        console.log('HealthProfessionalRequest enviado al backend: ', JSON.stringify(healtProfessionalRequest, null, 2));
+        
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest,{
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -65,7 +65,6 @@ export const createHealthUser = async (healthUserRequest: HealthUserRequest, acc
 
 export const createAdminUser = async (adminUserRequest: AdminUserRequest, accessToken: string): Promise<AxiosResponse> => {
     try{
-        console.log(`Datos del usuario administrador enviados al backend: ${JSON.stringify(adminUserRequest, null, 2)}`);
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_ADMIN_USER, adminUserRequest, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -79,7 +78,7 @@ export const createAdminUser = async (adminUserRequest: AdminUserRequest, access
     }
 }
 
-import axios from "axios";
+
 /**
  * Servicio para obtener los usuarios de salud
  * @description: Realiza una solicitud para obtener los usuarios de salud en el backend.
@@ -90,14 +89,12 @@ import axios from "axios";
 export const getHealthUsers = async (accessToken: string): Promise<AxiosResponse> => {
    
    try{
-    const headers = {
-        Authorization: `Bearer ${accessToken}`,
-      };
-      
-      // URL temporal directa para probar
-      const response = await axios.get('http://localhost:8081/admin/health-users', {
-        headers,
-      });
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_HEALTH_USERS,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+        console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return Promise.resolve(response);
    }catch(error){
         console.error('Error al obtener los usuarios de salud: ', error);

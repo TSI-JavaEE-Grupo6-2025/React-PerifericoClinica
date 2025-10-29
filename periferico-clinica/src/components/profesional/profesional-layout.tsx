@@ -4,15 +4,18 @@ import { useState } from "react"
 import { Link,  useLocation } from "react-router-dom"
 import { cn } from "../../utils"
 import { Button } from "../ui"
-import { LayoutDashboard, FileText, FilePlus, Search, LogOut, Menu, X, Stethoscope, Loader2 } from "lucide-react"
+import { LayoutDashboard, FileText, FilePlus, Search, LogOut, Menu, X, Stethoscope, Loader2 ,ClipboardList} from "lucide-react"
 import { useLogout } from "../../hooks/use-logout"
 
 
+//  revisar luego que se muestra en el sidebar, ya que estas opciones estan en quick actions (no es prioridad)
+
 const navigation = [
   { name: "Dashboard", href: "/profesional/dashboard", icon: LayoutDashboard },
-  { name: "Historia Clínica", href: "/profesional/historia-clinica", icon: Search },
+  { name: "Historia Clínica", href: "/profesional/historia-clinica", icon: ClipboardList},
   { name: "Nuevo Documento", href: "/profesional/documentos", icon: FilePlus },
   { name: "Mis Documentos", href: "/profesional/mis-documentos", icon: FileText },
+  { name: "Buscar Paciente", href: "/profesional/buscar-paciente", icon: Search },
 ]
 
 export function ProfessionalLayout({ children }: { children: React.ReactNode }) {
