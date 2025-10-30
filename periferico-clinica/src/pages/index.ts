@@ -13,3 +13,4 @@ export { HealthProfessionalListPage } from './Admin/HealthProfessionalListPage';
 export { HealthUserListPage } from './Admin/HealthUserListPage';
 export { AdminUserListPage } from './Admin/AdminUserListPage';
 export { ClinicDetailPage } from './Admin/ClinicDetailPage';
+export { ProfessionalCreateDoc } from './Profesional/ProfessionalCreateDoc';

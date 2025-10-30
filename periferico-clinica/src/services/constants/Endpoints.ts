@@ -40,6 +40,8 @@ export const ENDPOINTS_SERVICES = {
            
             // GET
             GET_DOCUMENTS: '',
+            GET_CONSULTATION_REASONS: '/consultation-reasons',
+
             UPDATE_DOCUMENT: '',
             DELETE_DOCUMENT: '',
         },

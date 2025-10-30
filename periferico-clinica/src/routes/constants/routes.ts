@@ -24,5 +24,7 @@ export const ROUTES = {
     PROFESSIONAL_HISTORY_CLINIC: '/profesional/historia-clinica',
     PROFESSIONAL_MY_DOCUMENTS: '/profesional/mis-documentos',
 
+
+
     
 } as const;
