@@ -236,7 +236,7 @@ export default function NewClinicalDocumentPage() {
                                 )}
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <div>
+                                {/* <div>
                                     <Label htmlFor={`diagnosisCode-${index}`} className="mb-2">Código SNOMED CT</Label>
                                     <Input
                                         id={`diagnosisCode-${index}`}
@@ -246,7 +246,7 @@ export default function NewClinicalDocumentPage() {
                                         className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
                                     >
                                     </Input>
-                                </div>
+                                </div> */}
                                 <div>
                                     <Label htmlFor={`diagnosisDisplayName-${index}`} className="mb-2">Descripción</Label>
                                     <Input
