@@ -1,7 +1,7 @@
 import API from "../../constants/Api";
 import { ENDPOINTS_SERVICES } from "../../constants/Endpoints";
 import type { AdminUserRequest, HealthProfessionalRequest, HealthUserRequest } from "../../../types/User";
-import type { AxiosResponse } from "axios";
+import { AxiosError, type AxiosResponse } from "axios";
 
 
 
@@ -24,8 +24,13 @@ export const createHealthProfessional = async (healtProfessionalRequest: HealthP
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return Promise.resolve(response);
     }catch(error){
-        console.error('Error al crear el profesional de salud: ', error);
-        return Promise.reject(error);
+        if (error instanceof AxiosError && error.response?.data?.message) {
+            const message = error.response.data.message;
+            console.log('Mensaje de error del servidor: ', message);
+            return Promise.reject(new Error(message));
+        }
+        const defaultMessage = 'Error al crear el profesional de salud';
+        return Promise.reject(new Error(defaultMessage));
     }
     
 }

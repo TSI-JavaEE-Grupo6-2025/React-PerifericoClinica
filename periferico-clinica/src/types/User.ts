@@ -17,7 +17,9 @@ export interface HealthProfessionalRequest {
   lastName: string
   email: string
   document: string // documento de identidad del profesional (cédula)
+  healthProfessionalNumber: string // número de matrícula del profesional
   specialtyIds?: string[] // lista de códigos de especialidades del profesional de salud
+  
   tenantId: string
 }
 
@@ -34,15 +36,8 @@ export interface HealthProfessionalRequest {
  * @property {Date} updatedAt - Fecha de actualización del profesional de salud
  */
 export interface HealthProfessionalRegisterResponse {
-  id: string
-  firstName: string
-  lastName: string
-  document: string
-  specialtyIds?: string[] // lista de códigos de especialidades del profesional de salud
-  email: string
-  active: boolean
-  createdAt: Date
-  updatedAt: Date
+  success: boolean 
+  message?: string | null // por defecto no hay mensaje => mostrar en toast luego
 }
 
 

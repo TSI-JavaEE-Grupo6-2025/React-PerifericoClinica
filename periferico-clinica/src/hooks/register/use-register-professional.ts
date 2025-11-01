@@ -74,9 +74,9 @@ export const useRegisterProfessional = ({
             setError(null);
             setSuccess(false);
 
-            // 4. Llamar al servicio
+            // 4. Llamar al adapter
             await AdminDashboardAdapter.createHealthProfessional(data, accessToken);
-
+    
             // 5. Éxito
             setSuccess(true);
             onSuccess?.();
@@ -86,14 +86,15 @@ export const useRegisterProfessional = ({
 
         } catch (error) {
             // 7. Manejar errores
-            const errorMessage = error instanceof Error 
-                ? error.message 
-                : "Error al registrar el profesional de salud";
+            let errorMessage = "Error al registrar el profesional de salud";
+            
+            if (error instanceof Error) {
+                // Si el error ya tiene el mensaje del backend extraído
+                errorMessage = error.message;
+            }
             
             setError(errorMessage);
             onError?.(errorMessage);
-
-            console.error("Error al registrar el profesional de salud: ", error);
         } finally {
             // 8. Finalizar
             setLoading(false);

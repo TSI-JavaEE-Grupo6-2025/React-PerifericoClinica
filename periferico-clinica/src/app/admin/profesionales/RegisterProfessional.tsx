@@ -27,6 +27,7 @@ export const RegisterProfessionalPage: React.FC = () => {
     lastName: "",
     email: "",
     document: "",
+    healthProfessionalNumber: "",
     specialtyIds: [],
     tenantId: tenantId || "",
   })
@@ -156,6 +157,19 @@ export const RegisterProfessionalPage: React.FC = () => {
                     id="document"
                     name="document"
                     value={formData.document}
+                    onChange={handleInputChange}
+                    placeholder="12345678"
+                    className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    required
+                  />
+                </div>
+                {/* Número de Matrícula */}
+                <div className="space-y-2">
+                  <Label htmlFor="healthProfessionalNumber">Número de Matrícula *</Label>
+                  <Input
+                    id="healthProfessionalNumber"
+                    name="healthProfessionalNumber"
+                    value={formData.healthProfessionalNumber}
                     onChange={handleInputChange}
                     placeholder="12345678"
                     className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
