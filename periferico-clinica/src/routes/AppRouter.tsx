@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import {  
   AdminLoginPage, 
   ProfesionalLoginPage, 
@@ -23,174 +23,104 @@ import { ROUTES} from './constants/routes';
 import { ProtectedHome } from './protectedRoute/ProtectedHome';
 import { ProtectedRoute} from './protectedRoute/ProtectedRoute';
 
-// TODO:  Refactorizar las rutas protegidas para que no se repita el protectedRoute en cada ruta 
-
-const Home = () => {
-  return (
-    <ProtectedHome>
-      <HomePage/>
-    </ProtectedHome>
-  )
-}
-const AdminLogin = () =>{
-  return (
-    <ProtectedHome>
-      <AdminLoginPage />
-    </ProtectedHome>
-  )
-} 
-const ProfesionalLogin = () => {
-  return (
-    <ProtectedHome>
-      <ProfesionalLoginPage />
-    </ProtectedHome>
-  )
-};
-const AdminDashboard = () =>{
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <AdminDashboardPage />
-    </ProtectedRoute>
-  )
-} 
-const ProfesionalDashboard = () => {
-  return (
-    <ProtectedRoute requiredRole="PROFESSIONAL">
-      <ProfesionalDashboardPage />
-    </ProtectedRoute>
-  )
-}
-
-const RegisterHealthProfessional = () =>{
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <RegisterProfessionalPage />
-    </ProtectedRoute>
-  )
-} 
-const AdminClinicSetting = () => 
-{
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <ClinicSettingPage />
-    </ProtectedRoute>
-  )
-}
-const RegisterHealthUser = () => {
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <RegisterHealthUserPage />
-    </ProtectedRoute>
-  )
-}
-const RegisterAdminUser = () => {
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <RegisterAdminUserPage />
-    </ProtectedRoute>
-  )
-}
-
-const HealthProfessionalList = () => {
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <HealthProfessionalListPage />
-    </ProtectedRoute>
-  )
-}
-const HealthUserList = () => {
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <HealthUserListPage />
-    </ProtectedRoute>
-  )
-}
-const AdminUserList = () => {
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <AdminUserListPage />
-    </ProtectedRoute>
-  )
-}
-const ClinicDetail = () => {
-  return (
-    <ProtectedRoute requiredRole="ADMIN_CLINIC">
-      <ClinicDetailPage />
-    </ProtectedRoute>
-  )
-}
-
-const ProfessionalCreateClinicalDocument = () => {
-  return (
-    <ProtectedRoute requiredRole="PROFESSIONAL">
-      <ProfessionalCreateDoc />
-    </ProtectedRoute>
-  )
-}
-
-
 const router = createBrowserRouter([
+  
   {
     path: ROUTES.HOME,
-    element: <Home/>,
-  },
-  {
-    path: ROUTES.ADMIN_DASHBOARD,
-    element: <AdminDashboard />,
+    element: (
+      <ProtectedHome>
+        <HomePage />
+      </ProtectedHome>
+    ),
   },
   {
     path: ROUTES.ADMIN_LOGIN,
-    element: <AdminLogin />,
+    element: (
+      <ProtectedHome>
+        <AdminLoginPage />
+      </ProtectedHome>
+    ),
   },
   {
     path: ROUTES.PROFESIONAL_LOGIN,
-    element: <ProfesionalLogin />,
+    element: (
+      <ProtectedHome>
+        <ProfesionalLoginPage />
+      </ProtectedHome>
+    ),
   },
+
+  // Rutas protegidas de Administrador
   {
-    path: ROUTES.PROFESIONAL_DASHBOARD,
-    element: <ProfesionalDashboard/>,
+    element: (
+      <ProtectedRoute requiredRole="ADMIN_CLINIC">
+        <Outlet />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: ROUTES.ADMIN_DASHBOARD,
+        element: <AdminDashboardPage />,
+      },
+      {
+        path: ROUTES.ADMIN_REGISTER_PROFESSIONALS,
+        element: <RegisterProfessionalPage />,
+      },
+      {
+        path: ROUTES.ADMIN_REGISTER_USERS,
+        element: <RegisterHealthUserPage />,
+      },
+      {
+        path: ROUTES.ADMIN_REGISTER_ADMIN_USERS,
+        element: <RegisterAdminUserPage />,
+      },
+      {
+        path: ROUTES.ADMIN_CLINIC_SETTING,
+        element: <ClinicSettingPage />,
+      },
+      {
+        path: ROUTES.ADMIN_PROFESSIONAL_LIST,
+        element: <HealthProfessionalListPage />,
+      },
+      {
+        path: ROUTES.ADMIN_HEALTH_USER_LIST,
+        element: <HealthUserListPage />,
+      },
+      {
+        path: ROUTES.ADMIN_ADMIN_USER_LIST,
+        element: <AdminUserListPage />,
+      },
+      {
+        path: ROUTES.ADMIN_CLINIC_DETAILS,
+        element: <ClinicDetailPage />,
+      },
+    ],
   },
+
+  // Rutas protegidas de Profesional
   {
-    path: ROUTES.ADMIN_REGISTER_PROFESSIONALS,
-    element: <RegisterHealthProfessional/>,
+    element: (
+      <ProtectedRoute requiredRole="PROFESSIONAL">
+        <Outlet />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: ROUTES.PROFESIONAL_DASHBOARD,
+        element: <ProfesionalDashboardPage />,
+      },
+      {
+        path: ROUTES.PROFESSIONAL_NEW_DOCUMENT,
+        element: <ProfessionalCreateDoc />,
+      },
+    ],
   },
+
+  // Ruta catch-all
   {
-    path: ROUTES.ADMIN_REGISTER_USERS,
-    element: <RegisterHealthUser/>,
-  },
-  {
-    path: ROUTES.ADMIN_REGISTER_ADMIN_USERS,
-    element: <RegisterAdminUser/>,
-  },
-  {
-    path: ROUTES.ADMIN_CLINIC_SETTING,
-    element: <AdminClinicSetting/>,
-  },
-  {
-    path: ROUTES.ADMIN_PROFESSIONAL_LIST,
-    element: <HealthProfessionalList/>,
-  },
-  {
-    path: ROUTES.ADMIN_HEALTH_USER_LIST,
-    element: <HealthUserList/>,
-  },
-  {
-    path: ROUTES.ADMIN_ADMIN_USER_LIST,
-    element: <AdminUserList/>,
-  },
-  {
-    path: ROUTES.ADMIN_CLINIC_DETAILS,
-    element: <ClinicDetail/>,
-  },
-  {
-    path: ROUTES.PROFESSIONAL_NEW_DOCUMENT,
-    element: <ProfessionalCreateClinicalDocument/>,
-  },
-  {
-    path: "*", // Catch-all route - captura cualquier ruta no definida
-    element: <NotFoundPage/>
+    path: "*",
+    element: <NotFoundPage />
   }
-  
 ]);
 
 export const AppRouter: React.FC = () => {

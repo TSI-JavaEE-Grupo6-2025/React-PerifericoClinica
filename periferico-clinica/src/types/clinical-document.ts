@@ -99,7 +99,7 @@ export interface FollowUpInstructions {
   nextConsultationDate?: string // formato: dd/mm/AAAA
   nextConsultationDescription?: string
   referralInstructions?: string
-  additionalNotes?: string
+  additionalNotes?: string // falta agregar en el fronted
 }
 
 /** Datos del formulario para crear documento clínico */
@@ -195,8 +195,8 @@ export interface CreateClinicalDocumentRequest {
 
   // Identificadores
   patientId: string
-  professionalId: string
-  tenantId: string
+  professionalId: string // ID del profesional de salud
+
 
   // Motivos de consulta con códigos SNOMED CT
   consultationReasons: Array<{
@@ -221,20 +221,7 @@ export interface CreateClinicalDocumentRequest {
     referralInstructions?: string
     additionalNotes?: string
   }
-
-  // Información adicional opcional
-  clinicalNotes?: string
-  physicalExamination?: string
-  vitalSigns?: {
-    bloodPressure?: string
-    heartRate?: number
-    temperature?: number
-    weight?: number
-    height?: number
-  }
-
-  // Estado del documento
-  status?: "DRAFT" | "FINAL"
+ 
 }
 
 
@@ -304,9 +291,7 @@ export interface ConsultationReasonResponse {
    displayName: string
    codeSystem: string
    codeSystemName: string
-   isActive: boolean
    category?: string
-   order?: number
 }
 
 /**
@@ -331,6 +316,3 @@ export interface ConsultationReasonListResponse {
     totalCount?: number
 }
 
-
-
-  
