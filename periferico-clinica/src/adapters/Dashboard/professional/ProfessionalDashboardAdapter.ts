@@ -8,19 +8,19 @@ export const ProfessionalDashboardAdapter = {
     createDocument: async (documentRequest: CreateClinicalDocumentRequest, accessToken: string): Promise<ClinicalDocumentResponse> => {
         try{
             const documentResponseData = await createDocument(documentRequest,accessToken);
-            return Promise.resolve(documentResponseData.data);
+            return documentResponseData?.data as ClinicalDocumentResponse
         }catch(error){
             console.error('Error al crear el documento: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al crear el documento: ' + error);
         }
     },
     getConsultationReasons: async (accessToken: string): Promise<ConsultationReasonListResponse> => {
         try{
             const consultationReasonsResponseData = await getConsultationReasons(accessToken);
-            return Promise.resolve(consultationReasonsResponseData.data);
+            return consultationReasonsResponseData?.data as ConsultationReasonListResponse
         }catch(error){
             console.error('Error al obtener los motivos de consulta: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al obtener los motivos de consulta: ' + error);
         }
     }
     

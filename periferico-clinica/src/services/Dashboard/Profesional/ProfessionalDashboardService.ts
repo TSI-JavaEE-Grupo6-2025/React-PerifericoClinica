@@ -1,7 +1,7 @@
 import type { CreateClinicalDocumentRequest } from '../../../types/clinical-document';
 import API from '../../constants/Api';
 import { ENDPOINTS_SERVICES } from '../../constants/Endpoints';
-import type { AxiosResponse } from 'axios';
+
 
 /**
  * Servicio para crear un documento clínico
@@ -30,7 +30,7 @@ import type { AxiosResponse } from 'axios';
  * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
  * ```  
  */
-export const createDocument = async(documentRequest: CreateClinicalDocumentRequest, accessToken: string): Promise<AxiosResponse> => {
+export const createDocument = async(documentRequest: CreateClinicalDocumentRequest, accessToken: string) => {
 
     try{
         console.log('Datos del documento enviados al backend: ', JSON.stringify(documentRequest, null, 2));
@@ -40,11 +40,11 @@ export const createDocument = async(documentRequest: CreateClinicalDocumentReque
             }
         });
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
-        return Promise.resolve(response);
+        return response
 
     }catch(error){
         console.error('Error al crear el documento: ', error);
-        return Promise.reject(error);
+        throw new Error('Error al crear el documento: ' + error)
     }
 
 }
@@ -61,16 +61,16 @@ export const createDocument = async(documentRequest: CreateClinicalDocumentReque
  * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
  * ```  
  */
-export const getConsultationReasons = async (accessToken: string): Promise<AxiosResponse> => {
+export const getConsultationReasons = async (accessToken: string) => {
     try{
         const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CONSULTATION_REASONS,{
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
-        return Promise.resolve(response);
+        return response
     }catch(error){
         console.error('Error al obtener los motivos de consulta: ', error);
-        return Promise.reject(error);
+        throw new Error('Error al obtener los motivos de consulta: ' + error)
     }
 }

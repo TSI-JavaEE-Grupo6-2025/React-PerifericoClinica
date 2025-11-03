@@ -51,7 +51,7 @@ export const useRegisterHealthUser = ({
         setSuccess(false);
         setLoading(false);
     }
-    const goBack = () => navigate(ROUTES.ADMIN_DASHBOARD);
+    const goBack = () => {navigate(ROUTES.ADMIN_DASHBOARD)};
     // === FUNCION PRINCIPAL ===
 
     const registerHealthUser = async (data: HealthUserRequest): Promise<void> => {
@@ -79,7 +79,6 @@ export const useRegisterHealthUser = ({
             onError?.(errorMessage);
             
             console.error("Error al registrar el usuario de salud: ", error);
-            return Promise.reject(error);
         }finally{
             // 7. finalizamos
             setLoading(false);

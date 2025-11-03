@@ -53,7 +53,9 @@ export const useRegisterAdmin = ({
         setSuccess(false);
         setLoading(false);
     }
-    const goBack = () => navigate(ROUTES.ADMIN_DASHBOARD);
+    const goBack = () => {
+        navigate(ROUTES.ADMIN_DASHBOARD);
+    }
 
     // === FUNCION PRINCIPAL ===    
     const registerAdmin = async (data: AdminUserRequest): Promise<void> => {
@@ -85,7 +87,6 @@ export const useRegisterAdmin = ({
             onError?.(errorMessage);
 
             console.error("Error al registrar el usuario administrador: ", error);
-            return Promise.reject(error);
         } finally {
             //7.  finalizamos
             setLoading(false);

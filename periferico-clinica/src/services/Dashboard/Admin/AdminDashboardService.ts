@@ -1,8 +1,7 @@
 import API from "../../constants/Api";
 import { ENDPOINTS_SERVICES } from "../../constants/Endpoints";
 import type { AdminUserRequest, HealthProfessionalRequest, HealthUserRequest } from "../../../types/User";
-import { AxiosError, type AxiosResponse } from "axios";
-
+import { handleServiceError } from "../../../utils";
 
 
 /**
@@ -10,10 +9,10 @@ import { AxiosError, type AxiosResponse } from "axios";
  * @description: Realiza una solicitud para crear un profesional de salud en el backend.
  * @param healtProfessionalRequest: Datos del profesional de salud.
  * @param accessToken: Token de autenticación.
- * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
+ * @returns: Devuelve la respuesta del servidor.
  */
 
-export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string): Promise<AxiosResponse> => {
+export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string) => {
     try{
         
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest,{
@@ -22,15 +21,9 @@ export const createHealthProfessional = async (healtProfessionalRequest: HealthP
             }
         });
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
-        return Promise.resolve(response);
+        return response;
     }catch(error){
-        if (error instanceof AxiosError && error.response?.data?.message) {
-            const message = error.response.data.message;
-            console.log('Mensaje de error del servidor: ', message);
-            return Promise.reject(new Error(message));
-        }
-        const defaultMessage = 'Error al crear el profesional de salud';
-        return Promise.reject(new Error(defaultMessage));
+        handleServiceError(error, 'Error al crear el profesional de salud')
     }
     
 }
@@ -43,9 +36,9 @@ export const createHealthProfessional = async (healtProfessionalRequest: HealthP
  * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
  * @param healthUserRequest 
  * @param accessToken 
- * @returns Devuelve una promesa con la respuesta del servidor o rechaza con el error
+ * @returns Devuelve la respuesta del servidor.
  */
-export const createHealthUser = async (healthUserRequest: HealthUserRequest, accessToken: string): Promise<AxiosResponse> => {
+export const createHealthUser = async (healthUserRequest: HealthUserRequest, accessToken: string) => {
     try{
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_HEALTH_USER, healthUserRequest, {
             headers: {
@@ -53,10 +46,9 @@ export const createHealthUser = async (healthUserRequest: HealthUserRequest, acc
             }
         })
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
-        return Promise.resolve(response);
+        return response;
     }catch(error){
-        console.error('Error al crear el usuario de salud: ', error);
-        return Promise.reject(error);
+       handleServiceError(error, 'Error al crear el usuario de salud')
     }
     
 }
@@ -68,7 +60,7 @@ export const createHealthUser = async (healthUserRequest: HealthUserRequest, acc
  * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
  */
 
-export const createAdminUser = async (adminUserRequest: AdminUserRequest, accessToken: string): Promise<AxiosResponse> => {
+export const createAdminUser = async (adminUserRequest: AdminUserRequest, accessToken: string) => {
     try{
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_ADMIN_USER, adminUserRequest, {
             headers: {
@@ -76,10 +68,9 @@ export const createAdminUser = async (adminUserRequest: AdminUserRequest, access
             }
         })
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
-        return Promise.resolve(response);
+        return response;
     }catch(error){
-        console.error('Error al crear el usuario administrador: ', error);
-        return Promise.reject(error);
+        handleServiceError(error, 'Error al crear el usuario administrador')
     }
 }
 
@@ -88,10 +79,10 @@ export const createAdminUser = async (adminUserRequest: AdminUserRequest, access
  * Servicio para obtener los usuarios de salud
  * @description: Realiza una solicitud para obtener los usuarios de salud en el backend.
  * @param accessToken: Token de autenticación.
- * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
+ * @returns: Devuelve la respuesta del servidor.
  */
 
-export const getHealthUsers = async (accessToken: string): Promise<AxiosResponse> => {
+export const getHealthUsers = async (accessToken: string) => {
    
    try{
         const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_HEALTH_USERS,{
@@ -100,10 +91,10 @@ export const getHealthUsers = async (accessToken: string): Promise<AxiosResponse
             }
         })
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
-        return Promise.resolve(response);
+        return response;
    }catch(error){
         console.error('Error al obtener los usuarios de salud: ', error);
-        return Promise.reject(error);
+        throw new Error('Error al obtener los usuarios de salud: ' + error);
    }
 }
 

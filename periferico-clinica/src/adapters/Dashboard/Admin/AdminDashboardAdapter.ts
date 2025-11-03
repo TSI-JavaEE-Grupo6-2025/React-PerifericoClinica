@@ -17,47 +17,43 @@ export const AdminDashboardAdapter = {
     createHealthProfessional: async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string): Promise<HealthProfessionalRegisterResponse> => {
         try {
             const response = await createHealthProfessional(healtProfessionalRequest, accessToken);
-            return Promise.resolve(response.data);
+            return response?.data;
         } catch (error) {
             console.error('Error al crear el profesional de salud: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al crear el profesional de salud: ' + error);
         }
     },
     createHealthUser: async (healthUserRequest: HealthUserRequest, accessToken: string): Promise<HealthUserRegisterResponse> => {
         try{
             const response = await createHealthUser(healthUserRequest, accessToken);
-            console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
-            return Promise.resolve(response.data)
+            console.log('Respuesta del servidor: ', JSON.stringify(response?.data, null, 2));
+            return response?.data as HealthUserRegisterResponse
         }catch(error){
-            console.error('Error al crear el usuario de salud: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al crear el usuario de salud: ' + error);
         }
     },
     createAdminUser: async (adminUserRequest: AdminUserRequest, accessToken: string): Promise<AdminUserRegisterResponse> => {
         try{
             const response = await createAdminUser(adminUserRequest, accessToken);
-            return Promise.resolve(response.data);
+            return response?.data as AdminUserRegisterResponse
         }catch(error){
-            console.error('Error al crear el usuario administrador: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al crear el usuario administrador: ' + error);
         }
     },
     getSpecialities: async (accessToken: string): Promise<SpecialityResponse> => {
         try{
             const specialities = await getSpecialities(accessToken);
-            return Promise.resolve(specialities.data as SpecialityResponse);
+            return specialities?.data as SpecialityResponse
         }catch(error){
-            console.error('Error al obtener las especialidades: ', error);
-            return Promise.reject(error);
+           throw new Error('Error al obtener las especialidades: ' + error);
         }
     },
     getHealthUsers: async (accessToken: string): Promise<HealthUserListResponse> => {
         try{
             const healthUsers = await getHealthUsers(accessToken);
-            return Promise.resolve(healthUsers.data as HealthUserListResponse);
+            return healthUsers?.data as HealthUserListResponse
         }catch(error){
-            console.error('Error al obtener los usuarios de salud: ', error);
-            return Promise.reject(error);
+           throw new Error('Error al obtener los usuarios de salud: ' + error);
         }
     }
 };

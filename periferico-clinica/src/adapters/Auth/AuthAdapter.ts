@@ -14,19 +14,18 @@ export const AuthAdapter = {
     login: async (userCredentials: UserCredentials): Promise<LoginResponse> => {
         try{
             const responseAuthData = await login(userCredentials);
-            return Promise.resolve(responseAuthData.data);
+            return responseAuthData?.data as LoginResponse
         }catch(error){
             console.error('Error al iniciar sesión: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al iniciar sesión: ' + error);
         }
     },
     logout: async (): Promise<void> => {
         try{
             await logout();
-            return Promise.resolve();
         }catch(error){
             console.error('Error al cerrar sesión: ', error);
-            return Promise.reject(error);
+            throw new Error('Error al cerrar sesión: ' + error);
         }
     }
 }
