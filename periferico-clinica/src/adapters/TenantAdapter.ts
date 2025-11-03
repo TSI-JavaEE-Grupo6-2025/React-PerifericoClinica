@@ -13,7 +13,7 @@ export const TenantAdapter = {
         try{
             console.warn('Entrando a getTenantByDomain: ', domain)
             const response = await getTenantByDomain(domain);
-            console.log('Respuesta del servicio de getTenant: ', JSON.stringify(response.data, null, 2));
+            console.log('Respuesta del adapter de tenant: ', JSON.stringify(response?.data, null, 2));
             return response?.data as TenantResponse
         }catch(error){
             console.error('Error al obtener el tenant por dominio: ', error);
