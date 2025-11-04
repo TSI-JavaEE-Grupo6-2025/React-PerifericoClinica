@@ -1,3 +1,6 @@
+
+// TODO: Granular las interfaces en archivos separados 
+
 /**
  * Tipos para Documentos Clínicos - Frontend (solo creación)
  *
@@ -49,7 +52,6 @@ export interface ConsultationReason {
  * @property startDate: Fecha de inicio del diagnóstico
  * @property problemStatus: Estado del problema diagnosticado
  * @property certaintyLevel: Grado de certeza del diagnóstico
- * @property order: Orden del diagnóstico
  * @property notes: Notas adicionales
  * 
  * @example: 
@@ -61,7 +63,6 @@ export interface ConsultationReason {
  *   startDate: '30/10/2025',
  *   problemStatus: 'ACTIVO',
  *   certaintyLevel: 'CONFIRMADO',
- *   order: 1,
  *   notes: 'Notas de la consulta'
  * }
  * ```
@@ -112,7 +113,6 @@ export interface FollowUpInstructions {
  * @property consultationReasons: Motivos de consulta
  * @property diagnoses: Diagnósticos
  * @property followUpInstructions: Instrucciones de seguimiento
- * @property status: Estado del documento
  * 
  * @example: 
  * ```typescript
@@ -141,9 +141,6 @@ export interface ClinicalDocumentFormData {
   consultationReasons: ConsultationReason[]
   diagnoses: Diagnosis[]
   followUpInstructions: FollowUpInstructions
-
-  // Estado
-  status: "DRAFT" | "FINAL"
 }
 
 // =========================================================================
@@ -315,4 +312,31 @@ export interface ConsultationReasonListResponse {
     reasons: ConsultationReasonResponse[]
     totalCount?: number
 }
+
+
+// estas interfaces son usadas especificamente en buscar historia clinica de un paciente (boceto - puede cambiar)
+
+
+export interface ClinicalDocumentListItem { // usado para la tabla de historia clínica
+    id: string
+    documentType: "CONSULTATION" | "PRESCRIPTION" | "LAB_RESULT" | "IMAGING" | "REFERRAL" | "DISCHARGE" | "OTHER"
+    title: string
+    consultationDate: string // dd/mm/AAAA
+    professionalName: string
+    createdAt: string // ISO date
+
+}
+export interface PatientBasicInfo { // usado para la info basica en la tabla de historia clínica (boceto - puede cambiar)
+    id?: string
+    firstName:string
+    lastName:string
+    birthDate: string // dd/mm/AAAA
+    gender: string
+    email: string
+    phone: string
+    address: string
+    documentNumber: string
+
+}
+
 

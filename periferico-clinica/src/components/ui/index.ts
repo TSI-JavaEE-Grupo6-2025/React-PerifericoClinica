@@ -8,3 +8,4 @@ export { Badge } from './Badge';
 export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs';
 export { Table, TableHeader, TableBody, TableFooter, TableRow, TableCell, TableHead } from './Table';
 export * from './DropdownMenu';
+export * from './Dialog';
