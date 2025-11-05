@@ -120,5 +120,22 @@ export interface XSLMetadata {
         snomedCT: string;
         gender?: string;
     }
+    // labels utilizado en los headers del XSL
+    labels?: {
+        headers?: {
+            patient?: string;           // "PACIENTE"
+            documentNumber?: string;     // "Nro. documento"
+            birthDate?: string;         // "Fecha de nacimiento"
+            gender?: string;            // "Sexo"
+            medicalInstance?: string;   // "INSTANCIA MEDICA"
+            attentionDate?: string;     // "Fecha atención"
+            location?: string;          // "Lugar"
+            author?: string;            // "Autor"
+            document?: string;         // "DOCUMENTO"
+            generationDate?: string;   // "Fecha generación"
+            custodian?: string;        // "Custodio"
+            contactInfo?: string;      // "Contact info"
+        }
+    }
 
 }

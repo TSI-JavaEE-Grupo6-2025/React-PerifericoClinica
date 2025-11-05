@@ -15,3 +15,4 @@ export { AdminUserListPage } from './Admin/AdminUserListPage';
 export { ClinicDetailPage } from './Admin/ClinicDetailPage';
 export { ProfessionalCreateDoc } from './Profesional/ProfessionalCreateDoc';
 export { ProfessionalHistoryClinicPage } from './Profesional/ProfessionalHistoryClinicPage';
+export { ProfessionalDocumentPreviewPage } from './Profesional/ProfessionalDocumentPreviewPage';

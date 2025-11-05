@@ -23,6 +23,7 @@ export const ROUTES = {
     PROFESSIONAL_SEARCH_PATIENT: '/profesional/buscar-paciente',
     PROFESSIONAL_HISTORY_CLINIC: '/profesional/historia-clinica',
     PROFESSIONAL_MY_DOCUMENTS: '/profesional/mis-documentos',
+    PROFESSIONAL_DOCUMENT_PREVIEW: '/profesional/documentos/:documentId',
 
 
 

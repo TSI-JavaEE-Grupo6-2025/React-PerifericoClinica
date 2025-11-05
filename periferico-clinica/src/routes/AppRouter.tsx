@@ -17,7 +17,7 @@ import {
   ClinicDetailPage,
   ProfessionalCreateDoc,
   ProfessionalHistoryClinicPage,
-  
+  ProfessionalDocumentPreviewPage,
 } from '../pages';
 
 import { ROUTES} from './constants/routes';
@@ -118,6 +118,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.PROFESSIONAL_SEARCH_PATIENT,
         element: <ProfessionalHistoryClinicPage />,
+      },
+      {
+        path: ROUTES.PROFESSIONAL_DOCUMENT_PREVIEW,
+        element: <ProfessionalDocumentPreviewPage />,
       },
     ],
   },

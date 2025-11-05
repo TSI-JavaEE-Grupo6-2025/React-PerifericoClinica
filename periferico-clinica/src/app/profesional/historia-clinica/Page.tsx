@@ -1,28 +1,26 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { ProfessionalLayout } from "../../../components/profesional"
 import { Button } from "../../../components/ui/Button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/Card"
 import { Input } from "../../../components/ui/Input"
 import { Label } from "../../../components/ui/Label"
 import { Badge } from "../../../components/ui/Badge"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../../components/ui/Dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
 import { Search, FilePlus, Eye, Loader2, AlertCircle } from "lucide-react"
-import { XSLPreview } from "../../../components/profesional/XSLPreview"
+import { ROUTES } from "../../../routes/constants/routes"
 import type { PatientBasicInfo, ClinicalDocumentListItem } from "../../../types/clinical-document"
 
 export default function HistoryClinicPage() {
+  const navigate = useNavigate()
   const [documentNumber, setDocumentNumber] = useState<string>("")
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
   const [loadHistoryLoading, setLoadHistoryLoading] = useState<boolean>(false)
-  const [detailLoading, setDetailLoading] = useState<boolean>(false)
 
   const [patient, setPatient] = useState<PatientBasicInfo | null>(null)
   const [documents, setDocuments] = useState<ClinicalDocumentListItem[]>([])
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null)
-  const [showDetailModal, setShowDetailModal] = useState<boolean>(false)
 
   const [error, setError] = useState<string | null>(null)
 
@@ -116,13 +114,10 @@ export default function HistoryClinicPage() {
     }
   }
 
-  const handleViewDocumentDetail = async (documentId: string) => {
-    setSelectedDocumentId(documentId)
-    setShowDetailModal(true)
-    setDetailLoading(true)
-
-    // TODO: El XSLPreview se encargará de cargar y transformar el documento
-    // cuando se implemente la integración con el servicio
+  const handleViewDocumentDetail = (documentId: string) => {
+    // Navegar a la página de preview del documento
+    const previewPath = ROUTES.PROFESSIONAL_DOCUMENT_PREVIEW.replace(':documentId', documentId)
+    navigate(previewPath)
   }
 
   const getDocumentTypeLabel = (type: string): string => {
@@ -292,7 +287,6 @@ export default function HistoryClinicPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleViewDocumentDetail(doc.id)}
-                          disabled={detailLoading}
                           className="text-[#3498db] hover:text-[#2980b9] hover:bg-[#3498db]/10"
                         >
                           <Eye className="w-4 h-4 mr-1" />
@@ -306,17 +300,6 @@ export default function HistoryClinicPage() {
             </CardContent>
           </Card>
         )}
-
-        <Dialog open={showDetailModal} onOpenChange={setShowDetailModal}>
-          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl text-[#2c3e50]">Detalle del Documento Clínico</DialogTitle>
-              <DialogDescription>Visualización del documento clínico transformado desde XML</DialogDescription>
-            </DialogHeader>
-
-            {selectedDocumentId && <XSLPreview documentId={selectedDocumentId} className="mt-4" />}
-          </DialogContent>
-        </Dialog>
       </div>
     </ProfessionalLayout>
   )
