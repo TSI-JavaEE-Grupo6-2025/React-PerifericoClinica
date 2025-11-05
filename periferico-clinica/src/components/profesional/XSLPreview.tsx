@@ -34,6 +34,8 @@ export const XSLPreview: React.FC<XSLPreviewProps> = ({ documentId, xmlContent, 
         setHtmlContent(html);
         setLoading(false);
 
+        console.log('Documento transformado correctamente:\n', html.substring(0, 50000));
+
       }catch(error){
         setError(error instanceof Error ? error.message : 'Error al transformar el documento');
       }finally{
