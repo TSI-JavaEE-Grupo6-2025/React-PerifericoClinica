@@ -35,12 +35,22 @@ export const ENDPOINTS_SERVICES = {
             
         },
         PROFESIONAL: {
-
-            CREATE_DOCUMENT: '',
+            // POST
+            CREATE_DOCUMENT: '/documents',
            
             // GET
             GET_DOCUMENTS: '',
-            GET_CONSULTATION_REASONS: '/consultation-reasons',
+            // todos los motivos de consulta
+            GET_CONSULTATION_REASONS: '/snomed/consultation-reasons',
+            //snomed/consultation-reasons?search={search}
+            GET_ESPECIFIC_CONSULTATION_REASON: '/snomed/consultation-reasons?search=:search',
+
+            GET_PROFESSIONAL_INFO: 'health-professionals/by-document/:email',
+
+            // todos los problemas
+            GET_PROBLEMS_STATUS: '/snomed/problem-status',
+            // todos los grado de certeza
+            GET_CERTAINTY_LEVEL: '/snomed/certainty-levels',
 
             UPDATE_DOCUMENT: '',
             DELETE_DOCUMENT: '',

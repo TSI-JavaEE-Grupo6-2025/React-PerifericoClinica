@@ -2,6 +2,7 @@
 // interface para el registro de profesional de salud usado para enviar los datos al backend
 
 import type { UserRole } from "./Auth"
+import type { SpecialityResponse } from "./Specialty"
 
 /**
  * Interfaz para el request de registro de profesional de salud (frontend)
@@ -123,4 +124,19 @@ export interface HealthUserListResponse {
   firstName: string
   lastName: string
   email: string
+}
+
+
+
+// interface utilizada para la respuesta de la información del professional
+export interface ProfessionalInfoResponse {
+    id: string;
+    firstName: string;
+    lastName: string;
+    document: string;
+    specialtyIds: SpecialityResponse;
+    email: string;
+    active: boolean;
+    createdAt: string;
+    updatedAt: string;
 }

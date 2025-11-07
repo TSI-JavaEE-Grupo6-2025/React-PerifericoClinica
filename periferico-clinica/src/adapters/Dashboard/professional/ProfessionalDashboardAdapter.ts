@@ -1,5 +1,6 @@
-import { createDocument, getConsultationReasons } from "../../../services/Dashboard";
-import type { ClinicalDocumentResponse, ConsultationReasonListResponse, CreateClinicalDocumentRequest } from "../../../types/clinical-document";
+import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo } from "../../../services/Dashboard";
+import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest } from "../../../types/clinical-document";
+import type { ProfessionalInfoResponse } from "../../../types/User";
 
 
 
@@ -14,13 +15,42 @@ export const ProfessionalDashboardAdapter = {
             throw new Error('Error al crear el documento: ' + error);
         }
     },
-    getConsultationReasons: async (accessToken: string): Promise<ConsultationReasonListResponse> => {
+    getConsultationReasons: async (accessToken: string, search?: string): Promise<SnomedCatalogListResponse> => {
         try{
-            const consultationReasonsResponseData = await getConsultationReasons(accessToken);
-            return consultationReasonsResponseData?.data as ConsultationReasonListResponse
+            const consultationReasonsResponseData = await getConsultationReasons(accessToken, search);
+            return consultationReasonsResponseData?.data as SnomedCatalogListResponse
         }catch(error){
             console.error('Error al obtener los motivos de consulta: ', error);
             throw new Error('Error al obtener los motivos de consulta: ' + error);
+        }
+    },
+    getProblemsStatus: async (accessToken: string): Promise<SnomedCatalogListResponse> => {
+
+        try{
+            const problemsStatusResponseData = await getProblemsStatus(accessToken);
+            return problemsStatusResponseData?.data as SnomedCatalogListResponse
+        }catch(error){
+            console.error('Error al obtener los problemas: ', error);
+            throw new Error('Error al obtener los problemas: ' + error);
+        }   
+    },
+    getCertaintyLevels: async (accessToken: string): Promise<SnomedCatalogListResponse> => {
+        try{
+            const certaintyLevelsResponseData = await getCertaintyLevels(accessToken);
+            return certaintyLevelsResponseData?.data as SnomedCatalogListResponse
+        }catch(error){
+            console.error('Error al obtener los grados de certeza: ', error);
+            throw new Error('Error al obtener los grados de certeza: ' + error);
+        }
+    },
+    getProfessionalInfo: async (email: string, accessToken: string): Promise<ProfessionalInfoResponse> => {
+        try{
+            const professionalInfoResponseData = await getProfessionalInfo(email, accessToken);
+            return professionalInfoResponseData?.data as ProfessionalInfoResponse
+
+        }catch(error){
+            console.error('Error al obtener las especialidades del professional: ', error);
+            throw new Error('Error al obtener las especialidades del professional: ' + error);
         }
     }
     

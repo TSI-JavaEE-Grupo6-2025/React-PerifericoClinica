@@ -53,24 +53,110 @@ export const createDocument = async(documentRequest: CreateClinicalDocumentReque
  * Servicio para obtener los motivos de consulta
  * @description: Realiza una solicitud para obtener los motivos de consulta en el backend.
  * @param accessToken: Token de autenticación.
+ * @param search: Búsqueda opcional para filtrar los motivos de consulta.
  * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
  * @example: 
  * ```typescript
  * const accessToken = '1234567890';
+ * const search = 'Consulta médica';
+ * const response = await getConsultationReasons(accessToken, search);
+ * 
+ * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
+ * ``` 
+ * 
+ * ```typescript
+ * // si se desea obtener todos los motivos de consulta, se puede hacer de la siguiente manera:
  * const response = await getConsultationReasons(accessToken);
+ * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
+ * 
+ * ```
+ */
+export const getConsultationReasons = async (accessToken: string, search?: string) => {
+
+    try{
+        const url = search ? ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_ESPECIFIC_CONSULTATION_REASON.replace(':search', search)
+        : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CONSULTATION_REASONS;
+
+        const response = await API.get(url,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+        console.log('Vino a buscar los motivos de consulta')
+        return response
+    }catch(error){
+        console.error('Error al obtener los motivos de consulta: ', error);
+        throw new Error('Error al obtener los motivos de consulta: ' + error)
+    }
+}
+
+/**
+ * 
+ * @param accessToken: Token de autenticación.
+ * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
+ * @example: 
+ * ```typescript
+ * const accessToken = '1234567890';
+ * const response = await getProblemsStatus(accessToken);
  * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
  * ```  
  */
-export const getConsultationReasons = async (accessToken: string) => {
+export const getProblemsStatus = async (accessToken: string) => {
     try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CONSULTATION_REASONS,{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROBLEMS_STATUS,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+        console.log('Vino a buscar los problemas')
+        return response
+    }catch(error){
+        console.error('Error al obtener los problemas: ', error);
+        throw new Error('Error al obtener los problemas: ' + error)
+    }
+}
+
+/**
+ * Servicio para obtener los grados de certeza
+ * @description: Realiza una solicitud para obtener los grados de certeza en el backend.
+ * @param accessToken: Token de autenticación.
+ * @returns: Promise que resuelve con la respuesta del servidor o rechaza con el error
+ * @example: 
+ * ```typescript
+ * const accessToken = '1234567890';
+ * const response = await getCertaintyLevels(accessToken);
+ * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
+ * ```  
+ */
+export const getCertaintyLevels = async (accessToken: string) => {
+    try{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CERTAINTY_LEVEL,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+        return response
+    }
+    catch(error){
+        console.error('Error al obtener los grados de certeza: ', error);
+        throw new Error('Error al obtener los grados de certeza: ' + error)
+    }
+}
+
+
+// obtener las especialidades del professional
+
+export const getProfessionalInfo = async (email: string, accessToken: string) => {
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROFESSIONAL_INFO.replace(':email', email),{
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         return response
     }catch(error){
-        console.error('Error al obtener los motivos de consulta: ', error);
-        throw new Error('Error al obtener los motivos de consulta: ' + error)
+        console.error('Error al obtener las especialidades del professional: ', error);
+        throw new Error('Error al obtener las especialidades del professional: ' + error)
     }
+
 }

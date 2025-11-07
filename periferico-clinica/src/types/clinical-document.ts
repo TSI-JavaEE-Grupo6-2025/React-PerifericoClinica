@@ -1,5 +1,4 @@
 
-// TODO: Granular las interfaces en archivos separados 
 
 /**
  * Tipos para Documentos Clínicos - Frontend (solo creación)
@@ -12,36 +11,40 @@
 // TIPOS PARA FORMULARIOS (UI)
 // =========================================================================
 
-/** Estado del problema diagnosticado */
-export type ProblemStatus = "ACTIVO" | "RESUELTO" | "EN_TRATAMIENTO" | "CRONICO" | "RECURRENTE"
+// se elimino los tipos de problem y grado de certeza ya que eran redundantes
 
-/** Grado de certeza del diagnóstico */
-export type DiagnosisCertainty = "CONFIRMADO" | "PRESUNTIVO" | "DIFERENCIAL" | "DESCARTADO"
-
-/** Motivo de consulta individual */
-/**
- * Motivo de consulta individual
- * @property id: ID del motivo de consulta
+/** 
+ * SnomedCatalogItem 
+ * usado para los motivos de consulta, problemas y grado de certeza
+ * 
+ * @property id: ID del item
  * @property code: Código SNOMED CT
- * @property displayName: Descripción legible
- * @property order: Orden del motivo de consulta
+ * @property displayName: Descripción del item
+ * @property codeSystem: Código del sistema
+ * @property codeSystemName: Nombre del sistema
  * 
  * @example: 
  * ```typescript
- * const reason = {
+ * const item = {
  *   id: '1234567890',
  *   code: '1234567890',
  *   displayName: 'Consulta médica',
- *   order: 1
+ *   codeSystem: '1234567890',
+ *   codeSystemName: 'SNOMED CT'
  * }
  * ```
  */
-export interface ConsultationReason {
+
+export interface SnomedCatalogItem {
   id?: string
-  code: string // Código SNOMED CT
-  displayName: string // Descripción legible
-  order: number
+  code: string
+  displayName: string
+  codeSystem: string
+  codeSystemName: string
 }
+
+
+
 
 /** Diagnóstico clínico */
 /**
@@ -68,13 +71,11 @@ export interface ConsultationReason {
  * ```
  */
 export interface Diagnosis {
-  id?: string
-  code: string // Código SNOMED CT
+  code?: string // Código SNOMED CT
   displayName: string // Descripción del diagnóstico
   startDate: string // formato: dd/mm/AAAA
-  problemStatus: ProblemStatus
-  certaintyLevel: DiagnosisCertainty
-  order: number
+  problemStatus: string
+  certaintyLevel: string
   notes?: string
 }
 
@@ -100,47 +101,6 @@ export interface FollowUpInstructions {
   nextConsultationDate?: string // formato: dd/mm/AAAA
   nextConsultationDescription?: string
   referralInstructions?: string
-  additionalNotes?: string // falta agregar en el fronted
-}
-
-/** Datos del formulario para crear documento clínico */
-/**
- * Datos del formulario para crear documento clínico
- * @property title: Título del documento
- * @property consultationDate: Fecha de la consulta
- * @property patientId: ID del paciente
- * @property patientName: Nombre del paciente
- * @property consultationReasons: Motivos de consulta
- * @property diagnoses: Diagnósticos
- * @property followUpInstructions: Instrucciones de seguimiento
- * 
- * @example: 
- * ```typescript
- * const formData = {
- *   title: 'Consulta médica',
- *   consultationDate: '30/10/2025',
- *   patientId: '1234567890',
- *   patientName: 'Juan Perez',
- *   consultationReasons: [{ code: '1234567890', displayName: 'Consulta médica' }],
- *   diagnoses: [{ code: '1234567890', displayName: 'Consulta médica', startDate: '30/10/2025', problemStatus: 'ACTIVO', certaintyLevel: 'CONFIRMADO', notes: 'Notas de la consulta' }],
- *   followUpInstructions: { nextConsultationDate: '30/10/2025', nextConsultationDescription: 'Consulta médica', referralInstructions: 'Instrucciones de seguimiento', additionalNotes: 'Notas adicionales' },
- *   status: 'DRAFT'
- * }
- * ```
- */
-export interface ClinicalDocumentFormData {
-  // Información básica
-  title: string
-  consultationDate: string // dd/mm/AAAA
-
-  // Paciente
-  patientId: string
-  patientName?: string
-
-  // Contenido clínico
-  consultationReasons: ConsultationReason[]
-  diagnoses: Diagnosis[]
-  followUpInstructions: FollowUpInstructions
 }
 
 // =========================================================================
@@ -155,15 +115,9 @@ export interface ClinicalDocumentFormData {
  * @property title: Título del documento
  * @property consultationDate: Fecha de la consulta
  * @property patientId: ID del paciente
- * @property professionalId: ID del profesional
- * @property tenantId: ID del tenant
  * @property consultationReasons: Motivos de consulta
  * @property diagnoses: Diagnósticos
  * @property followUpInstructions: Instrucciones de seguimiento
- * @property clinicalNotes: Notas clínicas
- * @property physicalExamination: Examen físico
- * @property vitalSigns: Signos vitales
- * @property status: Estado del documento
  * 
  * @example: 
  * ```typescript
@@ -172,15 +126,9 @@ export interface ClinicalDocumentFormData {
  *   title: 'Consulta médica',
  *   consultationDate: '30/10/2025',
  *   patientId: '1234567890',
- *   professionalId: '1234567890',
- *   tenantId: '1234567890',
  *   consultationReasons: [{ code: '1234567890', displayName: 'Consulta médica' }],
  *   diagnoses: [{ code: '1234567890', displayName: 'Consulta médica', startDate: '30/10/2025', problemStatus: 'ACTIVO', certaintyLevel: 'CONFIRMADO', notes: 'Notas de la consulta' }],
  *   followUpInstructions: { nextConsultationDate: '30/10/2025', nextConsultationDescription: 'Consulta médica', referralInstructions: 'Instrucciones de seguimiento', additionalNotes: 'Notas adicionales' },
- *   clinicalNotes: 'Notas clínicas',
- *   physicalExamination: 'Examen físico',
- *   vitalSigns: { bloodPressure: '120/80', heartRate: 70, temperature: 37, weight: 70, height: 170 },
- *   status: 'DRAFT'
  * }
  * ```
  */
@@ -192,22 +140,18 @@ export interface CreateClinicalDocumentRequest {
 
   // Identificadores
   patientId: string
-  professionalId: string // ID del profesional de salud
-
+  // se elimina el professionalId ya que se obtiene del token de autenticación
 
   // Motivos de consulta con códigos SNOMED CT
-  consultationReasons: Array<{
-    code: string // Código SNOMED CT
-    displayName: string
-  }>
+  consultationReasons: Array<Pick<SnomedCatalogItem, 'code' | 'displayName'>>
 
   // Diagnósticos con códigos SNOMED CT
   diagnoses: Array<{
     code: string // Código SNOMED CT
     displayName: string
     startDate: string // dd/mm/AAAA
-    problemStatus: ProblemStatus
-    certaintyLevel: DiagnosisCertainty
+    problemStatus: string
+    certaintyLevel: string
     notes?: string
   }>
 
@@ -216,8 +160,10 @@ export interface CreateClinicalDocumentRequest {
     nextConsultationDate?: string // dd/mm/AAAA
     nextConsultationDescription?: string
     referralInstructions?: string
-    additionalNotes?: string
   }
+
+  // especialidad de la consulta ID: [CARD, DERM,ETC...]
+  consultationSpecialtyId?: string | null
  
 }
 
@@ -248,69 +194,32 @@ export interface ClinicalDocumentResponse {
     success: boolean
     message: string
     documentId?: string
-    errors?: Array<{
-      field: string
-      message: string
-    }>
+    errors?: string | null
   }
 
 
-// Consultation Reason Response
 
 /**
- * Response para un motivo de consulta
- * @property id: ID del motivo de consulta
- * @property code: Código SNOMED CT
- * @property displayName: Descripción legible
- * @property codeSystem: Código del sistema
- * @property codeSystemName: Nombre del sistema
- * @property isActive: boolean
- * @property category: Categoría del motivo de consulta
- * @property order: Orden del motivo de consulta
- * 
- * @example: 
- * ```typescript
- * const reason = {
- *   id: '1234567890',
- *   code: '1234567890',
- *   displayName: 'Consulta médica',
- *   codeSystem: '1234567890',
- *   codeSystemName: 'SNOMED CT',
- *   isActive: true,
- *   category: 'Consulta médica',
- *   order: 1
- * }
- * ```
- */
-export interface ConsultationReasonResponse {
-   id?: string
-   code: string
-   displayName: string
-   codeSystem: string
-   codeSystemName: string
-   category?: string
-}
-
-/**
- * Response para la lista de motivos de consulta
+ * Response genérica para listas de catálogos SNOMED
+ * Se usa para: motivos de consulta, problem status, certainty levels
  * @property success: boolean
- * @property reasons: Array<ConsultationReasonResponse>
+ * @property reasons: Array<SnomedCatalogItem>
  * @property totalCount: number
  * 
  * @example: 
  * ```typescript
  * const response = {
  *   success: true,
- *   reasons: [{ id: '1234567890', code: '1234567890', displayName: 'Consulta médica', codeSystem: '1234567890', codeSystemName: 'Consulta médica', isActive: true, category: 'Consulta médica', order: 1 }],
+ *   items: [{ id: '1234567890', code: '1234567890', displayName: 'Consulta médica', codeSystem: '2.16.840.1.113883.6.96', codeSystemName: 'SNOMED CT' }],
  *   totalCount: 1
  * }
  * ```
  */
 
-export interface ConsultationReasonListResponse {
+export interface SnomedCatalogListResponse {
     success: boolean
-    reasons: ConsultationReasonResponse[]
-    totalCount?: number
+    reasons: SnomedCatalogItem[]
+    totalCount: number
 }
 
 
