@@ -9,10 +9,12 @@
  * 
  */
 
+
 export interface UserHcen { // usado en UserCredentials Value Object
     email: string;
     password: string;
     tenantId: string; // cambio domain por tenantId fecha 20/10/2025 01:05 am
+    role?: UserRole;
 }
 
 
@@ -22,7 +24,9 @@ export type UserRole = 'ADMIN_CLINIC' | 'PROFESSIONAL'; // usado en useAuthStore
 export interface User { // usado en useAuthStore
     id?: string;
     email: string;
+    document: string;
     username: string;
+    fullName: string;
     role: UserRole;
     // otros campos para agregar más adelante
   }

@@ -13,11 +13,10 @@ import { ENDPOINTS_SERVICES } from "../constants/Endpoints";
 export const login = async (userCredentials: UserCredentials) => {
     try{
         const response = await API.post(ENDPOINTS_SERVICES.AUTH.LOGIN, userCredentials.toBackendPayLoad());
-        // por ahora .
-        return Promise.resolve(response) 
+        return response
     }catch(error){
         console.error('Error al iniciar sesión: ', error);
-        return Promise.reject(error);
+        throw new Error('Error al iniciar sesión: ' + error)
     }
 }
 
@@ -25,12 +24,12 @@ export const login = async (userCredentials: UserCredentials) => {
  * Servicio de cierre de sesión para 
  */
 
-export const logout = async (): Promise<void> => {
+export const logout = async () => {
     try{
         await API.post(ENDPOINTS_SERVICES.AUTH.LOGOUT);
-        return Promise.resolve();
+        console.log('Sesión cerrada correctamente');
     }catch(error){
         console.error('Error al cerrar sesión: ', error);
-        return Promise.reject(error);
+        throw new Error('Error al cerrar sesión: ' + error)
     }
 }

@@ -20,25 +20,39 @@ export const ENDPOINTS_SERVICES = {
     DASHBOARD: {
         ADMIN: {
             // PUT
-            CREATE_ADMIN_USER: '',
+            CREATE_ADMIN_USER: '/admin-users',
             CREATE_PROFESIONAL: '/health-professionals', // crea profesional de salud
-            CREATE_HEALTH_USER: '',// alta de usuarios de salud 
+            CREATE_HEALTH_USER: '/health-users',// alta de usuarios de salud 
             // GET
-            GET_USERS: '',
-            GET_PROFESIONALS: '',
-            GET_HEALTH_USERS: '',
+            GET_USERS: '/admin-users', 
+            GET_PROFESIONALS: '/', // listar profesionales de salud
+            GET_HEALTH_USERS: '/health-users', // listar usuarios de salud
+
+            // GET SPECIALTIES
+            GET_SPECIALTIES: '/specialties',
 
             UPDATE_CLINIC: '/clinics/:tenantId', // actualiza datos de la clínica
             
         },
         PROFESIONAL: {
-
-            CREATE_DOCUMENT: '',
+            // POST
+            CREATE_DOCUMENT: '/documents',
            
             // GET
             GET_DOCUMENTS: '',
-            UPDATE_DOCUMENT: '',
-            DELETE_DOCUMENT: '',
+            // todos los motivos de consulta
+            GET_CONSULTATION_REASONS: '/snomed/consultation-reasons',
+            //snomed/consultation-reasons?search={search}
+            GET_ESPECIFIC_CONSULTATION_REASON: '/snomed/consultation-reasons?search=:search',
+
+            GET_PROFESSIONAL_INFO: '/health-professionals',
+
+            // todos los problemas
+            GET_PROBLEMS_STATUS: '/snomed/problem-status',
+            // todos los grado de certeza
+            GET_CERTAINTY_LEVEL: '/snomed/certainty-levels',
+
+            
         },
         
     },

@@ -1,4 +1,4 @@
-import type { UserHcen } from "../types";
+import type { UserHcen, UserRole } from "../types";
 import { Email } from "./Email";
 import { Password } from "./Password";
 
@@ -26,11 +26,13 @@ import { Password } from "./Password";
  * @property {Email} email - Value Object del email validado
  * @property {Password} password - Value Object de la contraseña validada  
  * @property {string} tenantId - ID del tenant (clínica) al que pertenece el usuario
+ * @property {UserRole} role - Rol del usuario
  */
 export class UserCredentials {
     public readonly email: Email;
     public readonly password: Password;
     public readonly tenantId: string;
+    public readonly role?: UserRole;
 
     /**
      * Constructor del Value Object UserCredentials
@@ -38,11 +40,13 @@ export class UserCredentials {
      * @param {Email} email - Value Object del email ya validado
      * @param {Password} password - Value Object de la contraseña ya validada
      * @param {string} tenantId - ID del tenant (clínica) del usuario
+     * @param {UserRole} role - Rol del usuario
      */
-    constructor(email: Email, password: Password, tenantId: string) {
+    constructor(email: Email, password: Password, tenantId: string, role?: UserRole) {
         this.email = email;
         this.password = password;
         this.tenantId = tenantId;
+        this.role = role;
         this.validate();
     }
 
@@ -66,6 +70,7 @@ export class UserCredentials {
      * @param {string} email - Email del usuario desde el formulario
      * @param {string} password - Contraseña del usuario desde el formulario  
      * @param {string} tenantId - ID del tenant (clínica) del usuario
+     * @param {UserRole} role - Rol del usuario
      * @returns {UserCredentials} Value Object con credenciales validadas
      * @throws {Error} Si el email, password o tenantId son inválidos
      * 
@@ -74,15 +79,16 @@ export class UserCredentials {
      * const credentials = UserCredentials.fromForm(
      *   'admin@clinica.com',
      *   'password123', 
-     *   'tenant-001'
+     *   'tenant-001',
+     *   'ADMIN_CLINIC'
      * );
      * ```
      */
-    static fromForm(email: string, password: string, tenantId: string): UserCredentials {
+    static fromForm(email: string, password: string, tenantId: string, role?: UserRole): UserCredentials {
         const emailVO = new Email(email);
         const passwordVO = new Password(password);
         
-        return new UserCredentials(emailVO, passwordVO, tenantId);
+        return new UserCredentials(emailVO, passwordVO, tenantId, role);
     }
     
     /**
@@ -101,11 +107,16 @@ export class UserCredentials {
      * ```
      */
     toBackendPayLoad(): UserHcen {
-        return {
+        const payload:UserHcen = {
             email: this.email.toString(),
             password: this.password.toString(),
-            tenantId: this.tenantId
+            tenantId: this.tenantId,
         }
+
+        if(this.role)
+            payload.role = this.role;
+        
+        return payload;
     }
 }
 

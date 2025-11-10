@@ -7,12 +7,25 @@ export const ROUTES = {
 
     // privadas Admin 
     ADMIN_DASHBOARD: '/admin/dashboard',
-    ADMIN_USERS: '/admin/usuarios',
-    ADMIN_PROFESSIONALS: '/admin/profesionales',
+    ADMIN_REGISTER_USERS: '/admin/usuarios/alta',
+    ADMIN_REGISTER_ADMIN_USERS: '/admin/administradores/alta',
+    ADMIN_REGISTER_PROFESSIONALS: '/admin/profesionales/alta',
     ADMIN_SETTINGS: '/admin/configuracion',
     ADMIN_CLINIC_SETTING: '/admin/configuracion/clinica',
+    ADMIN_PROFESSIONAL_LIST: '/admin/profesionales',
+    ADMIN_HEALTH_USER_LIST: '/admin/usuarios-salud/lista',
+    ADMIN_ADMIN_USER_LIST: '/admin/administradores/lista',
+    ADMIN_CLINIC_DETAILS: '/admin/clinica/detalle',
 
     // privadas Profesional
     PROFESIONAL_DASHBOARD: '/profesional/dashboard',
+    PROFESSIONAL_NEW_DOCUMENT: '/profesional/nuevo-documento',
+    PROFESSIONAL_SEARCH_PATIENT: '/profesional/buscar-paciente',
+    PROFESSIONAL_HISTORY_CLINIC: '/profesional/historia-clinica',
+    PROFESSIONAL_MY_DOCUMENTS: '/profesional/mis-documentos',
+    PROFESSIONAL_DOCUMENT_PREVIEW: '/profesional/documentos/:documentId',
+
+
+
     
 } as const;

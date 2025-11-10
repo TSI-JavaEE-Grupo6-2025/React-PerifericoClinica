@@ -4,12 +4,15 @@ import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { cn } from "../../utils"
 import { Button } from "../ui"
-import { LayoutDashboard, Users, UserCog, Settings, LogOut, Menu, X, Building2 } from "lucide-react"
+import { LayoutDashboard, Users, UserCog, Settings, LogOut, Menu, X, Building2, Stethoscope, Loader2 } from "lucide-react"
+import { useLogout } from "../../hooks/use-logout"
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Usuarios de Salud", href: "/admin/usuarios", icon: Users },
-  { name: "Profesionales", href: "/admin/profesionales", icon: UserCog },
+  { name: "Usuarios de Salud", href: "/admin/usuarios-salud/lista", icon: Users },
+  { name: "Profesionales", href: "/admin/profesionales", icon: Stethoscope },
+  { name: "Administradores", href: "/admin/administradores/lista", icon: UserCog },
+  { name: "Clínica", href: "/admin/clinica/detalle", icon: Building2 },
   { name: "Configuración", href: "/admin/configuracion/clinica", icon: Settings },
 ]
 
@@ -17,6 +20,12 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   const pathname = location.pathname
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { handleLogout: handleLogoutHook , loading: loadingLogout } = useLogout();
+
+  const handleLogout = () => {
+    // usamos useLogout para eliminar el session storage
+    handleLogoutHook();
+  }
 
   return (
     <div className="min-h-screen bg-[#f4f7fa]">
@@ -71,9 +80,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
           {/* Logout */}
           <div className="p-4 border-t border-[#34495e]">
-            <Button variant="ghost" className="w-full justify-start text-[#ecf0f1] hover:bg-[#34495e]">
+            <Button  className="w-full justify-start text-[#ecf0f1] hover:bg-[#34495e] cursor-pointer" onClick={handleLogout}>
               <LogOut className="w-5 h-5 mr-3" />
               Cerrar Sesión
+              {loadingLogout && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
             </Button>
           </div>
         </div>

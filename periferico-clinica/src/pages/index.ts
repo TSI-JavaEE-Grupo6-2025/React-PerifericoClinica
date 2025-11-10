@@ -6,3 +6,13 @@ export { RegisterProfessionalPage } from './Admin/RegisterProfessionalPage'
 export { ProfesionalDashboardPage } from './Profesional/ProfesionalDashboardPage'
 export { NotFoundPage } from './NotFound/404Page';
 export { ClinicSettingPage } from './Admin/ClinicSettingPage';
+export { RegisterHealthUserPage } from './Admin/RegisterHealthUserPage';
+export { RegisterAdminUserPage } from './Admin/RegisterAdminUserPage';
+export { UnauthorizedPage } from './NotAuthorized/403Page';
+export { HealthProfessionalListPage } from './Admin/HealthProfessionalListPage';
+export { HealthUserListPage } from './Admin/HealthUserListPage';
+export { AdminUserListPage } from './Admin/AdminUserListPage';
+export { ClinicDetailPage } from './Admin/ClinicDetailPage';
+export { ProfessionalCreateDoc } from './Profesional/ProfessionalCreateDoc';
+export { ProfessionalHistoryClinicPage } from './Profesional/ProfessionalHistoryClinicPage';
+export { ProfessionalDocumentPreviewPage } from './Profesional/ProfessionalDocumentPreviewPage';
