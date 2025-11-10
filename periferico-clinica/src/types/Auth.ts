@@ -9,6 +9,7 @@
  * 
  */
 
+
 export interface UserHcen { // usado en UserCredentials Value Object
     email: string;
     password: string;
@@ -23,7 +24,9 @@ export type UserRole = 'ADMIN_CLINIC' | 'PROFESSIONAL'; // usado en useAuthStore
 export interface User { // usado en useAuthStore
     id?: string;
     email: string;
+    document: string;
     username: string;
+    fullName: string;
     role: UserRole;
     // otros campos para agregar más adelante
   }

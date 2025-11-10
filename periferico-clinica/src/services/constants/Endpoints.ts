@@ -25,7 +25,7 @@ export const ENDPOINTS_SERVICES = {
             CREATE_HEALTH_USER: '/health-users',// alta de usuarios de salud 
             // GET
             GET_USERS: '/admin-users', 
-            GET_PROFESIONALS: '/health-professionals', // listar profesionales de salud
+            GET_PROFESIONALS: '/', // listar profesionales de salud
             GET_HEALTH_USERS: '/health-users', // listar usuarios de salud
 
             // GET SPECIALTIES
@@ -45,15 +45,14 @@ export const ENDPOINTS_SERVICES = {
             //snomed/consultation-reasons?search={search}
             GET_ESPECIFIC_CONSULTATION_REASON: '/snomed/consultation-reasons?search=:search',
 
-            GET_PROFESSIONAL_INFO: 'health-professionals/by-document/:email',
+            GET_PROFESSIONAL_INFO: '/health-professionals',
 
             // todos los problemas
             GET_PROBLEMS_STATUS: '/snomed/problem-status',
             // todos los grado de certeza
             GET_CERTAINTY_LEVEL: '/snomed/certainty-levels',
 
-            UPDATE_DOCUMENT: '',
-            DELETE_DOCUMENT: '',
+            
         },
         
     },

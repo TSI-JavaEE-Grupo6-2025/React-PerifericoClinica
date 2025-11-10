@@ -146,9 +146,9 @@ export const getCertaintyLevels = async (accessToken: string) => {
 
 // obtener las especialidades del professional
 
-export const getProfessionalInfo = async (email: string, accessToken: string) => {
+export const getProfessionalInfo = async (accessToken: string) => {
     try {
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROFESSIONAL_INFO.replace(':email', email),{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROFESSIONAL_INFO,{
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }

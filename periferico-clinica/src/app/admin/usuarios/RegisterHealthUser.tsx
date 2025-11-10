@@ -10,6 +10,7 @@ import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
 import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { HealthUserRequest } from "../../../types/User"
+import { formatDateToDDMMYYYY } from "../../../utils/validates"
 
 export const RegisterHealthUserPage: React.FC = () => {
   const navigate = useNavigate()
@@ -35,9 +36,13 @@ export const RegisterHealthUserPage: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
+    const formattedValue = name === "birthDate" && value
+      ? formatDateToDDMMYYYY(value)
+      : value
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: formattedValue,
     }))
   }
 
@@ -192,7 +197,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                       id="birthDate"
                       name="birthDate"
                       type="date"
-                      value={formData.birthDate}
+                      value={formData.birthDate ? formData.birthDate.split("/").reverse().join("-") : ""}
                       onChange={handleInputChange}
                       className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
                       required

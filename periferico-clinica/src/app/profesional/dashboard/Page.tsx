@@ -5,10 +5,9 @@ import { useAuthStore } from "../../../store/AuthStore";
 
 export default function ProfessionalDashboardPage() {
   const { user } = useAuthStore();
-  console.log('UserDto: ', user)
- 
   
-  const doctorName = `Dr. ${user?.username}`
+
+  const doctorName = `Dr. ${user?.fullName}`
   return (
     <ProfessionalLayout>
       <div className="space-y-6">

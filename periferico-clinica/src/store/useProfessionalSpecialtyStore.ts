@@ -1,13 +1,13 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import type { SpecialityResponse } from "../types/Specialty"
+import type { SpecialityState } from "../types/Specialty"
 
 interface ProfessionalSpecialtyState {
-  specialties: SpecialityResponse | null
+  specialties: SpecialityState | null
   lastUpdated: number | null
 
-  setSpecialties: (specialties: SpecialityResponse) => void
-  getSpecialties: () => SpecialityResponse | null
+  setSpecialties: (specialties: SpecialityState) => void
+  getSpecialties: () => SpecialityState | null
   clearSpecialties: () => void
 }
 

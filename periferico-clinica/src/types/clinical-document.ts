@@ -163,8 +163,8 @@ export interface CreateClinicalDocumentRequest {
   }
 
   // especialidad de la consulta ID: [CARD, DERM,ETC...]
-  consultationSpecialtyId?: string | null
- 
+  consultationSpecialityId: string 
+
 }
 
 

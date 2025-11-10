@@ -43,9 +43,9 @@ export const ProfessionalDashboardAdapter = {
             throw new Error('Error al obtener los grados de certeza: ' + error);
         }
     },
-    getProfessionalInfo: async (email: string, accessToken: string): Promise<ProfessionalInfoResponse> => {
+    getProfessionalInfo: async (accessToken: string): Promise<ProfessionalInfoResponse> => {
         try{
-            const professionalInfoResponseData = await getProfessionalInfo(email, accessToken);
+            const professionalInfoResponseData = await getProfessionalInfo(accessToken);
             return professionalInfoResponseData?.data as ProfessionalInfoResponse
 
         }catch(error){
