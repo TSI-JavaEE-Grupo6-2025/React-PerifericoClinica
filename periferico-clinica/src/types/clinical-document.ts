@@ -249,3 +249,11 @@ export interface PatientBasicInfo { // usado para la info basica en la tabla de 
 }
 
 
+
+
+// ================================================================
+// CLINICAL DOCUMENT XML RESPONSE
+// ================================================================
+
+
+export type ClinicalDocumentXMLResponse = XMLDocument

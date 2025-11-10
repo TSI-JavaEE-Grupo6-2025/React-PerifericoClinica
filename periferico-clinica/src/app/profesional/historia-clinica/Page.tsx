@@ -80,7 +80,7 @@ export default function HistoryClinicPage() {
 
       const mockDocuments: ClinicalDocumentListItem[] = [
         {
-          id: "DOC-001",
+          id: "691156fa8ccc6c766f89fe1f",
           documentType: "CONSULTATION",
           title: "Consulta Médica - Cefalea",
           consultationDate: "25/10/2024",

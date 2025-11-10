@@ -160,3 +160,21 @@ export const getProfessionalInfo = async (accessToken: string) => {
     }
 
 }
+
+
+// obtiene el documento clínico por su ID -> XML
+export const getClinicalDocumentById = async (id: string, accessToken: string) => {
+    try{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_DOCUMENT.replace(':id',id), {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            responseType: "text",
+            transformResponse: [(data) => data],
+        });
+        return response
+    }catch(error){
+        console.error('Error al obtener el documento clínico: ', error);
+        throw new Error('Error al obtener el documento clínico: ' + error)
+    }
+}

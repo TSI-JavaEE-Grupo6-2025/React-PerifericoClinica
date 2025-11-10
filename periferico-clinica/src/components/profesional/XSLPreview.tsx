@@ -1,11 +1,10 @@
 import type React from "react"
-import { useState, useEffect } from "react";
-import { XSLTransformer } from "../../utils/transform/transformer";
-import { mockClinicHistoryResponse } from "../../data/mockClinicHistory";
+import { useEffect } from "react";
+import { useClinicalDocumentXML } from "../../hooks/document/use-xml";
+
 
 interface XSLPreviewProps {
   documentId: string
-  xmlContent?: string
   className?: string
 }
 
@@ -15,38 +14,26 @@ interface XSLPreviewProps {
  * @param xmlContent - Contenido XML del documento (opcional por ahora)
  * @param className - Clases CSS adicionales
  */
-export const XSLPreview: React.FC<XSLPreviewProps> = ({ documentId, xmlContent, className = "" }) => {
-  const [htmlContent, setHtmlContent] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+export const XSLPreview: React.FC<XSLPreviewProps> = ({ documentId, className = "" }) => {
+  const {
+    loading,
+    error, 
+    html,
+    fragment
+  } = useClinicalDocumentXML(documentId)
 
-  useEffect(()=> {
-    const transformDocument = async () => {
-      setLoading(true);
-      setError(null);
 
-      try{
-        // TODO: Luego remplazar con la llamada real al servicio
-        // const response = await getDocumentById(documentId);
+  useEffect(() => {
+    if (!html && !fragment) return
 
-        //TEMPORAL: 
-        const html = await XSLTransformer(mockClinicHistoryResponse);
-        setHtmlContent(html);
-        setLoading(false);
+    console.log("📄 HTML transformado:", html)
 
-        console.log('Documento transformado correctamente:\n', html.substring(0, 50000));
-
-      }catch(error){
-        setError(error instanceof Error ? error.message : 'Error al transformar el documento');
-      }finally{
-        setLoading(false);
-      }
-    };
-    transformDocument();
-  },[documentId])
-
-  console.log('xmlContent', xmlContent)
-  console.log('documentId', documentId)
+    if (fragment) {
+      const serializer = new XMLSerializer()
+      console.log("🧩 Fragment serializado:", serializer.serializeToString(fragment))
+      console.log("🧩 Fragment (DOM):", fragment)
+    }
+  }, [html, fragment])
 
 
   if(loading){
@@ -70,8 +57,8 @@ export const XSLPreview: React.FC<XSLPreviewProps> = ({ documentId, xmlContent, 
   return (
     <div className={`xsl-preview ${className}`}>
       <div
-        className="bg-white rounded-lg border border-gray-300 p-6 overflow-auto max-h-[600px]"
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
+        className="bg-white rounded-lg border border-gray-300 p-6"
+        dangerouslySetInnerHTML={{ __html: html ?? '' }}
       />
     </div>
   )

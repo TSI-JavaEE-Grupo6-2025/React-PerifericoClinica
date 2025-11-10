@@ -1,5 +1,5 @@
-import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo } from "../../../services/Dashboard";
-import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest } from "../../../types/clinical-document";
+import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById } from "../../../services/Dashboard";
+import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest, ClinicalDocumentXMLResponse } from "../../../types/clinical-document";
 import type { ProfessionalInfoResponse } from "../../../types/User";
 
 
@@ -51,6 +51,22 @@ export const ProfessionalDashboardAdapter = {
         }catch(error){
             console.error('Error al obtener las especialidades del professional: ', error);
             throw new Error('Error al obtener las especialidades del professional: ' + error);
+        }
+    },
+    getClinicalDocumentById: async (id: string, accessToken: string): Promise<ClinicalDocumentXMLResponse> => {
+        try{
+            const clinicalDocumentResponseData = await getClinicalDocumentById(id, accessToken);
+            const xmlSource = clinicalDocumentResponseData?.data
+
+            if (typeof xmlSource !== "string") {
+                throw new Error("La respuesta del documento clínico no es un XML válido.");
+            }
+
+            const xmlDocument = new DOMParser().parseFromString(xmlSource, "application/xml");
+            return xmlDocument
+        }catch(error){
+            console.error('Error al obtener el documento clínico: ', error);
+            throw new Error('Error al obtener el documento clínico: ' + error);
         }
     }
     

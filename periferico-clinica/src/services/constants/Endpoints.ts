@@ -37,6 +37,7 @@ export const ENDPOINTS_SERVICES = {
         PROFESIONAL: {
             // POST
             CREATE_DOCUMENT: '/documents',
+
            
             // GET
             GET_DOCUMENTS: '',
@@ -51,6 +52,11 @@ export const ENDPOINTS_SERVICES = {
             GET_PROBLEMS_STATUS: '/snomed/problem-status',
             // todos los grado de certeza
             GET_CERTAINTY_LEVEL: '/snomed/certainty-levels',
+
+            // Obtiene el documento clínico por su ID
+            GET_CLINIC_DOCUMENT: '/documents/:id',
+            //obtiene la historia clínica por id del paciente
+            GET_CLINIC_HISTORY_BY_PATIENT_ID: ''
 
             
         },
