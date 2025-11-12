@@ -7,5 +7,7 @@ export { Avatar, AvatarImage, AvatarFallback } from './Avatar';
 export { Badge } from './Badge';
 export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs';
 export { Table, TableHeader, TableBody, TableFooter, TableRow, TableCell, TableHead } from './Table';
+export { Toaster } from './Toaster';
+export { Toast} from './Toast';
 export * from './DropdownMenu';
 export * from './Dialog';

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Link,  useLocation } from "react-router-dom"
 import { cn } from "../../utils"
 import { Button } from "../ui"
-import { LayoutDashboard, FileText, FilePlus, Search, LogOut, Menu, X, Stethoscope, Loader2 ,ClipboardList} from "lucide-react"
+import { LayoutDashboard, FilePlus, Search, LogOut, Menu, X, Stethoscope, Loader2} from "lucide-react"
 import { useLogout } from "../../hooks/use-logout"
 
 
@@ -12,9 +12,7 @@ import { useLogout } from "../../hooks/use-logout"
 
 const navigation = [
   { name: "Dashboard", href: "/profesional/dashboard", icon: LayoutDashboard },
-  { name: "Historia Clínica", href: "/profesional/historia-clinica", icon: ClipboardList},
-  { name: "Nuevo Documento", href: "/profesional/documentos", icon: FilePlus },
-  { name: "Mis Documentos", href: "/profesional/mis-documentos", icon: FileText },
+  { name: "Nuevo Documento", href: "/profesional/nuevo-documento", icon: FilePlus },
   { name: "Buscar Paciente", href: "/profesional/buscar-paciente", icon: Search },
 ]
 

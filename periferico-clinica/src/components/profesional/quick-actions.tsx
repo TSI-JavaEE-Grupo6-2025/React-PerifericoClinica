@@ -1,7 +1,6 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components"
-import { Button } from "../../components"
-import { FilePlus, Search, FileText, ClipboardList } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle,Button } from "../../components"
+import { FilePlus, Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../routes"
 
@@ -24,22 +23,6 @@ export function ProfessionalQuickActions() {
       onClick: () => navigate(ROUTES.PROFESSIONAL_SEARCH_PATIENT),
       color: "text-green-600",
       bgColor: "bg-green-50",
-    },
-    {
-      title: "Mis Documentos",
-      description: "Ver documentos creados",
-      icon: FileText,
-      onClick: () => navigate(ROUTES.PROFESSIONAL_MY_DOCUMENTS),
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-    },
-    {
-      title: "Historia Clínica",
-      description: "Ver historias clínicas",
-      icon: ClipboardList,
-      onClick: () => navigate(ROUTES.PROFESSIONAL_HISTORY_CLINIC),
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
     },
   ]
 
