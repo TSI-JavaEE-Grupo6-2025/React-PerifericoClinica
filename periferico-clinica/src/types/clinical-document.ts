@@ -240,11 +240,14 @@ export interface PatientBasicInfo { // usado para la info basica en la tabla de 
     firstName:string
     lastName:string
     birthDate: string // dd/mm/AAAA
+    nationality: string
     gender: string
     email: string
     phone: string
-    address: string
-    documentNumber: string
+    address?: string
+    documentNumber: string;
+    documentType: string;
+    domain?: string
 
 }
 

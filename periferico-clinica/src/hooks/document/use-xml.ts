@@ -47,7 +47,12 @@ export const useClinicalDocumentXML = (
             setError(null);
 
             const xmlDocument = await ProfessionalDashboardAdapter.getClinicalDocumentById(id, accessToken);
-            console.log('xmlDocument:\n', new XMLSerializer().serializeToString(xmlDocument)); // visualizamos el xmlDocument
+            if(!xmlDocument){
+                const message = "El documento clínico XML está vacío";
+                setError(message);
+                onError?.(message);
+                return null;
+            }
             // trasnformacion xsl
             const transformed = transformClinicalDocument(xmlDocument);
             setResult(transformed);

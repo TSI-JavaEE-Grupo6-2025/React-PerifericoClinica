@@ -161,11 +161,30 @@ export const getProfessionalInfo = async (accessToken: string) => {
 
 }
 
+// obtiene la información  de un paciente por su documento
+export const getPatientBasicInfo = async (documentNumber: string, accessToken: string) => {
+    try{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PATIENT_BASIC_INFO.replace(":documentNumber", documentNumber), {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+        return response
+    }catch(error){
+        console.error('Error al obtener la información basica del paciente: ', error);
+        throw new Error('Error al obtener la información basica del paciente: ' + error)
+    }
+}
+
 
 // obtiene el documento clínico por su ID -> XML
 export const getClinicalDocumentById = async (id: string, accessToken: string) => {
     try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_DOCUMENT.replace(':id',id), {
+        const develop: boolean = true; 
+        const url = develop? ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_DOCUMENT.replace(':id',id)// /documents/:id
+        : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.VIEW_CLINIC_DOCUMENT.replace(':id',id) // /documents/view/:id
+
+        const response = await API.get(url, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },

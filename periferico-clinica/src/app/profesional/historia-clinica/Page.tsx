@@ -13,16 +13,26 @@ import { Search, FilePlus, Eye, Loader2, AlertCircle } from "lucide-react"
 import { ROUTES } from "../../../routes/constants/routes"
 import type { PatientBasicInfo, ClinicalDocumentListItem } from "../../../types/clinical-document"
 
+import { useHealthUsers } from "../../../hooks/use-healthUser"
+
+
 export default function HistoryClinicPage() {
   const navigate = useNavigate()
   const [documentNumber, setDocumentNumber] = useState<string>("")
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
   const [loadHistoryLoading, setLoadHistoryLoading] = useState<boolean>(false)
-
   const [patient, setPatient] = useState<PatientBasicInfo | null>(null)
+
   const [documents, setDocuments] = useState<ClinicalDocumentListItem[]>([])
 
   const [error, setError] = useState<string | null>(null)
+
+
+
+  const { getPatientBasicInfo, clearPatient} = useHealthUsers({
+    autoFetch: false, // no realiza auto fetch al montar componente 
+    refetchOnMount: false
+  })
 
   const handleSearchPatient = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,29 +44,15 @@ export default function HistoryClinicPage() {
 
     setSearchLoading(true)
     setError(null)
-    setPatient(null)
+    clearPatient()
     setDocuments([])
 
     try {
-      // TODO: Reemplazar con llamada real al servicio
-      // const response = await searchPatientByDocument(documentNumber)
-
-      // Simulación de respuesta del backend
+     
       await new Promise((resolve) => setTimeout(resolve, 800))
+      const patient = await getPatientBasicInfo(documentNumber)
+      setPatient(patient)
 
-      const mockPatient: PatientBasicInfo = {
-        id: "PAT-001",
-        documentNumber: documentNumber,
-        firstName: "Juan",
-        lastName: "Pérez",
-        birthDate: "15/03/1985",
-        gender: "MASCULINO",
-        email: "juan.perez@example.com",
-        phone: "+598 99 123 456",
-        address: "Av. Italia 2525, Montevideo, Uruguay",
-      }
-
-      setPatient(mockPatient)
     } catch (err) {
       setError("No se encontró un paciente con esa cédula")
       console.error("Error buscando paciente:", err)
@@ -72,7 +68,7 @@ export default function HistoryClinicPage() {
     setError(null)
 
     try {
-      // TODO: Reemplazar con llamada real al servicio
+   
       // const response = await getClinicalDocumentsByPatient(patient.id)
 
       // Simulación de respuesta del backend

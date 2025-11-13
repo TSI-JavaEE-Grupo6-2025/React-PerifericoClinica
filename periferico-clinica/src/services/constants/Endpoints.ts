@@ -47,6 +47,8 @@ export const ENDPOINTS_SERVICES = {
             GET_ESPECIFIC_CONSULTATION_REASON: '/snomed/consultation-reasons?search=:search',
 
             GET_PROFESSIONAL_INFO: '/health-professionals',
+            // obtener información basica de un pacienti
+            GET_PATIENT_BASIC_INFO:'/health-users/by-document/:documentNumber',
 
             // todos los problemas
             GET_PROBLEMS_STATUS: '/snomed/problem-status',
@@ -55,6 +57,7 @@ export const ENDPOINTS_SERVICES = {
 
             // Obtiene el documento clínico por su ID
             GET_CLINIC_DOCUMENT: '/documents/:id',
+            VIEW_CLINIC_DOCUMENT: '/documents/view/:id',
             //obtiene la historia clínica por id del paciente
             GET_CLINIC_HISTORY_BY_PATIENT_ID: ''
 

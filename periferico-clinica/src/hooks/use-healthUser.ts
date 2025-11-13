@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { AdminDashboardAdapter } from "../adapters/Dashboard/Admin/AdminDashboardAdapter"
 import { useAuthStore } from "../store/AuthStore"
 import type { HealthUserListResponse } from "../types/User"
+import { ProfessionalDashboardAdapter } from "../adapters/Dashboard/professional/ProfessionalDashboardAdapter"
+import type { PatientBasicInfo } from "../types/clinical-document"
 
 // hook para obtener los usuarios de salud
 
@@ -14,12 +16,16 @@ interface UseHealthUserOptions {
 
 interface UseHealthUsersReturn {
     healthUsers: HealthUserListResponse[]
+    patientBasicInfo: PatientBasicInfo | null
+    patientLoading: boolean
     loading: boolean
     error: string | null
 
     fetchUsers: () => Promise<void>
-    refetch: () => void
+    getPatientBasicInfo: (documentNumber: string) => Promise<PatientBasicInfo>
+    refetch: () => Promise<void>
     clearError: () => void
+    clearPatient: () => void
 }
 
 export const useHealthUsers = ({
@@ -27,9 +33,11 @@ export const useHealthUsers = ({
     refetchOnMount = false
 }: UseHealthUserOptions = {}): UseHealthUsersReturn => {
     const [users, setUsers] = useState<HealthUserListResponse[]>([]);
+    const [patientBasicInfo, setPatientBasicInfo] = useState<PatientBasicInfo | null>(null);
+    const [patientLoading, setPatientLoading] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    
+
     const { accessToken } = useAuthStore();
     const hasFetched = useRef(false);
     const isFetching = useRef(false);
@@ -62,9 +70,14 @@ export const useHealthUsers = ({
             } else {
                 setUsers([]);
             }
-            
+
             hasFetched.current = true;
-            const usersCount = Array.isArray(response) ? response.length : (response ? 1 : 0);
+            let usersCount = 0;
+            if (Array.isArray(response)) {
+                usersCount = response.length;
+            } else if (response) {
+                usersCount = 1;
+            }
             console.log('✅ [useHealthUsers] Usuarios obtenidos:', usersCount);
 
         } catch (err) {
@@ -104,13 +117,49 @@ export const useHealthUsers = ({
         }
     }, [refetchOnMount, accessToken, fetchUsers]);
 
+
+
+    // getPatientBasicInfo
+    const getPatientBasicInfo = useCallback(async (documentNumber: string): Promise<PatientBasicInfo> => {
+        if (!accessToken) {
+            const errorMessage = 'No hay token acceso, por favor vuelve a iniciar sesión';
+            setError(errorMessage);
+            throw new Error(errorMessage)
+        }
+
+        setPatientLoading(true);
+        setError(null);
+
+        try {
+
+            isFetching.current = true;
+            const info: PatientBasicInfo = await ProfessionalDashboardAdapter.getPatientBasicInfo(documentNumber, accessToken);
+            setPatientBasicInfo(info);
+            return info;
+        } catch (error) {
+            console.error('Error al obtener la información basica del paciente: ', error);
+            throw error;
+        } finally {
+            setPatientLoading(false)
+            isFetching.current = false;
+        }
+    }, [accessToken])
+
+    const clearPatient = useCallback((): void => {
+        setPatientBasicInfo(null);
+    }, [])
+
     return {
         healthUsers: users,
+        patientBasicInfo: patientBasicInfo,
+        patientLoading,
         loading,
         error,
         fetchUsers,
         refetch,
-        clearError
+        clearError,
+        getPatientBasicInfo,
+        clearPatient
     }
 
 }

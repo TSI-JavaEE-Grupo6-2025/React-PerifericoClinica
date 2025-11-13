@@ -1,5 +1,5 @@
-import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById } from "../../../services/Dashboard";
-import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest, ClinicalDocumentXMLResponse } from "../../../types/clinical-document";
+import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById, getPatientBasicInfo } from "../../../services/Dashboard";
+import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest, ClinicalDocumentXMLResponse, PatientBasicInfo } from "../../../types/clinical-document";
 import type { ProfessionalInfoResponse } from "../../../types/User";
 
 
@@ -53,13 +53,22 @@ export const ProfessionalDashboardAdapter = {
             throw new Error('Error al obtener las especialidades del professional: ' + error);
         }
     },
-    getClinicalDocumentById: async (id: string, accessToken: string): Promise<ClinicalDocumentXMLResponse> => {
+    getPatientBasicInfo: async (documentNumber: string, accessToken: string): Promise<PatientBasicInfo> => {
+        try{
+            const patientBasicResponseData = await getPatientBasicInfo(documentNumber, accessToken);
+            return patientBasicResponseData?.data as PatientBasicInfo
+        }catch(error){
+            console.error('Error al obtener la información basica del paciente: ', error);
+            throw new Error('Error al obtener la información basica del paciente: ' + error);
+        }
+    },
+    getClinicalDocumentById: async (id: string, accessToken: string): Promise<ClinicalDocumentXMLResponse| null> => {
         try{
             const clinicalDocumentResponseData = await getClinicalDocumentById(id, accessToken);
             const xmlSource = clinicalDocumentResponseData?.data
 
             if (typeof xmlSource !== "string") {
-                throw new Error("La respuesta del documento clínico no es un XML válido.");
+                return null;
             }
 
             const xmlDocument = new DOMParser().parseFromString(xmlSource, "application/xml");
