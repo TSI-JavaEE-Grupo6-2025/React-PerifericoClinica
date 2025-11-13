@@ -59,7 +59,7 @@ export const ENDPOINTS_SERVICES = {
             GET_CLINIC_DOCUMENT: '/documents/:id',
             VIEW_CLINIC_DOCUMENT: '/documents/view/:id',
             //obtiene la historia clínica por id del paciente
-            GET_CLINIC_HISTORY_BY_PATIENT_ID: ''
+            GET_CLINIC_HISTORY:'/documents/history/:patientDocumentNumber/:specialtyId',
 
             
         },

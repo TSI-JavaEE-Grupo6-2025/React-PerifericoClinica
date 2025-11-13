@@ -30,9 +30,9 @@ import { ENDPOINTS_SERVICES } from '../../constants/Endpoints';
  * console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
  * ```  
  */
-export const createDocument = async(documentRequest: CreateClinicalDocumentRequest, accessToken: string) => {
+export const createDocument = async (documentRequest: CreateClinicalDocumentRequest, accessToken: string) => {
 
-    try{
+    try {
         console.log('Datos del documento enviados al backend: ', JSON.stringify(documentRequest, null, 2));
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.CREATE_DOCUMENT, documentRequest, {
             headers: {
@@ -42,7 +42,7 @@ export const createDocument = async(documentRequest: CreateClinicalDocumentReque
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return response
 
-    }catch(error){
+    } catch (error) {
         console.error('Error al crear el documento: ', error);
         throw new Error('Error al crear el documento: ' + error)
     }
@@ -73,18 +73,18 @@ export const createDocument = async(documentRequest: CreateClinicalDocumentReque
  */
 export const getConsultationReasons = async (accessToken: string, search?: string) => {
 
-    try{
+    try {
         const url = search ? ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_ESPECIFIC_CONSULTATION_REASON.replace(':search', search)
-        : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CONSULTATION_REASONS;
+            : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CONSULTATION_REASONS;
 
-        const response = await API.get(url,{
+        const response = await API.get(url, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         console.log('Vino a buscar los motivos de consulta')
         return response
-    }catch(error){
+    } catch (error) {
         console.error('Error al obtener los motivos de consulta: ', error);
         throw new Error('Error al obtener los motivos de consulta: ' + error)
     }
@@ -102,15 +102,15 @@ export const getConsultationReasons = async (accessToken: string, search?: strin
  * ```  
  */
 export const getProblemsStatus = async (accessToken: string) => {
-    try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROBLEMS_STATUS,{
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROBLEMS_STATUS, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         console.log('Vino a buscar los problemas')
         return response
-    }catch(error){
+    } catch (error) {
         console.error('Error al obtener los problemas: ', error);
         throw new Error('Error al obtener los problemas: ' + error)
     }
@@ -129,15 +129,15 @@ export const getProblemsStatus = async (accessToken: string) => {
  * ```  
  */
 export const getCertaintyLevels = async (accessToken: string) => {
-    try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CERTAINTY_LEVEL,{
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CERTAINTY_LEVEL, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         return response
     }
-    catch(error){
+    catch (error) {
         console.error('Error al obtener los grados de certeza: ', error);
         throw new Error('Error al obtener los grados de certeza: ' + error)
     }
@@ -148,13 +148,13 @@ export const getCertaintyLevels = async (accessToken: string) => {
 
 export const getProfessionalInfo = async (accessToken: string) => {
     try {
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROFESSIONAL_INFO,{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PROFESSIONAL_INFO, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         return response
-    }catch(error){
+    } catch (error) {
         console.error('Error al obtener las especialidades del professional: ', error);
         throw new Error('Error al obtener las especialidades del professional: ' + error)
     }
@@ -163,14 +163,14 @@ export const getProfessionalInfo = async (accessToken: string) => {
 
 // obtiene la información  de un paciente por su documento
 export const getPatientBasicInfo = async (documentNumber: string, accessToken: string) => {
-    try{
+    try {
         const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_PATIENT_BASIC_INFO.replace(":documentNumber", documentNumber), {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         return response
-    }catch(error){
+    } catch (error) {
         console.error('Error al obtener la información basica del paciente: ', error);
         throw new Error('Error al obtener la información basica del paciente: ' + error)
     }
@@ -179,10 +179,10 @@ export const getPatientBasicInfo = async (documentNumber: string, accessToken: s
 
 // obtiene el documento clínico por su ID -> XML
 export const getClinicalDocumentById = async (id: string, accessToken: string) => {
-    try{
-        const develop: boolean = true; 
-        const url = develop? ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_DOCUMENT.replace(':id',id)// /documents/:id
-        : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.VIEW_CLINIC_DOCUMENT.replace(':id',id) // /documents/view/:id
+    try {
+        const develop: boolean = true;
+        const url = develop ? ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_DOCUMENT.replace(':id', id)// /documents/:id
+            : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.VIEW_CLINIC_DOCUMENT.replace(':id', id) // /documents/view/:id
 
         const response = await API.get(url, {
             headers: {
@@ -192,8 +192,29 @@ export const getClinicalDocumentById = async (id: string, accessToken: string) =
             transformResponse: [(data) => data],
         });
         return response
-    }catch(error){
+    } catch (error) {
         console.error('Error al obtener el documento clínico: ', error);
         throw new Error('Error al obtener el documento clínico: ' + error)
+    }
+}
+
+
+// obtiene la historia clínica por documento de paciente y especialidad de la consulta
+export const getClinicHistoryPatientByDocumentAndSpecialty = async (documentNumber: string, specialtyId: string, accessToken: string) => {
+    try {
+        const url = ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_HISTORY.
+            replace(':patientDocumentNumber', documentNumber).
+            replace(':specialtyId', specialtyId)
+        const response = await API.get(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+
+        return response
+
+    } catch (error) {
+        console.error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ', error);
+        throw new Error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ' + error)
     }
 }

@@ -1,6 +1,7 @@
-import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById, getPatientBasicInfo } from "../../../services/Dashboard";
-import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest, ClinicalDocumentXMLResponse, PatientBasicInfo } from "../../../types/clinical-document";
+import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById, getPatientBasicInfo, getClinicHistoryPatientByDocumentAndSpecialty } from "../../../services/Dashboard";
+import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest, ClinicalDocumentXMLResponse, PatientBasicInfo} from "../../../types/clinical-document";
 import type { ProfessionalInfoResponse } from "../../../types/User";
+import type { ClinicalHistoryResponse } from "../../../types/clinical-history";
 
 
 
@@ -77,6 +78,17 @@ export const ProfessionalDashboardAdapter = {
             console.error('Error al obtener el documento clínico: ', error);
             throw new Error('Error al obtener el documento clínico: ' + error);
         }
+    },
+
+    getClinicHistoryPatient: async (documentNumber: string, specialtyId: string, accessToken: string): Promise<ClinicalHistoryResponse> => {
+        try{
+            const clinicHistoryResponseData = await getClinicHistoryPatientByDocumentAndSpecialty(documentNumber,specialtyId,accessToken);
+            return clinicHistoryResponseData?.data as ClinicalHistoryResponse
+        }catch(error){
+            console.error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ', error);
+            throw new Error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ' + error);
+        }
     }
+
     
 }
