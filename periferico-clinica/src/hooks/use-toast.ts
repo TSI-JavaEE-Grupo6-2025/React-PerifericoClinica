@@ -1,7 +1,8 @@
 import type React from "react"
 
-import { createContext, useContext, useState, useCallback, useMemo, createElement } from "react"
+import { createContext, useContext, useState, useCallback, useMemo, createElement, useRef} from "react"
 import type { ToastVariant, ToastPosition } from "../components/ui/Toast"
+import { markToastAsClosed, removeToast } from "./helper/toastHelper"
 
 export interface ToastOptions {
   title?: string
@@ -38,13 +39,19 @@ const ToastContext = createContext<ToastContextValue | undefined>(undefined)
 
 function useToastProvider(position: ToastPosition, duration: number): ToastContextValue {
   const [toasts, setToasts] = useState<ToastState[]>([])
+  
+  const toastsRef = useRef<ToastState[]>([]);
+
 
   const dismiss = useCallback((id: string) => {
-    setToasts((prev) => prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast)))
+    
+    toastsRef.current = markToastAsClosed(toastsRef.current, id)
+    setToasts([... toastsRef.current])
 
     // Remover del estado después de la animación
     setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id))
+      toastsRef.current = removeToast(toastsRef.current, id)
+      setToasts([... toastsRef.current])
     }, 200)
   }, [])
 

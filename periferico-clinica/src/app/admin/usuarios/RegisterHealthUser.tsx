@@ -1,6 +1,6 @@
 // src/app/admin/usuarios/RegisterHealthUser.tsx
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, Users, Mail, Phone, Calendar, Globe, FileText, MapPin } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
@@ -10,15 +10,22 @@ import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
 import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { HealthUserRequest } from "../../../types/User"
-import { formatDateToDDMMYYYY } from "../../../utils/validates"
+import { formatDateToDDMMYYYY, isAdult } from "../../../utils/validates"
+
+import { useToast } from "../../../hooks/use-toast"
 
 export const RegisterHealthUserPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
 
   const { registerHealthUser, loading, error, success } = useRegisterFactory('health-user', {
-    onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD)
+    onSuccess: () => {
+      navigate(ROUTES.ADMIN_DASHBOARD)
+    },
   })
+
+  //Hook para mostrar toasts notify
+  const { success: showSuccessToast, error: showErrorToast } = useToast()
 
   const [formData, setFormData] = useState<HealthUserRequest>({
     firstName: "",
@@ -34,26 +41,71 @@ export const RegisterHealthUserPage: React.FC = () => {
     tenantId: tenantId || "",
   })
 
+  const [validationError, setValidationError] = useState<string | null>(null)
+
+  // Observar cambios en success y error para mostrar toasts
+  useEffect(() => {
+    if (success) {
+      showSuccessToast("Éxito", "Usuario de salud registrado exitosamente", {
+        duration: 5000
+      })
+    }
+    if (error) {
+      showErrorToast("Error", error, {
+        duration: 5000
+      })
+    }
+  }, [success, error, showSuccessToast, showErrorToast])
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    const formattedValue = name === "birthDate" && value
-      ? formatDateToDDMMYYYY(value)
-      : value
-
+    // Para el campo de fecha, guardamos directamente el valor YYYY-MM-DD
+    // ya que el input de tipo "date" trabaja con ese formato
     setFormData((prev) => ({
       ...prev,
-      [name]: formattedValue,
+      [name]: value,
     }))
+    // Limpiar error de validación cuando el usuario cambia el campo de fecha
+    if (name === "birthDate" && validationError) {
+      setValidationError(null)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      alert(JSON.stringify(formData, null, 2))
-      await registerHealthUser(formData)
+      // Convertir la fecha de YYYY-MM-DD a DD/MM/YYYY para validación
+      const birthDateDDMMYYYY = formData.birthDate 
+        ? formatDateToDDMMYYYY(formData.birthDate)
+        : ""
+
+      // Validar que el usuario sea mayor de edad
+      if (!birthDateDDMMYYYY || !isAdult(birthDateDDMMYYYY)) {
+        const errorMsg = "El usuario debe ser mayor de edad (18 años o más)"
+        setValidationError(errorMsg)
+        showErrorToast("Error", errorMsg, {
+          duration: 5000
+        })
+        return
+      }
+
+      // Limpiar error de validación si pasa la validación
+      setValidationError(null)
+
+      // Preparar los datos para enviar al backend con formato DD/MM/YYYY
+      const dataToSend: HealthUserRequest = {
+        ...formData,
+        birthDate: birthDateDDMMYYYY
+      }
+
+      await registerHealthUser(dataToSend)
+      // Los toasts se muestran automáticamente en el useEffect cuando cambian success o error
     } catch (err) {
       console.error("Error:", err)
+      showErrorToast("Error", "Error al registrar el usuario de salud", {
+        duration: 5000
+      })
     }
   }
 
@@ -197,7 +249,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                       id="birthDate"
                       name="birthDate"
                       type="date"
-                      value={formData.birthDate ? formData.birthDate.split("/").reverse().join("-") : ""}
+                      value={formData.birthDate}
                       onChange={handleInputChange}
                       className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
                       required
@@ -263,6 +315,12 @@ export const RegisterHealthUserPage: React.FC = () => {
             </div>
 
             {/* Error y Success Messages */}
+            {validationError && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-red-600 text-sm">{validationError}</p>
+              </div>
+            )}
+
             {error && (
               <div className="p-4 bg-red-50 border border-red-200 rounded-md">
                 <p className="text-red-600 text-sm">{error}</p>
