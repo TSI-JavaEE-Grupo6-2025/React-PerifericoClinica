@@ -6,21 +6,18 @@ import { DropdownMenu, DropdownMenuItem } from "../../../components/ui/DropdownM
 import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Edit, Trash2, RefreshCw, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../../routes/constants/routes"
-import { useHealthUsers } from "../../../hooks/use-healthUser"
 import type { HealthUserListResponse } from "../../../types/User"
+import { useHealthUserList } from "../../../hooks/factory/useListFactory"
 
 export function HealthUsersList() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
 
-  const itemsPerPage = 1
+  const itemsPerPage = 10
 
   // Hook para obtener usuarios de salud
-  const { healthUsers: users, loading, error, refetch } = useHealthUsers({
-    autoFetch: true,
-    refetchOnMount: false
-  })
+  const { users, loading, error, refetch } = useHealthUserList()
 
   // Filtrar usuarios de forma escalable
   const filteredUsers = useMemo(() => {

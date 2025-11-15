@@ -103,6 +103,18 @@ export interface AdminUserRequest {
 
 }
 
+// interface para la lista de usuarios admin
+export interface AdminUserListResponse{
+  firstName: string
+  lastName: string
+  email: string
+  document: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+
+
 
 /**
  * Interfaz para el response de registro de usuario administrador
@@ -128,7 +140,7 @@ export interface HealthUserListResponse {
 
 
 
-// interface utilizada para la respuesta de la información del professional
+// interface utilizada para la respuesta de la información del professional 
 export interface ProfessionalInfoResponse {
     id: string;
     firstName: string;

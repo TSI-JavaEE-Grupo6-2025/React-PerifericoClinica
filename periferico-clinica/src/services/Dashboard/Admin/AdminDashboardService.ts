@@ -98,4 +98,34 @@ export const getHealthUsers = async (accessToken: string) => {
    }
 }
 
+export const getHealthProfessionals  = async (accessToken: string) => {
+    try{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_PROFESIONALS,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        console.log('Respuesta del servidor: ',JSON.stringify(response.data,null,2))
+        return response;
+    }catch(error){
+        handleServiceError(error, 'Error al obtener los profesionales de salud')
+    }
+}
+
+
+
+export const getAdminUser  = async (accessToken: string) => {
+    try{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_ADMIN_USERS,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        console.log('Respuesta del servidor: ',JSON.stringify(response.data,null,2))
+        return response;
+    }catch(error){
+        handleServiceError(error, 'Error al obtener los profesionales de salud')
+    }
+}
+
 

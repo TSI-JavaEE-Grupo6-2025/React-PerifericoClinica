@@ -1,58 +1,53 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { AdminLayout } from "../../../components/admin/admin-layout"
-import { Button, Input, Badge } from "../../../components/ui"
+import { Button, Input } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
 import { DropdownMenu, DropdownMenuItem } from "../../../components/ui/DropdownMenu"
-import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Eye, Edit, Trash2 } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Eye, Edit, Trash2, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../../routes/constants/routes"
-
-// Mock data - reemplazar con datos reales del backend
-const mockAdmins = [
-  {
-    id: "1",
-    firstName: "Admin",
-    lastName: "Principal",
-    document: "11111111",
-    email: "admin@clinica.com",
-    active: true,
-    createdAt: new Date("2024-01-01"),
-  },
-  {
-    id: "2",
-    firstName: "Laura",
-    lastName: "Méndez",
-    document: "22222222",
-    email: "laura.mendez@clinica.com",
-    active: true,
-    createdAt: new Date("2024-02-01"),
-  },
-]
+import { useAdminUserList } from "../../../hooks/factory/useListFactory"
+import type { AdminUserListResponse } from "../../../types"
 
 export function AdminsList() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
   const itemsPerPage = 10
 
+  const { users, loading, error, refetch } = useAdminUserList()
+
   // Filtrar administradores
-  const filteredAdmins = mockAdmins.filter((admin) => {
-    const matchesSearch =
-      admin.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admin.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admin.document.includes(searchTerm) ||
-      admin.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAdmins = useMemo(() => {
+    if (!users || users.length === 0) return []
 
-    const matchesStatus = statusFilter === "all" || (statusFilter === "active" ? admin.active : !admin.active)
+    return users.filter((admin) => {
+      const matchesSearch =
+        admin.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        admin.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        admin.document.includes(searchTerm) ||
+        admin.email.toLowerCase().includes(searchTerm.toLowerCase())
 
-    return matchesSearch && matchesStatus
-  })
+
+      return matchesSearch
+    })
+  }, [users, searchTerm])
 
   // Paginación
   const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedAdmins = filteredAdmins.slice(startIndex, startIndex + itemsPerPage)
+
+  // Formatear fecha
+  const formatDate = (date: Date | string | undefined): string => {
+    if (!date) return "N/A"
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date)
+      return dateObj.toLocaleDateString("es-UY")
+    } catch {
+      return String(date)
+    }
+  }
 
   // Action handlers for view, edit, and delete
   const handleViewDetails = (id: string) => {
@@ -78,7 +73,7 @@ export function AdminsList() {
             <p className="text-gray-600 mt-1">Gestiona los administradores de la clínica</p>
           </div>
           <Button
-            onClick={() => navigate(ROUTES.ADMIN_ADMIN_USER_LIST)}
+            onClick={() => navigate(ROUTES.ADMIN_REGISTER_ADMIN_USERS)}
             className="bg-[#2980b9] hover:bg-[#21618c] text-white"
           >
             <UserPlus className="w-4 h-4 mr-2" />
@@ -101,91 +96,93 @@ export function AdminsList() {
               />
             </div>
 
-            {/* Status Filter */}
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === "all" ? "default" : "outline"}
-                onClick={() => setStatusFilter("all")}
-                className={statusFilter === "all" ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-              >
-                Todos
-              </Button>
-              <Button
-                variant={statusFilter === "active" ? "default" : "outline"}
-                onClick={() => setStatusFilter("active")}
-                className={statusFilter === "active" ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-              >
-                Activos
-              </Button>
-              <Button
-                variant={statusFilter === "inactive" ? "default" : "outline"}
-                onClick={() => setStatusFilter("inactive")}
-                className={statusFilter === "inactive" ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
-              >
-                Inactivos
-              </Button>
-            </div>
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-red-800">Error al cargar administradores</p>
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetch()}
+              className="border-red-300 text-red-700 hover:bg-red-100"
+            >
+              Reintentar
+            </Button>
+          </div>
+        )}
+
         {/* Table */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Documento</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Fecha de Registro</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedAdmins.length === 0 ? (
+          {loading ? (
+            <div className="p-8 text-center">
+              <p className="text-gray-500">Cargando administradores...</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                    No se encontraron administradores
-                  </TableCell>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Documento</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead>Fecha de Registro</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
-              ) : (
-                paginatedAdmins.map((admin) => (
-                  <TableRow key={admin.id}>
-                    <TableCell className="font-medium">
-                      {admin.firstName} {admin.lastName}
-                    </TableCell>
-                    <TableCell>{admin.document}</TableCell>
-                    <TableCell>{admin.email}</TableCell>
-                    <TableCell>
-                      <Badge variant={admin.active ? "default" : "secondary"}>
-                        {admin.active ? "Activo" : "Inactivo"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{admin.createdAt.toLocaleDateString("es-UY")}</TableCell>
-                    <TableCell>
-                      <DropdownMenu
-                        trigger={
-                          <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
-                            <MoreVertical className="w-4 h-4 text-gray-600" />
-                          </button>
-                        }
-                      >
-                        <DropdownMenuItem icon={<Eye />} onClick={() => handleViewDetails(admin.id)}>
-                          Ver Detalle
-                        </DropdownMenuItem>
-                        <DropdownMenuItem icon={<Edit />} onClick={() => handleEdit(admin.id)}>
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem icon={<Trash2 />} variant="danger" onClick={() => handleDelete(admin.id)}>
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenu>
+              </TableHeader>
+              <TableBody>
+                {paginatedAdmins.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      {searchTerm 
+                        ? "No se encontraron administradores con los filtros aplicados"
+                        : "No hay administradores registrados"}
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  paginatedAdmins.map((admin: AdminUserListResponse) => {
+                      
+                    return (
+                      <TableRow key={admin.email}>
+                        <TableCell className="font-medium">
+                          {admin.firstName} {admin.lastName}
+                        </TableCell>
+                        <TableCell>{admin.document}</TableCell>
+                        <TableCell>{admin.email}</TableCell>
+          
+                        <TableCell>{formatDate(admin.createdAt)}</TableCell>
+                        <TableCell>
+                          <DropdownMenu
+                            trigger={
+                              <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
+                                <MoreVertical className="w-4 h-4 text-gray-600" />
+                              </button>
+                            }
+                          >
+                            <DropdownMenuItem icon={<Eye />} onClick={() => handleViewDetails(admin.email)}>
+                              Ver Detalle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem icon={<Edit />} onClick={() => handleEdit(admin.email)}>
+                              Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem icon={<Trash2 />} variant="danger" onClick={() => handleDelete(admin.email)}>
+                              Eliminar
+                            </DropdownMenuItem>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
+                )}
+              </TableBody>
+            </Table>
+          )}
 
           {/* Pagination */}
           {totalPages > 1 && (

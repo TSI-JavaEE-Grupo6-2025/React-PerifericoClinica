@@ -24,8 +24,8 @@ export const ENDPOINTS_SERVICES = {
             CREATE_PROFESIONAL: '/health-professionals', // crea profesional de salud
             CREATE_HEALTH_USER: '/health-users',// alta de usuarios de salud 
             // GET
-            GET_USERS: '/admin-users', 
-            GET_PROFESIONALS: '/', // listar profesionales de salud
+            GET_ADMIN_USERS: '/admin-users/all', 
+            GET_PROFESIONALS: '/health-professionals/all', // listar profesionales de salud
             GET_HEALTH_USERS: '/health-users', // listar usuarios de salud
 
             // GET SPECIALTIES

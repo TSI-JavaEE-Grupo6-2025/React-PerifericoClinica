@@ -1,7 +1,7 @@
 // src/adapters/Dashboard/Admin/AdminDashboardAdapter.ts
 
-import { createHealthProfessional, createHealthUser,createAdminUser ,getSpecialities, getHealthUsers } from "../../../services/Dashboard";
-import type { AdminUserRegisterResponse, AdminUserRequest, HealthProfessionalRegisterResponse, HealthProfessionalRequest, HealthUserListResponse, HealthUserRegisterResponse, HealthUserRequest } from "../../../types/User";
+import { createHealthProfessional, createHealthUser,createAdminUser ,getSpecialities, getHealthUsers , getHealthProfessionals,getAdminUser} from "../../../services/Dashboard";
+import type { AdminUserListResponse, AdminUserRegisterResponse, AdminUserRequest, HealthProfessionalRegisterResponse, HealthProfessionalRequest, HealthUserListResponse, HealthUserRegisterResponse, HealthUserRequest, ProfessionalInfoResponse } from "../../../types/User";
 import type { SpecialityResponse } from "../../../types/Specialty";
 
 
@@ -54,6 +54,22 @@ export const AdminDashboardAdapter = {
             return healthUsers?.data as HealthUserListResponse
         }catch(error){
            throw new Error('Error al obtener los usuarios de salud: ' + error);
+        }
+    },
+    getAdminUsers: async(accessToken: string): Promise<AdminUserListResponse> => {
+        try{
+            const adminUsers = await getAdminUser(accessToken)
+            return adminUsers?.data as AdminUserListResponse
+        }catch(error){
+            throw new Error('Error al obtener los usuariso administradores: ' + error)
+        }
+    },
+    getProfessioanlUsers: async(accessToken: string): Promise<ProfessionalInfoResponse> => {
+        try{
+            const professionalUsers = await getHealthProfessionals(accessToken)
+            return professionalUsers?.data as ProfessionalInfoResponse
+        }catch(error){
+            throw new Error('Error al obtener los usuariso administradores: ' + error)
         }
     }
 };
