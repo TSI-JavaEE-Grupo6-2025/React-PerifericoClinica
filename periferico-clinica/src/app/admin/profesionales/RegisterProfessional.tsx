@@ -1,6 +1,6 @@
 // src/pages/Admin/RegisterProfessionalPage.tsx
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, UserCog, Mail, Award, X } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
@@ -11,16 +11,35 @@ import { GlobalStyles } from "../../../styles/styles"
 import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { HealthProfessionalRequest } from "../../../types/User"
 import { useSpecialities } from "../../../hooks/use-specialities"
+import { useToast } from "../../../hooks/use-toast"
 
 export const RegisterProfessionalPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
 
   const { registerProfessional, loading, error, success } = useRegisterFactory('health-professional',{
-    onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD),
+    onSuccess: () => {
+      navigate(ROUTES.ADMIN_DASHBOARD)
+    },
   }) 
 
   const { specialties, loading: loadingSpecialities, error: specialitiesError } = useSpecialities()
+
+  //Hook para mostrar toasts notify
+  const { success: showSuccessToast, error: showErrorToast } = useToast();
+
+  useEffect(()=>{
+    if(success){
+      showSuccessToast("Éxito", "Profesional registrado exitosamente", {
+        duration: 5000
+      })
+    }
+    if(error){
+      showErrorToast("Error", error, {
+        duration: 5000
+      })
+    }
+  }, [success, error, showSuccessToast, showErrorToast])
 
   const [formData, setFormData] = useState<HealthProfessionalRequest>({
     firstName: "",
@@ -67,7 +86,6 @@ export const RegisterProfessionalPage: React.FC = () => {
     e.preventDefault()
 
     try {
-      alert(JSON.stringify(formData, null, 2))
       await registerProfessional(formData)
     } catch (err) {
       console.error("Error:", err)
@@ -238,7 +256,7 @@ export const RegisterProfessionalPage: React.FC = () => {
                     </div>
                   )}
 
-                  {formData.specialtyIds && formData.specialtyIds.length === 0 && (
+                  {formData.specialtyIds?.length === 0 && (
                     <p className="text-sm text-gray-500 mt-2">
                       No hay especialidades seleccionadas. Agregue al menos una.
                     </p>

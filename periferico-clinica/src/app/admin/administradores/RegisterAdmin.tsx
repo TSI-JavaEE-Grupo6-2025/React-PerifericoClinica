@@ -1,6 +1,6 @@
 // src/app/admin/administradores/RegisterAdmin.tsx
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, Shield, Mail } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
@@ -9,14 +9,33 @@ import { ROUTES } from "../../../routes"
 import { GlobalStyles } from "../../../styles/styles"
 import { useRegisterFactory } from "../../../hooks/factory/useRegisterFactory"
 import type { AdminUserRequest } from "../../../types/User"
+import { useToast } from "../../../hooks/use-toast"
 
 export const RegisterAdminPage: React.FC = () => {
   const navigate = useNavigate()
 
 
   const { registerAdmin, loading, error, success } = useRegisterFactory('admin-user', {
-    onSuccess: () => navigate(ROUTES.ADMIN_DASHBOARD),
+    onSuccess: () => {
+      navigate(ROUTES.ADMIN_DASHBOARD)
+    },
   })
+
+  //Hook para mostrar toasts notify
+  const { success: showSuccessToast, error: showErrorToast } = useToast();
+
+  useEffect(()=>{
+    if(success){
+      showSuccessToast("Éxito", "Administrador registrado exitosamente", {
+        duration: 5000
+      })
+    }
+    if(error){
+      showErrorToast("Error", error, {
+        duration: 5000
+      })
+    }
+  }, [success, error, showSuccessToast, showErrorToast])
 
   const [formData, setFormData] = useState<AdminUserRequest>({
     firstName: "",
@@ -37,10 +56,12 @@ export const RegisterAdminPage: React.FC = () => {
     e.preventDefault()
 
     try {
-      alert(JSON.stringify(formData, null, 2))
       await registerAdmin(formData)
     } catch (err) {
       console.error("Error:", err)
+      showErrorToast("Error",err as string, {
+        duration: 5000
+      })
     }
   }
 
