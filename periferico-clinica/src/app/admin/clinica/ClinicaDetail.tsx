@@ -1,23 +1,55 @@
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui"
-import { Building2, Mail, Phone, MapPin, Calendar, Globe, Users } from "lucide-react"
-
+import { Building2, Mail, Calendar, Globe, Users } from "lucide-react"
+import { useClinic } from "../../../hooks/use-clinic"
 // Mock data - reemplazar con datos reales del backend
 const mockClinicData = {
-  name: "Clínica Periférico",
-  email: "contacto@clinicaperiferico.com",
-  phone: "+598 2 123 4567",
-  address: "Av. Italia 2525, Montevideo, Uruguay",
-  website: "www.clinicaperiferico.com",
-  foundedDate: "2020-01-15",
   totalProfessionals: 25,
   totalHealthUsers: 1250,
   totalAdmins: 3,
   description:
-    "Clínica Periférico es un centro de salud integral que brinda servicios médicos de alta calidad a la comunidad. Contamos con profesionales especializados en diversas áreas de la medicina.",
+    "",
 }
 
 export function ClinicDetails() {
+  const { clinicData, clinicLoading, clinicError } = useClinic()
+
+  const clinicName = clinicData?.name || ''
+  const clinicEmail = clinicData?.email || ''
+  const clinicWebsite = clinicData?.domain || ''
+  const clinicFounded = clinicData?.createdAt || ''
+  //const clinicLogo = clinicData?.logoUrl || ''
+
+
+
+  // Valores presentables (evita ternarios anidados en JSX)
+  let displayEmail: string
+  if (clinicLoading) {
+    displayEmail = 'Cargando...'
+  } else if (clinicError) {
+    displayEmail = '—'
+  } else {
+    displayEmail = clinicEmail
+  }
+
+  let displayWebsite: string
+  if (clinicLoading) {
+    displayWebsite = 'Cargando...'
+  } else if (clinicError) {
+    displayWebsite = '—'
+  }else{
+    displayWebsite = clinicWebsite
+  }
+
+  let displayFounded: string
+  if (clinicLoading) {
+    displayFounded = 'Cargando...'
+  } else if (clinicError) {
+    displayFounded = '—'
+  } else {
+    displayFounded = new Date(clinicFounded).toLocaleDateString('es-UY', { year: 'numeric', month: 'long', day: 'numeric' })
+  }
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -32,15 +64,18 @@ export function ClinicDetails() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="p-3 bg-[#2980b9] rounded-lg">
+
                 <Building2 className="w-8 h-8 text-white" />
               </div>
               <div>
-                <CardTitle className="text-2xl">{mockClinicData.name}</CardTitle>
+                <CardTitle className="text-2xl">{clinicName}</CardTitle>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-700 leading-relaxed">{mockClinicData.description}</p>
+            <p className="text-gray-700 leading-relaxed">
+              Clínica dedicada a atención médica integral, con especialidades coordinadas, procesos claros y equipamiento actualizado. Su enfoque combina rigor profesional, diagnósticos precisos y un servicio ordenado que facilita cada etapa de la atención.
+            </p>
           </CardContent>
         </Card>
 
@@ -58,52 +93,26 @@ export function ClinicDetails() {
                 <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-600">Email</p>
-                  <p className="font-medium">{mockClinicData.email}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Teléfono</p>
-                  <p className="font-medium">{mockClinicData.phone}</p>
+                  <p className="font-medium">{displayEmail}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Globe className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-600">Sitio Web</p>
-                  <p className="font-medium">{mockClinicData.website}</p>
+                  <p className="font-medium">{displayWebsite}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-[#2980b9]" />
-                Ubicación
-              </CardTitle>
-            </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Dirección</p>
-                  <p className="font-medium">{mockClinicData.address}</p>
-                </div>
-              </div>
               <div className="flex items-start gap-3">
                 <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-600">Fecha de Fundación</p>
-                  <p className="font-medium">
-                    {new Date(mockClinicData.foundedDate).toLocaleDateString("es-UY", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
+                  <p className="font-medium">{displayFounded}</p>
                 </div>
               </div>
             </CardContent>

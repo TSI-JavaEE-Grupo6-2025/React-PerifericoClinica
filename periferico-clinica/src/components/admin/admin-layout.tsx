@@ -6,6 +6,8 @@ import { cn } from "../../utils"
 import { Button } from "../ui"
 import { LayoutDashboard, Users, UserCog, Settings, LogOut, Menu, X, Building2, Stethoscope, Loader2 } from "lucide-react"
 import { useLogout } from "../../hooks/use-logout"
+import { useTenantStore } from "../../store/TenantStore"
+import { useDocumentTitle } from "../../hooks/use-documentTitle"
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -21,6 +23,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = location.pathname
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { handleLogout: handleLogoutHook , loading: loadingLogout } = useLogout();
+
+  // Actualizar título global con nombre del tenant
+  const clinicName = useTenantStore(s => s.tenant?.name ?? "Clínica")
+  useDocumentTitle(clinicName, "Admin")
 
   const handleLogout = () => {
     // usamos useLogout para eliminar el session storage

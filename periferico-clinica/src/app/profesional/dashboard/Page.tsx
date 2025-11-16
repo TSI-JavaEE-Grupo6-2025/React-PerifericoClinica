@@ -2,7 +2,6 @@ import { ProfessionalLayout, StatsCard, RecentActivity } from "../../../componen
 import { ProfessionalQuickActions } from "../../../components/profesional/quick-actions"
 import { useAuthStore } from "../../../store/AuthStore";
 
-
 export default function ProfessionalDashboardPage() {
   const { user } = useAuthStore();
   

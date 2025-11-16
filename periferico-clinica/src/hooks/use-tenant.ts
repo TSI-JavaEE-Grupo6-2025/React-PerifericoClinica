@@ -52,7 +52,7 @@ export const useTenantFetcher = (preConfig?: Partial<TenantConfig>) => {
     setLoading(true);
     setError(null); // reseteamos los errores
     try {
-      const fullHostname = window.location.hostname;
+      const fullHostname = globalThis.location.hostname;
       
       // Usar configuración según el ambiente
       const config = preConfig || ( import.meta.env.MODE === 'production' 
@@ -62,20 +62,20 @@ export const useTenantFetcher = (preConfig?: Partial<TenantConfig>) => {
       
       const currentDomain = extractTenantFromDomain(fullHostname, config);
       if (!currentDomain) {
-        return Promise.reject(new Error('No se pudo obtener el dominio del tenant'))
+        throw new Error('No se pudo obtener el dominio del tenant')
       }
       const tenant = await TenantAdapter.getTenantByDomain(currentDomain);
      
       setTenant(tenant); // almacenamos el tenant en localStorage
       if (!tenant) {
-        return Promise.reject(new Error('No se pudo obtener el tenant'))
+        throw new Error('No se pudo obtener el tenant')
       }
-      return Promise.resolve(tenant);
+      return tenant;
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al obtener el tenant';
       setError(errorMessage)
-      return Promise.reject(error);
+      throw error;
     }finally{
       setLoading(false);
     }

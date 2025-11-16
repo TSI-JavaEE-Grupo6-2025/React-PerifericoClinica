@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui';
 import { Building2, Stethoscope, ArrowRight } from '../../components/icons';
 import { GlobalStyles } from '../../styles/styles';
-
+import { setDocumentTitle } from '../../utils';
 
 import { useTenantStore } from '../../store/TenantStore';
-import { useMemo } from 'react';
+
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +19,11 @@ export const HomePage: React.FC = () => {
     navigate('/profesional/login');
   };
   const { tenant } = useTenantStore();
+  const name = tenant?.name || 'Clínica'
+
+  useEffect(()=> {
+    setDocumentTitle(name)
+  },[name])
   
   // movi la logica de tenantFetch a ProtectedHome.tsx
 
@@ -40,8 +45,7 @@ export const HomePage: React.FC = () => {
   console.log('Tenant data: ', JSON.stringify(tenantData, null, 2))
 
   console.log('✅ HomePage renderizado - Todo funcionando correctamente');
-  // console.log('configuración de desarrollo: ', TENANT_CONFIG.development);
-  // console.log('Probando la captura del dominio en home page en entorno de development: ', domain);
+
 
   return (
     <div className={GlobalStyles.layout.main}>

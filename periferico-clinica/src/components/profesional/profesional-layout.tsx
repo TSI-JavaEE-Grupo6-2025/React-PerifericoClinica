@@ -6,7 +6,8 @@ import { cn } from "../../utils"
 import { Button } from "../ui"
 import { LayoutDashboard, FilePlus, Search, LogOut, Menu, X, Stethoscope, Loader2} from "lucide-react"
 import { useLogout } from "../../hooks/use-logout"
-
+import { useTenantStore } from "../../store/TenantStore"
+import { useDocumentTitle } from "../../hooks/use-documentTitle"
 
 //  revisar luego que se muestra en el sidebar, ya que estas opciones estan en quick actions (no es prioridad)
 
@@ -22,7 +23,11 @@ export function ProfessionalLayout({ children }: { children: React.ReactNode }) 
   const { handleLogout: handleLogoutHook , loading: loadingLogout } = useLogout();
   const pathname = location.pathname
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  
 
+   // Actualizar título global con nombre del tenant
+   const clinicName = useTenantStore(s => s.tenant?.name ?? "Clínica")
+   useDocumentTitle(clinicName, "Profesional")
 
   const handleLogout = () => {
     handleLogoutHook();

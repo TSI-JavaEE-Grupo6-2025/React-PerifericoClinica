@@ -129,3 +129,18 @@ export const getAdminUser  = async (accessToken: string) => {
 }
 
 
+export const getClinicInfoByTenant = async (tenantId: string, accessToken: string) => {
+    try{
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_CLINIC_INFO.replace(':tenantId',tenantId),{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        console.log('Respuesta del servidor: ',JSON.stringify(response.data,null,2))
+        return response
+    }catch(error){
+        handleServiceError(error, 'Error al obtener información de la clínica')
+    }
+}
+
+

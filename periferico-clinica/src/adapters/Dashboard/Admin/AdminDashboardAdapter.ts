@@ -1,6 +1,6 @@
 // src/adapters/Dashboard/Admin/AdminDashboardAdapter.ts
 
-import { createHealthProfessional, createHealthUser,createAdminUser ,getSpecialities, getHealthUsers , getHealthProfessionals,getAdminUser} from "../../../services/Dashboard";
+import { createHealthProfessional, createHealthUser,createAdminUser ,getSpecialities, getHealthUsers , getHealthProfessionals,getAdminUser,getClinicInfoByTenant} from "../../../services/Dashboard";
 import type { AdminUserListResponse, AdminUserRegisterResponse, AdminUserRequest, HealthProfessionalRegisterResponse, HealthProfessionalRequest, HealthUserListResponse, HealthUserRegisterResponse, HealthUserRequest, ProfessionalInfoResponse } from "../../../types/User";
 import type { SpecialityResponse } from "../../../types/Specialty";
 
@@ -70,6 +70,14 @@ export const AdminDashboardAdapter = {
             return professionalUsers?.data as ProfessionalInfoResponse
         }catch(error){
             throw new Error('Error al obtener los usuariso administradores: ' + error)
+        }
+    },
+    getClinicInfo: async (tenantId: string, accessToken: string) => {
+        try{
+            const clinicData = await getClinicInfoByTenant(tenantId,accessToken)
+            return clinicData?.data
+        }catch(error){
+            throw new Error('Error al obtener la información de la clínica ' + error)
         }
     }
 };
