@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react"
 import { AdminLayout } from "../../../components/admin/admin-layout"
-import { Button, Input, Badge, DropdownMenu, DropdownMenuItem } from "../../../components/ui"
+import { Button, Input, Badge } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
-import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Edit, Trash, AlertCircle } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, UserPlus,  AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../../routes/constants/routes"
 import { useHealthProfessionalList } from "../../../hooks/factory/useListFactory"
@@ -224,28 +224,6 @@ export function HealthProfessionalList() {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>{formatDate(professional.createdAt)}</TableCell>
-                                                <TableCell>
-                                                    <DropdownMenu
-                                                        trigger={
-                                                            <button className="p-2 hover:bg-gray-100 rounded-md transition-colors cursor-pointer">
-                                                                <MoreVertical className="w-4 h-4 text-gray-600" />
-                                                            </button>
-                                                        }
-                                                    >
-                                                        <DropdownMenuItem
-                                                            icon={<Edit />}
-                                                            className="cursor-pointer"
-                                                        >
-                                                            Editar
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            icon={<Trash />}
-                                                            className="cursor-pointer"
-                                                        >
-                                                            Eliminar
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenu>
-                                                </TableCell>
                                             </TableRow>
                                         )
                                     })

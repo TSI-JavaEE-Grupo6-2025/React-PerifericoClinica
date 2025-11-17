@@ -2,8 +2,7 @@ import { useState, useMemo, useEffect } from "react"
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Button, Input } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
-import { DropdownMenu, DropdownMenuItem } from "../../../components/ui/DropdownMenu"
-import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Edit, Trash2, RefreshCw, AlertCircle } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, UserPlus, RefreshCw, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../../routes/constants/routes"
 import type { HealthUserListResponse } from "../../../types/User"
@@ -45,13 +44,7 @@ export function HealthUsersList() {
 
   
 
-  const handleEdit = (email: string) => {
-    alert(`[✏️] Editar usuario de salud con email: ${email}`)
-  }
-
-  const handleDelete = (email: string) => {
-    alert(`[❌] Eliminar usuario de salud con email: ${email}`)
-  }
+ 
 
   const handleRefresh = () => {
     refetch()
@@ -162,22 +155,6 @@ export function HealthUsersList() {
                         {user.firstName} {user.lastName}
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <DropdownMenu
-                          trigger={
-                            <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
-                              <MoreVertical className="w-4 h-4 text-gray-600" />
-                            </button>
-                          }
-                        >
-                          <DropdownMenuItem icon={<Edit />} onClick={() => handleEdit(user.email)}>
-                            Editar
-                          </DropdownMenuItem>
-                          <DropdownMenuItem icon={<Trash2 />} variant="danger" onClick={() => handleDelete(user.email)}>
-                            Eliminar
-                          </DropdownMenuItem>
-                        </DropdownMenu>
-                      </TableCell>
                     </TableRow>
                   ))
                 )}

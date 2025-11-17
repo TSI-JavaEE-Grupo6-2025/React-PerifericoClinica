@@ -1,15 +1,8 @@
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui"
-import { Building2, Mail, Calendar, Globe, Users } from "lucide-react"
+import { Building2, Mail, Globe } from "lucide-react"
 import { useClinic } from "../../../hooks/use-clinic"
-// Mock data - reemplazar con datos reales del backend
-const mockClinicData = {
-  totalProfessionals: 25,
-  totalHealthUsers: 1250,
-  totalAdmins: 3,
-  description:
-    "",
-}
+
 
 export function ClinicDetails() {
   const { clinicData, clinicLoading, clinicError } = useClinic()
@@ -17,8 +10,7 @@ export function ClinicDetails() {
   const clinicName = clinicData?.name || ''
   const clinicEmail = clinicData?.email || ''
   const clinicWebsite = clinicData?.domain || ''
-  const clinicFounded = clinicData?.createdAt || ''
-  //const clinicLogo = clinicData?.logoUrl || ''
+  const clinicLogo = clinicData?.logoUrl || ''
 
 
 
@@ -41,14 +33,7 @@ export function ClinicDetails() {
     displayWebsite = clinicWebsite
   }
 
-  let displayFounded: string
-  if (clinicLoading) {
-    displayFounded = 'Cargando...'
-  } else if (clinicError) {
-    displayFounded = '—'
-  } else {
-    displayFounded = new Date(clinicFounded).toLocaleDateString('es-UY', { year: 'numeric', month: 'long', day: 'numeric' })
-  }
+ 
 
   return (
     <AdminLayout>
@@ -64,8 +49,11 @@ export function ClinicDetails() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="p-3 bg-[#2980b9] rounded-lg">
-
-                <Building2 className="w-8 h-8 text-white" />
+                {clinicLogo ? (
+                  <img src={clinicLogo} alt="Logo de la clínica" className="w-8 h-8 object-cover rounded-lg"/>
+                ): (
+                  <Building2 className="w-8 h-8 text-white" />
+                )}
               </div>
               <div>
                 <CardTitle className="text-2xl">{clinicName}</CardTitle>
@@ -80,7 +68,7 @@ export function ClinicDetails() {
         </Card>
 
         {/* Contact Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -104,46 +92,9 @@ export function ClinicDetails() {
                 </div>
               </div>
             </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="space-y-4">
-              <div className="flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Fecha de Fundación</p>
-                  <p className="font-medium">{displayFounded}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          </Card>          
         </div>
 
-        {/* Statistics */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#2980b9]" />
-              Estadísticas
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-blue-50 rounded-lg">
-                <p className="text-4xl font-bold text-[#2980b9]">{mockClinicData.totalProfessionals}</p>
-                <p className="text-gray-600 mt-2">Profesionales de Salud</p>
-              </div>
-              <div className="text-center p-6 bg-green-50 rounded-lg">
-                <p className="text-4xl font-bold text-green-600">{mockClinicData.totalHealthUsers}</p>
-                <p className="text-gray-600 mt-2">Usuarios de Salud</p>
-              </div>
-              <div className="text-center p-6 bg-purple-50 rounded-lg">
-                <p className="text-4xl font-bold text-purple-600">{mockClinicData.totalAdmins}</p>
-                <p className="text-gray-600 mt-2">Administradores</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </AdminLayout>
   )

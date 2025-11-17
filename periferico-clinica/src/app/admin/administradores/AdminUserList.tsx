@@ -2,8 +2,7 @@ import { useState, useMemo } from "react"
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Button, Input } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
-import { DropdownMenu, DropdownMenuItem } from "../../../components/ui/DropdownMenu"
-import { Search, ChevronLeft, ChevronRight, UserPlus, MoreVertical, Eye, Edit, Trash2, AlertCircle } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, UserPlus, AlertCircle } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../../routes/constants/routes"
 import { useAdminUserList } from "../../../hooks/factory/useListFactory"
@@ -17,17 +16,25 @@ export function AdminsList() {
 
   const { users, loading, error, refetch } = useAdminUserList()
 
+  const fullName = (firstName: string, lastName: string) => {
+    if (firstName && lastName) {
+      return `${firstName} ${lastName}`
+    } else {
+      return 'Sin nombre'
+    }
+  }
   // Filtrar administradores
   const filteredAdmins = useMemo(() => {
     if (!users || users.length === 0) return []
 
     return users.filter((admin) => {
+      const searchLower = searchTerm.toLowerCase()
+      const nameFull = fullName(admin.firstName, admin.lastName).toLowerCase()
+      
       const matchesSearch =
-        admin.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        admin.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        admin.document.includes(searchTerm) ||
-        admin.email.toLowerCase().includes(searchTerm.toLowerCase())
-
+        nameFull.includes(searchLower) ||
+        admin.document?.toLowerCase().includes(searchLower) ||
+        admin.email?.toLowerCase().includes(searchLower)
 
       return matchesSearch
     })
@@ -38,30 +45,11 @@ export function AdminsList() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedAdmins = filteredAdmins.slice(startIndex, startIndex + itemsPerPage)
 
-  // Formatear fecha
-  const formatDate = (date: Date | string | undefined): string => {
-    if (!date) return "N/A"
-    try {
-      const dateObj = date instanceof Date ? date : new Date(date)
-      return dateObj.toLocaleDateString("es-UY")
-    } catch {
-      return String(date)
-    }
-  }
 
-  // Action handlers for view, edit, and delete
-  const handleViewDetails = (id: string) => {
-    alert(`[👁️] Ver detalle del administrador con id: ${id}`)
-    
-  }
 
-  const handleEdit = (id: string) => {
-    alert(`[✏️] Editar administrador con id: ${id}`)
-  }
+  
 
-  const handleDelete = (id: string) => {
-    alert(`[❌] Eliminar administrador con id: ${id}`)
-  }
+
 
   return (
     <AdminLayout>
@@ -128,11 +116,10 @@ export function AdminsList() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nombre</TableHead>
+                  <TableHead>Nombre completo</TableHead>
                   <TableHead>Documento</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Fecha de Registro</TableHead>
+
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -140,42 +127,21 @@ export function AdminsList() {
                 {paginatedAdmins.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                      {searchTerm 
+                      {searchTerm
                         ? "No se encontraron administradores con los filtros aplicados"
                         : "No hay administradores registrados"}
                     </TableCell>
                   </TableRow>
                 ) : (
                   paginatedAdmins.map((admin: AdminUserListResponse) => {
-                      
+
                     return (
                       <TableRow key={admin.email}>
                         <TableCell className="font-medium">
-                          {admin.firstName} {admin.lastName}
+                          {fullName(admin.firstName,admin.lastName)}
                         </TableCell>
-                        <TableCell>{admin.document}</TableCell>
+                        <TableCell>{admin.document ? admin.document : 'N/A'}</TableCell>
                         <TableCell>{admin.email}</TableCell>
-          
-                        <TableCell>{formatDate(admin.createdAt)}</TableCell>
-                        <TableCell>
-                          <DropdownMenu
-                            trigger={
-                              <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
-                                <MoreVertical className="w-4 h-4 text-gray-600" />
-                              </button>
-                            }
-                          >
-                            <DropdownMenuItem icon={<Eye />} onClick={() => handleViewDetails(admin.email)}>
-                              Ver Detalle
-                            </DropdownMenuItem>
-                            <DropdownMenuItem icon={<Edit />} onClick={() => handleEdit(admin.email)}>
-                              Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem icon={<Trash2 />} variant="danger" onClick={() => handleDelete(admin.email)}>
-                              Eliminar
-                            </DropdownMenuItem>
-                          </DropdownMenu>
-                        </TableCell>
                       </TableRow>
                     )
                   })
