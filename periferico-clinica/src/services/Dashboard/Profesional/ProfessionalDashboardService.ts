@@ -178,11 +178,10 @@ export const getPatientBasicInfo = async (documentNumber: string, accessToken: s
 
 
 // obtiene el documento clínico por su ID -> XML
-export const getClinicalDocumentById = async (id: string, accessToken: string) => {
+export const getClinicalDocumentById = async (id: number, accessToken: string) => {
     try {
-        const develop: boolean = true;
-        const url = develop ? ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_DOCUMENT.replace(':id', id)// /documents/:id
-            : ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.VIEW_CLINIC_DOCUMENT.replace(':id', id) // /documents/view/:id
+        // api/documents/view/id
+        const url = ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.VIEW_CLINIC_DOCUMENT.replace(':id', id.toString()) 
 
         const response = await API.get(url, {
             headers: {
@@ -200,21 +199,30 @@ export const getClinicalDocumentById = async (id: string, accessToken: string) =
 
 
 // obtiene la historia clínica por documento de paciente y especialidad de la consulta
-export const getClinicHistoryPatientByDocumentAndSpecialty = async (documentNumber: string, specialtyId: string, accessToken: string) => {
+export const getClinicHistoryPatientByDocumentAndSpecialty = async (documentNumber: number, specialtyId: string, accessToken: string) => {
     try {
+        console.log('documentNumber: ', documentNumber.toString())
+        console.log('specialtyId: ', specialtyId)
         const url = ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_CLINIC_HISTORY.
-            replace(':patientDocumentNumber', documentNumber).
+            replace(':patientDocumentNumber', documentNumber.toString()).
             replace(':specialtyId', specialtyId)
+        
+        console.log('🔵 Llamada HTTP al backend:', url)
+        console.log('🔵 Parámetros:', { documentNumber, specialtyId })
+        
         const response = await API.get(url, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
 
+        console.log('✅ Respuesta del backend:', response.data)
+        console.log('✅ Status:', response.status)
+
         return response
 
     } catch (error) {
-        console.error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ', error);
+        console.error('❌ Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ', error);
         throw new Error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ' + error)
     }
 }

@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ProfessionalLayout } from "../../../components/profesional"
 import { Button } from "../../../components/ui/Button"
@@ -11,9 +11,11 @@ import { Badge } from "../../../components/ui/Badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
 import { Search, FilePlus, Eye, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { ROUTES } from "../../../routes/constants/routes"
-import type { PatientBasicInfo, ClinicalDocumentListItem } from "../../../types/clinical-document"
+import type { PatientBasicInfo } from "../../../types/clinical-document"
 import { useHealthUsers } from "../../../hooks/use-healthUser"
 import { useProfessionalSpecialty } from "../../../hooks/document/use-ProfessionalSpecialty"
+import { useClinicalHistory } from "../../../hooks/use-clinical-history"
+import type { ClinicalHistoryResponse } from "../../../types/clinical-history"
 
 export default function HistoryClinicPage() {
   const navigate = useNavigate()
@@ -22,7 +24,8 @@ export default function HistoryClinicPage() {
   const [loadHistoryLoading, setLoadHistoryLoading] = useState<boolean>(false)
 
   const [patient, setPatient] = useState<PatientBasicInfo | null>(null)
-  const [documents, setDocuments] = useState<ClinicalDocumentListItem[]>([])
+  const [documents, setDocuments] = useState<ClinicalHistoryResponse[]>([])
+  const [hasTriedToLoad, setHasTriedToLoad] = useState<boolean>(false)
 
   const [error, setError] = useState<string | null>(null)
 
@@ -31,11 +34,23 @@ export default function HistoryClinicPage() {
 
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
-
+  
   const { getPatientBasicInfo, clearPatient } = useHealthUsers({
     autoFetch: false,
     refetchOnMount: false,
   })
+
+  const { getClinicalHistoryPatient, loading: loadingHistory, error: historyError } = useClinicalHistory()
+
+  useEffect(() => {
+    console.log("Estado del botón:", {
+      loadHistoryLoading,
+      loadingHistory,
+      selectedSpecialty,
+      patient: !!patient,
+      disabled: loadHistoryLoading || loadingHistory || !selectedSpecialty || selectedSpecialty.trim() === ""
+    })
+  }, [loadHistoryLoading, loadingHistory, selectedSpecialty, patient])
 
   const indexOfLastDocument = currentPage * itemsPerPage
   const indexOfFirstDocument = indexOfLastDocument - itemsPerPage
@@ -70,6 +85,7 @@ export default function HistoryClinicPage() {
     setError(null)
     clearPatient()
     setDocuments([])
+    setHasTriedToLoad(false)
     setCurrentPage(1)
 
     try {
@@ -85,129 +101,44 @@ export default function HistoryClinicPage() {
   }
 
   const handleLoadClinicalHistory = async () => {
-    if (!patient) return
+    console.log("handleLoadClinicalHistory llamado")
+    console.log("patient:", patient)
+    console.log("selectedSpecialty:", selectedSpecialty)
+    
+    if (!patient || !selectedSpecialty) {
+      console.log("No se puede cargar: falta patient o selectedSpecialty")
+      return
+    }
 
     setLoadHistoryLoading(true)
     setError(null)
+    setHasTriedToLoad(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800))
-
-      const mockDocuments: ClinicalDocumentListItem[] = [
-        {
-          id: "691156fa8ccc6c766f89fe1f",
-          documentType: "CONSULTATION",
-          title: "Consulta Médica - Cefalea",
-          consultationDate: "25/10/2024",
-          professionalName: "Dr. María González",
-          createdAt: "2024-10-25T10:30:00Z",
-        },
-        {
-          id: "DOC-002",
-          documentType: "CONSULTATION",
-          title: "Control de Rutina",
-          consultationDate: "15/09/2024",
-          professionalName: "Dr. Carlos Rodríguez",
-          createdAt: "2024-09-15T14:20:00Z",
-        },
-        {
-          id: "DOC-003",
-          documentType: "LAB_RESULT",
-          title: "Análisis de Sangre",
-          consultationDate: "10/08/2024",
-          professionalName: "Laboratorio Central",
-          createdAt: "2024-08-10T09:15:00Z",
-        },
-        {
-          id: "DOC-004",
-          documentType: "CONSULTATION",
-          title: "Consulta Seguimiento",
-          consultationDate: "05/08/2024",
-          professionalName: "Dr. María González",
-          createdAt: "2024-08-05T11:00:00Z",
-        },
-        {
-          id: "DOC-005",
-          documentType: "PRESCRIPTION",
-          title: "Receta Médica",
-          consultationDate: "01/08/2024",
-          professionalName: "Dr. Carlos Rodríguez",
-          createdAt: "2024-08-01T16:45:00Z",
-        },
-        {
-          id: "DOC-006",
-          documentType: "IMAGING",
-          title: "Radiografía Tórax",
-          consultationDate: "25/07/2024",
-          professionalName: "Dr. Ana Martínez",
-          createdAt: "2024-07-25T09:30:00Z",
-        },
-        {
-          id: "DOC-007",
-          documentType: "LAB_RESULT",
-          title: "Examen de Orina",
-          consultationDate: "20/07/2024",
-          professionalName: "Laboratorio Central",
-          createdAt: "2024-07-20T14:00:00Z",
-        },
-        {
-          id: "DOC-008",
-          documentType: "CONSULTATION",
-          title: "Consulta Cardiología",
-          consultationDate: "15/07/2024",
-          professionalName: "Dr. Roberto Silva",
-          createdAt: "2024-07-15T10:15:00Z",
-        },
-        {
-          id: "DOC-009",
-          documentType: "REFERRAL",
-          title: "Referencia Especialista",
-          consultationDate: "10/07/2024",
-          professionalName: "Dr. María González",
-          createdAt: "2024-07-10T13:30:00Z",
-        },
-        {
-          id: "DOC-010",
-          documentType: "CONSULTATION",
-          title: "Control Presión Arterial",
-          consultationDate: "05/07/2024",
-          professionalName: "Dr. Carlos Rodríguez",
-          createdAt: "2024-07-05T15:20:00Z",
-        },
-        {
-          id: "DOC-011",
-          documentType: "LAB_RESULT",
-          title: "Análisis Colesterol",
-          consultationDate: "01/07/2024",
-          professionalName: "Laboratorio Central",
-          createdAt: "2024-07-01T08:45:00Z",
-        },
-      ]
-
-      setDocuments(mockDocuments)
+      console.log("Llamando a getClinicalHistoryPatient con:", patient.documentNumber, selectedSpecialty)
+      const historyData = await getClinicalHistoryPatient(Number(patient.documentNumber), selectedSpecialty)
+      console.log("Datos recibidos:", historyData)
+      setDocuments(historyData)
       setCurrentPage(1)
     } catch (err) {
-      setError("Error al cargar la historia clínica")
+      console.error("Error en handleLoadClinicalHistory:", err)
+      const errorMessage = historyError || "Error al cargar la historia clínica"
+      setError(errorMessage)
       console.error("Error cargando documentos:", err)
     } finally {
       setLoadHistoryLoading(false)
     }
   }
 
-  const handleViewDocumentDetail = (documentId: string) => {
-    const previewPath = ROUTES.PROFESSIONAL_DOCUMENT_PREVIEW.replace(":documentId", documentId)
+  const handleViewDocumentDetail = (id: number) => {
+    const previewPath = ROUTES.PROFESSIONAL_DOCUMENT_PREVIEW.replace(":documentId", id.toString())
     navigate(previewPath)
   }
 
   const getDocumentTypeLabel = (type: string): string => {
     const labels: Record<string, string> = {
-      CONSULTATION: "Consulta",
-      PRESCRIPTION: "Receta",
-      LAB_RESULT: "Laboratorio",
-      IMAGING: "Imagenología",
-      REFERRAL: "Referencia",
-      DISCHARGE: "Alta",
-      OTHER: "Otro",
+      Policlinica: "Policlínica",
+      Emergencia: "Emergencia",
     }
     return labels[type] || type
   }
@@ -345,11 +276,14 @@ export default function HistoryClinicPage() {
                   </div>
 
                   <Button
-                    onClick={handleLoadClinicalHistory}
-                    disabled={loadHistoryLoading || !selectedSpecialty || selectedSpecialty.trim() === ""}
+                    onClick={() => {
+                      console.log("Botón clickeado")
+                      handleLoadClinicalHistory()
+                    }}
+                    disabled={loadHistoryLoading || loadingHistory || !selectedSpecialty || selectedSpecialty.trim() === ""}
                     className="bg-[#27ae60] hover:bg-[#229954] w-full sm:w-auto sm:mb-0"
                   >
-                    {loadHistoryLoading ? (
+                    {loadHistoryLoading || loadingHistory ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         Cargando...
@@ -367,60 +301,68 @@ export default function HistoryClinicPage() {
           </Card>
         )}
 
-        {documents.length > 0 && (
+        {hasTriedToLoad && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg sm:text-xl">Documentos Clínicos ({documents.length})</CardTitle>
               <CardDescription className="text-sm">
-                Historial completo de documentos del paciente - Mostrando {indexOfFirstDocument + 1} a{" "}
-                {Math.min(indexOfLastDocument, documents.length)} de {documents.length}
+                {documents.length > 0
+                  ? `Historial completo de documentos del paciente - Mostrando ${indexOfFirstDocument + 1} a ${Math.min(indexOfLastDocument, documents.length)} de ${documents.length}`
+                  : "No se encontraron documentos clínicos para este paciente"}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto -mx-4 sm:mx-0">
-                <div className="inline-block min-w-full align-middle">
-                  <div className="overflow-hidden">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="whitespace-nowrap">Tipo</TableHead>
-                          <TableHead className="whitespace-nowrap">Título</TableHead>
-                          <TableHead className="whitespace-nowrap">Fecha</TableHead>
-                          <TableHead className="whitespace-nowrap">Profesional</TableHead>
-                          <TableHead className="w-[100px] whitespace-nowrap">Acciones</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {currentDocuments.map((doc) => (
-                          <TableRow key={doc.id}>
-                            <TableCell className="whitespace-nowrap">
-                              <Badge variant="outline" className="text-xs">
-                                {getDocumentTypeLabel(doc.documentType)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="font-medium min-w-[200px]">{doc.title}</TableCell>
-                            <TableCell className="whitespace-nowrap">{doc.consultationDate}</TableCell>
-                            <TableCell className="whitespace-nowrap">{doc.professionalName}</TableCell>
-                            <TableCell>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleViewDocumentDetail(doc.id)}
-                                className="text-[#3498db] hover:text-[#2980b9] hover:bg-[#3498db]/10 whitespace-nowrap"
-                              >
-                                <Eye className="w-4 h-4 mr-1" />
-                                Ver
-                              </Button>
-                            </TableCell>
+              {documents.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="text-lg font-medium">No hay documentos cargados</p>
+                  <p className="text-sm mt-2">No se encontraron documentos clínicos para este paciente con la especialidad seleccionada.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                  <div className="inline-block min-w-full align-middle">
+                    <div className="overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="whitespace-nowrap">Tipo</TableHead>
+                            <TableHead className="whitespace-nowrap">Título</TableHead>
+                            <TableHead className="whitespace-nowrap">Fecha</TableHead>
+                            <TableHead className="whitespace-nowrap">Profesional</TableHead>
+                            <TableHead className="w-[100px] whitespace-nowrap">Acciones</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {currentDocuments.map((doc) => (
+                            <TableRow key={doc.id}>
+                              <TableCell className="whitespace-nowrap">
+                                <Badge variant="outline" className="text-xs">
+                                  {getDocumentTypeLabel(doc.evento || doc.documentType)}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="font-medium min-w-[200px]">{doc.descripcion}</TableCell>
+                              <TableCell className="whitespace-nowrap">{doc.consultationDate}</TableCell>
+                              <TableCell className="whitespace-nowrap">{doc.nombreProfesional}</TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleViewDocumentDetail(doc.id)}
+                                  className="text-[#3498db] hover:text-[#2980b9] hover:bg-[#3498db]/10 whitespace-nowrap"
+                                >
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  Ver
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              {totalPages > 1 && (
+              {documents.length > 0 && totalPages > 1 && (
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 pt-4 border-t">
                   <div className="text-sm text-muted-foreground">
                     Página {currentPage} de {totalPages}

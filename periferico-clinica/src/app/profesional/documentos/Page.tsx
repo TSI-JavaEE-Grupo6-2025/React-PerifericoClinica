@@ -9,6 +9,7 @@ import { Plus, Trash2, Save } from "lucide-react"
 import type {
     CreateClinicalDocumentRequest,
     Diagnosis,
+    EventType,
     FollowUpInstructions,
     SnomedCatalogItem,
 } from "../../../types/clinical-document"
@@ -142,12 +143,17 @@ export default function NewClinicalDocumentPage() {
     const [consultationReasons, setConsultationReasons] = useState<SnomedCatalogItem[]>([])
     const [selectedConsultationReasonCode, setSelectedConsultationReasonCode] = useState<string>("")
     const [selectedSpecialityId, setSelectedSpecialityId] = useState<string>("")
+
+    const [eventType, setEventType] = useState<EventType>('Policlinica')
+    // Obtener fecha actual en formato yyyy-mm-dd para el input type="date"
+    const getCurrentDate = () => new Date().toISOString().split("T")[0]
+
     // Inicializar con un diagnóstico vacío para que se muestre el formulario
-    const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([
+    const [diagnoses, setDiagnoses] = useState<Diagnosis[]>(() => [
         {
             code: "",
             displayName: "",
-            startDate: "",
+            startDate: getCurrentDate(),
             problemStatus: "",
             certaintyLevel: "",
             notes: "",
@@ -174,7 +180,7 @@ export default function NewClinicalDocumentPage() {
                 {
                     code: "",
                     displayName: "",
-                    startDate: "",
+                    startDate: getCurrentDate(),
                     problemStatus: problemStatusCatalog[0].displayName,
                     certaintyLevel: certaintyLevelsCatalog[0].displayName,
                     notes: "",
@@ -375,7 +381,7 @@ export default function NewClinicalDocumentPage() {
             const consultationDateFormatted = formatDateToDDMMYYYY(consultationDateISO)
 
             return {
-                documentType: "CONSULTATION",
+                documentType: eventType,
                 title: `Consulta - ${consultationDateFormatted}`,
                 consultationDate: consultationDateFormatted,
                 patientId: patientId.trim(),
@@ -391,6 +397,7 @@ export default function NewClinicalDocumentPage() {
             mapDiagnosesToRequest,
             mapFollowUpInstructionsToRequest,
             selectedSpecialityId,
+            eventType,
         ],
     )
 
@@ -498,12 +505,15 @@ export default function NewClinicalDocumentPage() {
             return
         }
 
+        // Obtener fecha actual en formato yyyy-mm-dd para el input type="date"
+        const currentDate = new Date().toISOString().split("T")[0]
+
         setDiagnoses([
             ...diagnoses,
             {
                 code: "",
                 displayName: "",
-                startDate: "",
+                startDate: currentDate,
                 problemStatus: problemStatusCatalog[0]?.displayName || "",
                 certaintyLevel: certaintyLevelsCatalog[0]?.displayName || "",
                 notes: "",
@@ -642,6 +652,21 @@ export default function NewClinicalDocumentPage() {
                                         ))}
                                 </select>
                             </div>
+                        </div>
+                        {/* Tipo de evento */}
+                        <div>
+                            <Label htmlFor="eventType" className="mb-2">Tipo de evento</Label>
+                            <select
+                                id="eventType"
+                                value={eventType}
+                                onChange={(e) => setEventType(e.target.value as EventType)}
+                                className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                                required
+                            >
+                                <option value="Policlinica">Policlinica</option>
+                                <option value="Emergencia">Emergencia</option>
+                            </select>
+
                         </div>
 
                         {/* Badges de motivos seleccionados */}

@@ -50,7 +50,7 @@ export const ProfessionalDashboardAdapter = {
             params: [documentNumber, accessToken],
         })
     },
-    getClinicalDocumentById: async (id: string, accessToken: string): Promise<ClinicalDocumentXMLResponse | null> => {
+    getClinicalDocumentById: async (id: number, accessToken: string): Promise<ClinicalDocumentXMLResponse | null> => {
         try {
             const clinicalDocumentResponseData = await getClinicalDocumentById(id, accessToken);
             const xmlSource = clinicalDocumentResponseData?.data
@@ -67,7 +67,7 @@ export const ProfessionalDashboardAdapter = {
         }
     },
 
-    getClinicHistoryPatient: async (documentNumber: string, specialtyId: string, accessToken: string): Promise<ClinicalHistoryResponse> => {
+    getClinicHistoryPatient: async (documentNumber: number, specialtyId: string, accessToken: string): Promise<ClinicalHistoryResponse[]> => {
         return handleServiceCall({
             serviceFunction: getClinicHistoryPatientByDocumentAndSpecialty,
             errorMessage: 'Error al obtener la historia clínica del paciente',

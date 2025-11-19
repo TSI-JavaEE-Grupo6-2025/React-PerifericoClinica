@@ -46,7 +46,7 @@ export const useClinicalDocumentXML = (
             setLoading(true);
             setError(null);
 
-            const xmlDocument = await ProfessionalDashboardAdapter.getClinicalDocumentById(id, accessToken);
+            const xmlDocument = await ProfessionalDashboardAdapter.getClinicalDocumentById(Number(id), accessToken);
             if(!xmlDocument){
                 const message = "El documento clínico XML está vacío";
                 setError(message);

@@ -45,6 +45,7 @@ export interface SnomedCatalogItem {
 
 
 
+export type EventType = "Policlinica" | "Emergencia"
 
 /** Diagnóstico clínico */
 /**
@@ -122,7 +123,7 @@ export interface FollowUpInstructions {
  * @example: 
  * ```typescript
  * const request = {
- *   documentType: 'CONSULTATION',
+ *   documentType: 'Policlinica',
  *   title: 'Consulta médica',
  *   consultationDate: '30/10/2025',
  *   patientId: '1234567890',
@@ -134,7 +135,7 @@ export interface FollowUpInstructions {
  */
 export interface CreateClinicalDocumentRequest {
   // Información básica
-  documentType: "CONSULTATION" | "PRESCRIPTION" | "LAB_RESULT" | "IMAGING" | "REFERRAL" | "DISCHARGE" | "OTHER"
+  documentType: EventType
   title: string
   consultationDate: string // dd/mm/AAAA
 
@@ -228,7 +229,7 @@ export interface SnomedCatalogListResponse {
 
 export interface ClinicalDocumentListItem { // usado para la tabla de historia clínica
     id: string
-    documentType: "CONSULTATION" | "PRESCRIPTION" | "LAB_RESULT" | "IMAGING" | "REFERRAL" | "DISCHARGE" | "OTHER"
+    documentType: string
     title: string
     consultationDate: string // dd/mm/AAAA
     professionalName: string

@@ -10,7 +10,7 @@
 
 export interface ClinicalDocument {
     id?: string
-    documentType: "CONSULTATION" | "PRESCRIPTION" | "LAB_RESULT" | "IMAGING" | "REFERRAL" | "OTHER"
+    documentType: "Policlinica" | "Emergencia"
     title: string
     description: string
     patientId: string

@@ -12,7 +12,7 @@ interface ClinicalHistoryState {
 
 interface ClinicalHistoryActions {
   getClinicalHistoryPatient: (
-    documentNumber: string,
+    documentNumber: number,
     specialtyId: string
   ) => Promise<ClinicalHistoryResponse[]>
   clearError: () => void
@@ -47,26 +47,33 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
     setState((prev) => ({ ...prev, documents }))
 
   const fetchHistory = useCallback(
-    async (documentNumber: string, specialtyId: string) => {
+    async (documentNumber: number, specialtyId: string) => {
+      console.log("fetchHistory llamado con:", { documentNumber, specialtyId })
+      
       if (!accessToken) {
         const message = 'No hay token de acceso, por favor inicie sesión'
+        console.error("No hay accessToken")
         setError(message)
         throw new Error(message)
       }
 
+      console.log("Token disponible, iniciando carga...")
       setLoading(true)
       setError(null)
       setSuccess(false)
 
       try {
-        currentParamsRef.current = { documentNumber, specialtyId }
+        currentParamsRef.current = { documentNumber: documentNumber.toString(), specialtyId }
 
+        console.log("Llamando a ProfessionalDashboardAdapter.getClinicHistoryPatient")
         const response =
           await ProfessionalDashboardAdapter.getClinicHistoryPatient(
             documentNumber,
             specialtyId,
             accessToken
           )
+
+        console.log("Respuesta recibida:", response)
 
         let documents: ClinicalHistoryResponse[] = [];
         
@@ -76,11 +83,13 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
             documents = [response]
         }
 
+        console.log("Documentos procesados:", documents)
         setDocuments(documents)
         setSuccess(true)
 
         return documents
       } catch (error) {
+        console.error("Error en fetchHistory:", error)
         const message =
           error instanceof Error
             ? error.message
@@ -100,7 +109,7 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
   const refetch = useCallback(async () => {
     if (!currentParamsRef.current) return
     const { documentNumber, specialtyId } = currentParamsRef.current
-    return fetchHistory(documentNumber, specialtyId)
+    return fetchHistory(Number(documentNumber), specialtyId)
   }, [fetchHistory])
 
   const clearError = () => setError(null)
