@@ -14,13 +14,13 @@ export const useLogout = () => {
             setLoading(true);
             // llamamos al adapter AuthAdapter.logout para cerrar sesión desde back (futuro)
             //await AuthAdapter.logout();
-            logout();// => eliminamos el accessToken de sessionStorage
+            logout();// => eliminamos el accessToken de sessionStorage y estados de localstorage
             // redirigimos al home
             navigate(ROUTES.HOME);
-            return Promise.resolve();
+            return true;
         }catch(error){
             console.error('Error al cerrar sesión: ', error);
-            return Promise.reject(error);
+            throw error;
         }finally{
             setLoading(false);
         }

@@ -38,14 +38,28 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         }),
       
-      // Acción: Logout
-      logout: () =>
+      /**
+       * Cierra la sesión del usuario y limpia todos los estados  de los stores
+       */
+      logout: () => {
         set({
           accessToken: null,
           tenantId: null,
           user: null,
           isAuthenticated: false,
-        }),
+        });
+        
+        // Limpiar todas las claves específicas de los stores
+        localStorage.removeItem('tenant-storage');
+        localStorage.removeItem('snomed-catalog-storage');
+        localStorage.removeItem('professional-specialties-storage');
+        localStorage.removeItem('specialties_cache');
+        sessionStorage.removeItem('auth-storage');
+        
+        // Limpiar completamente localStorage y sessionStorage como respaldo
+        localStorage.clear();
+        sessionStorage.clear();
+      },
       
       // Acción: Actualizar usuario
       setUser: (user) =>
