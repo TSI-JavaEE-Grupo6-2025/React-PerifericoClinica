@@ -340,7 +340,7 @@ export default function HistoryClinicPage() {
                                 </Badge>
                               </TableCell>
                               <TableCell className="font-medium min-w-[200px]">{doc.descripcion}</TableCell>
-                              <TableCell className="whitespace-nowrap">{doc.consultationDate}</TableCell>
+                              <TableCell className="whitespace-nowrap">{doc.fechaCreacion}</TableCell>
                               <TableCell className="whitespace-nowrap">{doc.nombreProfesional}</TableCell>
                               <TableCell>
                                 <Button
