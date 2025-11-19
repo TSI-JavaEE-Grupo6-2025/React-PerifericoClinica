@@ -7,4 +7,4 @@ export * from './icons';
 export * from './admin';
 
 
-export { ProfessionalLayout, StatsCard, RecentActivity } from './profesional';
+export * from './profesional';

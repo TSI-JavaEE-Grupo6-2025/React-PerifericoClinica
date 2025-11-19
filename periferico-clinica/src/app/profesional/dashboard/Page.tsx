@@ -1,10 +1,10 @@
-import { ProfessionalLayout, StatsCard, RecentActivity } from "../../../components/profesional"
+import { ProfessionalLayout } from "../../../components/profesional"
 import { ProfessionalQuickActions } from "../../../components/profesional/quick-actions"
 import { useAuthStore } from "../../../store/AuthStore";
 
 export default function ProfessionalDashboardPage() {
   const { user } = useAuthStore();
-  
+
 
   const doctorName = `Dr. ${user?.fullName}`
   return (
@@ -14,13 +14,7 @@ export default function ProfessionalDashboardPage() {
           <h1 className="text-3xl font-bold text-[#2c3e50]">Panel Profesional</h1>
           <p className="text-muted-foreground mt-2">Bienvenido {doctorName} 👋</p>
         </div>
-
-        {/* <ProfessionalStats /> */}
-        <StatsCard/>
-        <div className="grid gap-6 md:grid-cols-2">
-          <ProfessionalQuickActions/>
-          <RecentActivity/>
-        </div>
+        <ProfessionalQuickActions />
       </div>
     </ProfessionalLayout>
   )

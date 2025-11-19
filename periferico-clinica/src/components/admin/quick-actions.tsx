@@ -40,7 +40,6 @@ export const QuickActions: React.FC = () => {
   ]
 
   return (
-    <>
       <Card>
         <CardHeader>
           <CardTitle className="text-[#2c3e50]">Acciones Rápidas</CardTitle>
@@ -59,7 +58,5 @@ export const QuickActions: React.FC = () => {
           ))}
         </CardContent>
       </Card>
-      
-    </>
   )
 }
