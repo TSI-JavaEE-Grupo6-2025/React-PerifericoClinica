@@ -23,7 +23,7 @@
  *   tenantId: '1234567890',
  *   name: 'Clínica A',
  *   domain: 'www.clinicaa.miapp.com',
- *   logo: 'https://clinicaa.miapp.com/logo.png',
+ *   logo: 'https://clinicaa.saludportal.com/logo.png',
  *   color: {
  *     background: '#2980b9',
  *     text: '#ffffff'
@@ -37,7 +37,7 @@ export interface TenantResponse { // respuesta del backend en get by domain
     domain: string;
     logo?: string;
     color?: {
-        background: string | "#2980b9";
-        text: string | "#ffffff";
+        background: string;
+        text: string;
     }
 }

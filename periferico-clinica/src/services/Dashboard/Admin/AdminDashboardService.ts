@@ -2,6 +2,7 @@ import API from "../../constants/Api";
 import { ENDPOINTS_SERVICES } from "../../constants/Endpoints";
 import type { AdminUserRequest, HealthProfessionalRequest, HealthUserRequest } from "../../../types/User";
 import { handleServiceError } from "../../../utils";
+import type { UpdateClinicRequest } from "../../../types";
 
 
 /**
@@ -13,19 +14,19 @@ import { handleServiceError } from "../../../utils";
  */
 
 export const createHealthProfessional = async (healtProfessionalRequest: HealthProfessionalRequest, accessToken: string) => {
-    try{
-        
-        const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest,{
+    try {
+
+        const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_PROFESIONAL, healtProfessionalRequest, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
             }
         });
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return response;
-    }catch(error){
+    } catch (error) {
         handleServiceError(error, 'Error al crear el profesional de salud')
     }
-    
+
 }
 
 /**
@@ -39,7 +40,7 @@ export const createHealthProfessional = async (healtProfessionalRequest: HealthP
  * @returns Devuelve la respuesta del servidor.
  */
 export const createHealthUser = async (healthUserRequest: HealthUserRequest, accessToken: string) => {
-    try{
+    try {
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_HEALTH_USER, healthUserRequest, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -47,10 +48,10 @@ export const createHealthUser = async (healthUserRequest: HealthUserRequest, acc
         })
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return response;
-    }catch(error){
-       handleServiceError(error, 'Error al crear el usuario de salud')
+    } catch (error) {
+        handleServiceError(error, 'Error al crear el usuario de salud')
     }
-    
+
 }
 
 /**
@@ -61,7 +62,7 @@ export const createHealthUser = async (healthUserRequest: HealthUserRequest, acc
  */
 
 export const createAdminUser = async (adminUserRequest: AdminUserRequest, accessToken: string) => {
-    try{
+    try {
         const response = await API.post(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.CREATE_ADMIN_USER, adminUserRequest, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -69,7 +70,7 @@ export const createAdminUser = async (adminUserRequest: AdminUserRequest, access
         })
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return response;
-    }catch(error){
+    } catch (error) {
         handleServiceError(error, 'Error al crear el usuario administrador')
     }
 }
@@ -83,63 +84,77 @@ export const createAdminUser = async (adminUserRequest: AdminUserRequest, access
  */
 
 export const getHealthUsers = async (accessToken: string) => {
-   
-   try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_HEALTH_USERS,{
+
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_HEALTH_USERS, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
         })
         console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2));
         return response;
-   }catch(error){
+    } catch (error) {
         console.error('Error al obtener los usuarios de salud: ', error);
         throw new Error('Error al obtener los usuarios de salud: ' + error);
-   }
+    }
 }
 
-export const getHealthProfessionals  = async (accessToken: string) => {
-    try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_PROFESIONALS,{
+export const getHealthProfessionals = async (accessToken: string) => {
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_PROFESIONALS, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         })
-        console.log('Respuesta del servidor: ',JSON.stringify(response.data,null,2))
+        console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2))
         return response;
-    }catch(error){
+    } catch (error) {
         handleServiceError(error, 'Error al obtener los profesionales de salud')
     }
 }
 
 
 
-export const getAdminUser  = async (accessToken: string) => {
-    try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_ADMIN_USERS,{
+export const getAdminUser = async (accessToken: string) => {
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_ADMIN_USERS, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         })
-        console.log('Respuesta del servidor: ',JSON.stringify(response.data,null,2))
+        console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2))
         return response;
-    }catch(error){
+    } catch (error) {
         handleServiceError(error, 'Error al obtener los profesionales de salud')
     }
 }
 
 
 export const getClinicInfoByTenant = async (tenantId: string, accessToken: string) => {
-    try{
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_CLINIC_INFO.replace(':tenantId',tenantId),{
+    try {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_CLINIC_INFO.replace(':tenantId', tenantId), {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         })
-        console.log('Respuesta del servidor: ',JSON.stringify(response.data,null,2))
+        console.log('Respuesta del servidor: ', JSON.stringify(response.data, null, 2))
         return response
-    }catch(error){
+    } catch (error) {
         handleServiceError(error, 'Error al obtener información de la clínica')
+    }
+}
+
+export const updateClinicDataByTenant = async (tenantId: string, clinicData: UpdateClinicRequest ,accessToken: string) => {
+
+    try {
+        const response = await API.put(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.PUT_UPDATE_CLINIC.replace(':tenantId',tenantId),clinicData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+        return response
+    } catch (error) {
+        handleServiceError(error, 'Error al actualizar los datos de la clínica.')
     }
 }
 

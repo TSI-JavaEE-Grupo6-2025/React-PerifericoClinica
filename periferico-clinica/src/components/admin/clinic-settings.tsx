@@ -3,9 +3,19 @@ import { Input,Label,Button,Tabs,TabsContent,TabsList,TabsTrigger, Card, CardCon
 
 import { Upload, Save } from "lucide-react"
 
+import { useTenantStore } from "../../store/TenantStore"
+import { useClinic } from "../../hooks/use-clinic"
+
 export function ClinicSettings() {
   const [primaryColor, setPrimaryColor] = useState("#2980b9")
   const [sidebarColor, setSidebarColor] = useState("#2c3e50")
+  const {clinicData} = useClinic()
+
+  const clinicEmail = clinicData?.email
+  console.log(`Email de la clínica: `+ clinicEmail)
+  const {tenant}= useTenantStore()
+
+ 
 
   return (
     <Tabs defaultValue="general" className="space-y-6">
@@ -24,17 +34,19 @@ export function ClinicSettings() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="clinic-name">Nombre de la Clínica</Label>
-                <Input id="clinic-name" defaultValue="Clínica Salud Integral" />
+                <Label htmlFor="clinic-name">Nombre de la clínica</Label>
+                <Input id="clinic-name" defaultValue={tenant?.name} />
               </div>
              
               <div className="space-y-2">
-                <Label htmlFor="clinic-email">Email</Label>
-                <Input id="clinic-email" type="email" defaultValue="contacto@clinica.com" />
+                <Label htmlFor="clinic-email">Email de la clínica</Label>
+                <Input id="clinic-email" type="email" defaultValue={clinicEmail} />
               </div>
             </div>
             
-            <Button className="bg-[#2980b9] hover:bg-[#2471a3]">
+            <Button 
+            
+            className="bg-[#2980b9] hover:bg-[#2471a3] cursor-pointer">
               <Save className="mr-2 h-4 w-4" />
               Guardar Cambios
             </Button>

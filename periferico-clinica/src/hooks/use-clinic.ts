@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import type { ClinicResponse } from '../types'
+import type { ClinicResponse, UpdateClinicRequest } from '../types'
 import { AdminDashboardAdapter } from '../adapters'
 import { useTenantId } from './use-tenant'
+import { useTenantStore } from '../store/TenantStore'
 import { useAuthStore } from '../store/AuthStore'
 
 interface ClinicOption {
@@ -14,10 +15,12 @@ interface ClinicReturn {
     clinicData: ClinicResponse | null,
     clinicLoading: boolean,
     clinicError: string | null
+    success: boolean
 
     // Acciones
     refetch: () => Promise<void>
     getClinicInfo: (tenantId: string) => Promise<ClinicResponse>
+    updateClinicData: (clinicData: UpdateClinicRequest) => Promise<ClinicResponse>;
 }
 
 export const useClinic = ({
@@ -33,8 +36,11 @@ export const useClinic = ({
     const [loading, setLoading] = useState<boolean>(false)
     const [clinic, setClinic] = useState<ClinicResponse | null>(null)
 
+    const [success, setSuccess] = useState<boolean>(false)
+
     const hasFetched = useRef(false);
     const isFetching = useRef(false);
+    const isUpdating = useRef(false);
 
     const getClinicInfo = useCallback(async (tenantIdParam: string): Promise<ClinicResponse> => {
         if (!accessToken) {
@@ -93,11 +99,74 @@ export const useClinic = ({
         }
     }, [refetchOnMount, tenantId, accessToken, getClinicInfo])
 
+
+
+    // update clinic 
+
+    const updateClinicData = useCallback(
+        async (clinicData: UpdateClinicRequest): Promise<ClinicResponse> => {
+            if (isUpdating.current) {
+                throw new Error('Ya hay una actualización en curso');
+            }
+
+            setLoading(true)
+            setError(null)
+            setSuccess(false)
+
+            try {
+                if (!accessToken || !tenantId) {
+                    const errorMessage = accessToken 
+                        ? "No hay tenant seleccionado"
+                        : "Error de autenticación, vuelva a iniciar sesión.";
+                    setError(errorMessage);
+                    throw new Error(errorMessage);
+                }
+
+                isUpdating.current = true;
+                const res: ClinicResponse = await AdminDashboardAdapter.updateClinic(tenantId, clinicData, accessToken);
+                
+                // Actualizar el estado local con los nuevos datos (incluyendo colors si viene)
+                setClinic(res);
+                setSuccess(true); 
+
+                const {tenant, setTenant} = useTenantStore.getState()
+
+                if(tenant && res ){
+                    setTenant({
+                        ...tenant,
+                        name: res.name ?? tenant.name,
+                        logo: res.logoUrl ?? tenant.logo,
+                        color: res.colors ? {
+                            background: res.colors.background,
+                            text: res.colors.text
+                        }: tenant.color
+                    })
+                }
+
+                
+                
+                return res;
+
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : 'Error al actualizar información de la clínica';
+                setError(errorMessage);
+                console.error('❌ [useClinic] Error al actualizar:', err);
+                throw err instanceof Error ? err : new Error(String(err))
+            } finally {
+                setLoading(false);
+                isUpdating.current = false;
+            }
+
+        }, [accessToken, tenantId])
+
+
     return {
         clinicData: clinic,
         clinicLoading: loading,
         clinicError: error,
         refetch,
-        getClinicInfo
+        getClinicInfo,
+        success,
+        updateClinicData,
     }
 }
