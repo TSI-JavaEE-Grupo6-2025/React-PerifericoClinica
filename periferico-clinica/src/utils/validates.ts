@@ -71,3 +71,76 @@ export function isAdult(date: string): boolean {
   // Retornar true si es mayor o igual a 18 años
   return age >= 18;
 }
+
+
+// validación de formato email
+// retorna true si cumple con condición de email
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+
+
+
+
+type baseResponse = {
+  success: boolean,
+  message: string,
+}
+
+// validación del formato de la imagen (AVIF, JPG, WEBP  O PNG ) y size (max 2mb)
+const isValidImageFormatAndSize = (image: File): baseResponse => {
+  // formatos permitidos de imagen
+  const allowedFormat = [".avif",".webp",".jpg",".png"]
+  const maxSize = 2 * 1024 * 1024; //2MB
+
+ 
+  //Si no es imagen o no pertenece a los formatos validos.
+  if(!image.type.startsWith('image/') || !allowedFormat.some(format => image.name.toLocaleLowerCase().endsWith(format.toLocaleLowerCase()))){
+    
+    return {
+      success: false,
+      message: `Debe ingresar una imagen con los siguientes formatos: ${allowedFormat.join(', ')}`
+
+    }
+  }
+  if(image.size > maxSize){
+    return {
+      success: false,
+      message: `La imagen no debe superar los 2MB. Tamaño actual: ${image.size} `
+    }
+  }
+  return {
+    success: true,
+    message: "Imagen cargada exitosamente."
+  }
+}
+
+
+
+// validación de campo vacío
+// retorna un objeto con success: false y mensaje si el campo está vacío
+// retorna success: true si el campo tiene contenido
+const isEmptyField = (field: string, fieldName: string): baseResponse => {
+  if(!field || field.trim() === ""){
+    return {
+      success: false,
+      message: `El ${fieldName} es requerido`
+    }
+  }
+  return {
+    success: true,
+    message: ""
+  }
+}
+
+
+export const validators = {
+  isValidEmail,
+  isValidImageFormatAndSize,
+  isEmptyField
+}
+
+
+

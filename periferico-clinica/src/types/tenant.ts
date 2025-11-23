@@ -25,7 +25,8 @@
  *   domain: 'www.clinicaa.miapp.com',
  *   logo: 'https://clinicaa.saludportal.com/logo.png',
  *   color: {
- *     background: '#2980b9',
+ *     sidebar: '#2c3e50
+ *     primary: '#2980b9',
  *     text: '#ffffff'
  *   }
  * }
@@ -37,7 +38,8 @@ export interface TenantResponse { // respuesta del backend en get by domain
     domain: string;
     logo?: string;
     color?: {
-        background: string;
+        sidebar: string;
+        primary: string;
         text: string;
     }
 }

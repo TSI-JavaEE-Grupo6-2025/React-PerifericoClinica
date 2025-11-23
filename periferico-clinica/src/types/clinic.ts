@@ -3,12 +3,10 @@
  * @description: Contiene los campos básicos que se repiten en diferentes interfaces
  * @prop name: Nombre de la clínica
  * @prop email: Email de la clínica
- * @prop logoUrl: Logo de la clínica
  */
 export interface BaseClinicData {
     name?: string
     email?: string
-    logoUrl?: string | null
 }
 
 /**
@@ -24,9 +22,13 @@ export interface ClinicMetadata {
 /**
  * Interfaz para los colores de personalización de la clínica
  * @description: Esquema de colores reutilizable
+ * @prop sidebar: Color de la barra lateral izquierda (menú de opciones)
+ * @prop primary: Color primario, utilizado en botones
+ * @prop text: Color del texto
  */
 export interface ClinicColors {
-    background: string
+    sidebar: string
+    primary: string
     text: string
 }
 
@@ -46,13 +48,14 @@ export interface ClinicResponse extends BaseClinicData, ClinicMetadata {
     domain: string
     active: boolean
     colors?: ClinicColors
+    logoUrl?: string | null
 }
 
 /**
  * Interfaz con la información para update clínic
  * @prop name: Nombre de la clínica
  * @prop email: Email de la clínica
- * @prop logoUrl: Url del logo de la clínica
+ * @prop logoFile: Logo de la clínica (tipo File)
  * @prop colors: Colores de la personalización de la clínica
  * 
  * @example
@@ -60,9 +63,10 @@ export interface ClinicResponse extends BaseClinicData, ClinicMetadata {
  * const updateClinic: UpdateClinicRequest {
  *  name: "Clínica pepito";
  *  email: "pepito@cli-pep.com";
- *  logoUrl: "https://...."
+ *  logoFile: imagen.png
  *  colors: {
- *      background: "#2980b9",
+ *      sidebar: "#2c3e50",
+ *      primary: "#2980b9"
  *      text: "#fffff"    
  *     }
  * }
@@ -70,4 +74,5 @@ export interface ClinicResponse extends BaseClinicData, ClinicMetadata {
  */
 export interface UpdateClinicRequest extends BaseClinicData {
     colors?: ClinicColors
+    logoFile?: File
 }

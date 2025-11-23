@@ -3,6 +3,7 @@ import { ENDPOINTS_SERVICES } from "../../constants/Endpoints";
 import type { AdminUserRequest, HealthProfessionalRequest, HealthUserRequest } from "../../../types/User";
 import { handleServiceError } from "../../../utils";
 import type { UpdateClinicRequest } from "../../../types";
+import * as serviceHandler from "../../helper/serviceHelper"
 
 
 /**
@@ -144,15 +145,45 @@ export const getClinicInfoByTenant = async (tenantId: string, accessToken: strin
     }
 }
 
-export const updateClinicDataByTenant = async (tenantId: string, clinicData: UpdateClinicRequest ,accessToken: string) => {
-
+/**
+ * Servicio para actualizar los datos de la clínica
+ * @description: Actualiza los datos de la clínica, maneja archivos con FormData y datos simples con JSON
+ * @param tenantId - ID del tenant/clínica
+ * @param clinicData - Datos de la clínica a actualizar
+ * @param accessToken - Token de autenticación
+ * @returns Respuesta del servidor con los datos actualizados
+ */
+export const updateClinicDataByTenant = async (
+    tenantId: string,
+    clinicData: UpdateClinicRequest,
+    accessToken: string
+) => {
+    // Log mejorado de datos (maneja File correctamente)
+    serviceHandler.logClinicData(clinicData)
+    
     try {
-        const response = await API.put(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.PUT_UPDATE_CLINIC.replace(':tenantId',tenantId),clinicData, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
-        return response
+        const endpoint = ENDPOINTS_SERVICES.DASHBOARD.ADMIN.PUT_UPDATE_CLINIC.replace(':tenantId', tenantId)
+        const hasFile = serviceHandler.hasFile(clinicData)
+
+        if(hasFile){
+            // Construir FormData usando serviceHelper
+            const formData = serviceHandler.buildFormData(clinicData)
+            // Log de información del archivo
+            serviceHandler.logFileInfo(clinicData.logoFile as File)
+            // Construir headers para multipart/form-data
+            const headers = serviceHandler.buildHeaders(accessToken, { hasFile: true })
+            
+            const response = await API.put(endpoint, formData, { headers })
+            console.log('Respuesta del backend ', response)
+            return response
+            
+        } else {
+            // Enviar como JSON (sin archivo)
+            const headers = serviceHandler.buildHeaders(accessToken, { hasFile: false })
+            const response = await API.put(endpoint, clinicData, { headers })
+            console.log('Respuesta del backend ', response)
+            return response
+        }
     } catch (error) {
         handleServiceError(error, 'Error al actualizar los datos de la clínica.')
     }

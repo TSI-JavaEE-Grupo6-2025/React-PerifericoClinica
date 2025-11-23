@@ -137,14 +137,13 @@ export const useClinic = ({
                         name: res.name ?? tenant.name,
                         logo: res.logoUrl ?? tenant.logo,
                         color: res.colors ? {
-                            background: res.colors.background,
+                            sidebar: res.colors.sidebar,
+                            primary: res.colors.primary,
                             text: res.colors.text
                         }: tenant.color
                     })
                 }
 
-                
-                
                 return res;
 
             } catch (err) {

@@ -38,20 +38,20 @@ export const HomePage: React.FC = () => {
     }
   }, [tenant]);
 
-  const backgroundColor = tenantData?.color?.background || '#2980b9';
+  
 
-  console.log('color de fondo: ', tenantData?.color?.background)
-  console.log('🟦color de fondo default: ',backgroundColor)
+  console.log('Paleta de colores de la clínica: ',JSON.stringify(tenantData?.color,null,2))
   console.log('Tenant data: ', JSON.stringify(tenantData, null, 2))
 
   console.log('✅ HomePage renderizado - Todo funcionando correctamente');
-
+  
+  const logoBgColor = tenantData?.color?.primary || '#2980b9';
 
   return (
     <div className={GlobalStyles.layout.main}>
       <div className={GlobalStyles.layout.container}>
         <div className='flex flex-col items-center justify-center mb-8'>
-          <div className={`w-24 h-24 rounded-full bg-[${backgroundColor}] flex items-center justify-center overflow-hidden shadow-lg`}>
+          <div className={`w-24 h-24 rounded-full bg-[${logoBgColor}] flex items-center justify-center overflow-hidden shadow-lg`}>
             {tenantData?.logo ? (
               <img
                 src={tenantData.logo || "/placeholder.svg"}
