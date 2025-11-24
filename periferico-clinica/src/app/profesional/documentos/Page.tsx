@@ -23,42 +23,21 @@ import { formatDateToDDMMYYYY } from "../../../utils"
 import { useProfessionalSpecialty } from "../../../hooks/document/use-ProfessionalSpecialty"
 
 import { useToast } from "../../../hooks/use-toast"
-import { useNavigate } from "react-router-dom"
-import { ROUTES } from "../../../routes"
+
 
 export default function NewClinicalDocumentPage() {
     // ===============================================================
     //          HOOKS
     // ===============================================================
 
-    const navigate = useNavigate()
-
-   
-
+    
     const { loading, createDocument } = useClinicalDocument({
-        onSuccess: (response) => {
+        onSuccess: () => {
             showSuccessToast(
                 "Documento creado correctamente",
-                `El documento ID ${response?.documentId || "N/A"} fue creado`,
+                "",
                 {
                   duration: 8000,
-                  actions: [
-                    <Button
-                      key="view"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const previewPath = ROUTES.PROFESSIONAL_DOCUMENT_PREVIEW.replace(
-                            ":documentId",
-                            response?.documentId || "" 
-                        )
-                        navigate(previewPath)
-                      }}
-                      className="bg-white text-green-900 hover:bg-green-700 border-green-600"
-                    >
-                      Ver
-                    </Button>,
-                  ],
                 },
               )
             // ira un toast de success en el futuro
