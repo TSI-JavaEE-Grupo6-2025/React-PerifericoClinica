@@ -30,10 +30,11 @@ export const ENDPOINTS_SERVICES = {
 
             // GET SPECIALTIES
             GET_SPECIALTIES: '/specialties',
-            GET_CLINIC_INFO: '/clinics/:tenantId',// obtiene la información de una clínica
+            GET_CLINIC_INFO: '/clinics',// obtiene la información de una clínica
 
             // PUT
-            PUT_UPDATE_CLINIC: '/clinics/:tenantId', // actualiza datos de la clínica
+            PUT_UPDATE_LOGO_CLINIC: '/clinics/logo', // actualiza el logo de la clínica
+            PUT_UPDATE_CLINIC: '/clinics' // actualiza datos generales y colores de la clínica
            
         },
         PROFESIONAL: {

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { ClinicResponse, UpdateClinicRequest } from '../types'
 import { AdminDashboardAdapter } from '../adapters'
-import { useTenantId } from './use-tenant'
 import { useTenantStore } from '../store/TenantStore'
 import { useAuthStore } from '../store/AuthStore'
 
@@ -19,7 +18,7 @@ interface ClinicReturn {
 
     // Acciones
     refetch: () => Promise<void>
-    getClinicInfo: (tenantId: string) => Promise<ClinicResponse>
+    getClinicInfo: () => Promise<ClinicResponse>
     updateClinicData: (clinicData: UpdateClinicRequest) => Promise<ClinicResponse>;
 }
 
@@ -28,8 +27,6 @@ export const useClinic = ({
     refetchOnMount = true
 }: ClinicOption = {}): ClinicReturn => {
 
-    // capturamos el tenantId
-    const tenantId = useTenantId();
     const { accessToken } = useAuthStore()
 
     const [error, setError] = useState<string | null>(null)
@@ -42,7 +39,7 @@ export const useClinic = ({
     const isFetching = useRef(false);
     const isUpdating = useRef(false);
 
-    const getClinicInfo = useCallback(async (tenantIdParam: string): Promise<ClinicResponse> => {
+    const getClinicInfo = useCallback(async (): Promise<ClinicResponse> => {
         if (!accessToken) {
             setError('Error: Sesión caducada. por favor vuelva a iniciar sesión');
             throw new Error('No hay token de acceso');
@@ -57,7 +54,7 @@ export const useClinic = ({
             setLoading(true)
             setError(null)
 
-            const clinicInfo: ClinicResponse = await AdminDashboardAdapter.getClinicInfo(tenantIdParam || '', accessToken)
+            const clinicInfo: ClinicResponse = await AdminDashboardAdapter.getClinicInfo( accessToken)
             setClinic(clinicInfo)
             hasFetched.current = true
             return clinicInfo
@@ -74,30 +71,26 @@ export const useClinic = ({
 
     const refetch = useCallback(async (): Promise<void> => {
         hasFetched.current = false
-        if (!tenantId) {
-            setError('No hay tenant seleccionado')
-            return
-        }
-        await getClinicInfo(tenantId)
-    }, [getClinicInfo, tenantId])
+        await getClinicInfo()
+    }, [getClinicInfo])
 
     // Auto-fetch en el primer render si está habilitado
     useEffect(() => {
-        if (autoFetch && !hasFetched.current && tenantId && accessToken) {
-            getClinicInfo(tenantId).catch(() => {
+        if (autoFetch && !hasFetched.current && accessToken) {
+            getClinicInfo().catch(() => {
                 // error ya manejado en getClinicInfo
             })
         }
-    }, [autoFetch, tenantId, accessToken, getClinicInfo])
+    }, [autoFetch, accessToken, getClinicInfo])
 
     // Refetch al montar si está habilitado y ya se había hecho fetch antes
     useEffect(() => {
-        if (refetchOnMount && hasFetched.current && tenantId && accessToken) {
-            getClinicInfo(tenantId).catch(() => {
+        if (refetchOnMount && hasFetched.current && accessToken) {
+            getClinicInfo().catch(() => {
                 // error ya manejado en getClinicInfo
             })
         }
-    }, [refetchOnMount, tenantId, accessToken, getClinicInfo])
+    }, [refetchOnMount, accessToken, getClinicInfo])
 
 
 
@@ -114,16 +107,13 @@ export const useClinic = ({
             setSuccess(false)
 
             try {
-                if (!accessToken || !tenantId) {
-                    const errorMessage = accessToken 
-                        ? "No hay tenant seleccionado"
-                        : "Error de autenticación, vuelva a iniciar sesión.";
+                if (!accessToken) {
+                    const errorMessage = "Error de autenticación, vuelva a iniciar sesión.";
                     setError(errorMessage);
                     throw new Error(errorMessage);
                 }
-
                 isUpdating.current = true;
-                const res: ClinicResponse = await AdminDashboardAdapter.updateClinic(tenantId, clinicData, accessToken);
+                const res: ClinicResponse = await AdminDashboardAdapter.updateClinic(clinicData, accessToken);
                 
                 // Actualizar el estado local con los nuevos datos (incluyendo colors si viene)
                 setClinic(res);
@@ -135,10 +125,12 @@ export const useClinic = ({
                     setTenant({
                         ...tenant,
                         name: res.name ?? tenant.name,
-                        logo: res.logoUrl ?? tenant.logo,
+                        logoBase64: res.logoBase64 ?? tenant.logoBase64,
                         color: res.colors ? {
                             sidebar: res.colors.sidebar,
                             primary: res.colors.primary,
+                            secondary: res.colors.secondary,
+                            background: res.colors.background,
                             text: res.colors.text
                         }: tenant.color
                     })
@@ -156,7 +148,7 @@ export const useClinic = ({
                 isUpdating.current = false;
             }
 
-        }, [accessToken, tenantId])
+        }, [accessToken])
 
 
     return {

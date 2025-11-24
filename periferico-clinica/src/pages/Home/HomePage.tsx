@@ -33,7 +33,7 @@ export const HomePage: React.FC = () => {
       id: tenant.tenantId,
       name: tenant.name,
       domain: tenant.domain,
-      logo: tenant.logo,
+      logoBase64: tenant.logoBase64,
       color: tenant.color 
     }
   }, [tenant]);
@@ -52,9 +52,9 @@ export const HomePage: React.FC = () => {
       <div className={GlobalStyles.layout.container}>
         <div className='flex flex-col items-center justify-center mb-8'>
           <div className={`w-24 h-24 rounded-full bg-[${logoBgColor}] flex items-center justify-center overflow-hidden shadow-lg`}>
-            {tenantData?.logo ? (
+            {tenantData?.logoBase64 ? (
               <img
-                src={tenantData.logo || "/placeholder.svg"}
+                src={tenantData.logoBase64 || "/placeholder.svg"}
                 alt={`Logo ${tenantData.name}`}
                 className="w-full h-full object-cover"
               />

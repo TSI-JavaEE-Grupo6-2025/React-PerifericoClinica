@@ -109,7 +109,7 @@ export const useTenantStore = create<TenantState>()(
              *   console.log(tenant.id);        // Acceso a ID
              *   console.log(tenant.name);      // Acceso a nombre
              *   console.log(tenant.domain);    // Acceso a dominio
-             *   console.log(tenant.logo);      // Acceso a logo
+             *   console.log(tenant.logoBase64);      // Acceso a logo en base64
              * }
              * ```
             */

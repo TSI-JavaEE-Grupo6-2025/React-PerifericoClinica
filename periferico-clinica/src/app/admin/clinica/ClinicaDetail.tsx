@@ -10,7 +10,7 @@ export function ClinicDetails() {
   const clinicName = clinicData?.name || ''
   const clinicEmail = clinicData?.email || ''
   const clinicWebsite = clinicData?.domain || ''
-  const clinicLogo = clinicData?.logoUrl || ''
+  const clinicLogo = clinicData?.logoBase64 || ''
 
 
 

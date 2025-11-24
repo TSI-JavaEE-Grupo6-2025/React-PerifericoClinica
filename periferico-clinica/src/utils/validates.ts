@@ -89,31 +89,45 @@ type baseResponse = {
   message: string,
 }
 
-// validación del formato de la imagen (AVIF, JPG, WEBP  O PNG ) y size (max 2mb)
+// validación del formato de la imagen (PNG, JPEG, JPG, SVG+XML) y size (max 5MB)
 const isValidImageFormatAndSize = (image: File): baseResponse => {
-  // formatos permitidos de imagen
-  const allowedFormat = [".avif",".webp",".jpg",".png"]
-  const maxSize = 2 * 1024 * 1024; //2MB
+  // Tipos MIME permitidos según la especificación del backend
+  const allowedMimeTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/svg+xml'
+  ]
+  const maxSize = 5 * 1024 * 1024; // 5MB
 
- 
-  //Si no es imagen o no pertenece a los formatos validos.
-  if(!image.type.startsWith('image/') || !allowedFormat.some(format => image.name.toLocaleLowerCase().endsWith(format.toLocaleLowerCase()))){
-    
+  // Validar que sea una imagen
+  if (!image.type.startsWith('image/')) {
     return {
       success: false,
-      message: `Debe ingresar una imagen con los siguientes formatos: ${allowedFormat.join(', ')}`
-
+      message: 'El archivo debe ser una imagen válida.'
     }
   }
-  if(image.size > maxSize){
+
+  // Validar tipo MIME permitido
+  if (!allowedMimeTypes.includes(image.type)) {
     return {
       success: false,
-      message: `La imagen no debe superar los 2MB. Tamaño actual: ${image.size} `
+      message: `Formato no permitido. Los formatos aceptados son: PNG, JPEG, JPG o SVG. Formato actual: ${image.type}`
     }
   }
+
+  // Validar tamaño máximo
+  if (image.size > maxSize) {
+    const sizeInMB = (image.size / (1024 * 1024)).toFixed(2)
+    return {
+      success: false,
+      message: `La imagen no debe superar los 5MB. Tamaño actual: ${sizeInMB}MB`
+    }
+  }
+
   return {
     success: true,
-    message: "Imagen cargada exitosamente."
+    message: 'Imagen cargada exitosamente.'
   }
 }
 

@@ -57,7 +57,7 @@ export function ClinicSettings() {
       setClinicName(clinicData.name ?? tenant?.name ?? "")
       // Actualizar email: solo de clinicData
       setClinicEmail(clinicData.email ?? "")
-      setLogoPreview(clinicData.logoUrl ?? null)
+      setLogoPreview(clinicData.logoBase64 ?? null)
 
       if (clinicData.colors) {
         setColors((prev) => ({
@@ -210,6 +210,8 @@ export function ClinicSettings() {
           colors: {
             sidebar: colors.sidebar.trim(),
             primary: colors.primary.trim(),
+            secondary: "", // colocar input
+            background: "", // colocar input
             text: colors.text.trim(),
           },
         }),
@@ -309,7 +311,7 @@ export function ClinicSettings() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="logo">Logo de la Clínica</Label>
-                <p className="text-sm text-gray-500">Tamaño recomendado: 200x200px. Formatos: avif, jpg, png o webp (máx. 2MB)</p>
+                <p className="text-sm text-gray-500">Tamaño recomendado: 200x200px. Formatos: PNG, JPEG, JPG o SVG (máx. 5MB)</p>
                 <div className="flex items-center gap-4">
                   <div className="relative w-32 h-32 border-2 border-dashed rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden">
                     {logoPreview ? (
@@ -335,7 +337,7 @@ export function ClinicSettings() {
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept="image/*"
+                      accept="image/png,image/jpeg,image/jpg,image/svg+xml"
                       onChange={handleLogoChange}
                       className="hidden"
                       id="logo-upload"

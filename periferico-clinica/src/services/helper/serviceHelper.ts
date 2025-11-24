@@ -1,27 +1,15 @@
 import type { UpdateClinicRequest } from "../../types"
 
 /**
- * Construye un FormData a partir de UpdateClinicRequest
- * @param clinicData - Datos de la clínica a actualizar
- * @returns FormData con los campos necesarios
+ * Construye un FormData solo con el logo para el endpoint de actualización de logo
+ * @param clinicData - Datos de la clínica (solo se usa logoFile)
+ * @returns FormData con solo el campo 'logo'
  */
-export const buildFormData = (clinicData: UpdateClinicRequest): FormData => {
+export const buildLogoFormData = (clinicData: UpdateClinicRequest): FormData => {
   const formData = new FormData()
 
-  if (clinicData.name !== undefined) {
-    formData.append('name', clinicData.name)
-  }
-
-  if (clinicData.email !== undefined) {
-    formData.append('email', clinicData.email)
-  }
-
-  if (clinicData.colors !== undefined) {
-    formData.append('colors', JSON.stringify(clinicData.colors))
-  }
-
   if (clinicData.logoFile instanceof File) {
-    formData.append('logoFile', clinicData.logoFile)
+    formData.append('logo', clinicData.logoFile)
   }
 
   return formData

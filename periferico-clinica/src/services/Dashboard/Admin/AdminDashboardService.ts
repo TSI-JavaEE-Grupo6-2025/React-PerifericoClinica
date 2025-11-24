@@ -131,9 +131,9 @@ export const getAdminUser = async (accessToken: string) => {
 }
 
 
-export const getClinicInfoByTenant = async (tenantId: string, accessToken: string) => {
+export const getClinicInfo = async (accessToken: string) => {
     try {
-        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_CLINIC_INFO.replace(':tenantId', tenantId), {
+        const response = await API.get(ENDPOINTS_SERVICES.DASHBOARD.ADMIN.GET_CLINIC_INFO, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -147,14 +147,15 @@ export const getClinicInfoByTenant = async (tenantId: string, accessToken: strin
 
 /**
  * Servicio para actualizar los datos de la clínica
- * @description: Actualiza los datos de la clínica, maneja archivos con FormData y datos simples con JSON
- * @param tenantId - ID del tenant/clínica
+ * @description: Actualiza los datos de la clínica usando dos endpoints separados:
+ * - PUT /api/clinics/logo: Para actualizar solo el logo (multipart/form-data)
+ * - PUT /api/clinics: Para actualizar datos generales y colores (application/json)
+ * El tenantId se obtiene automáticamente del JWT.
  * @param clinicData - Datos de la clínica a actualizar
  * @param accessToken - Token de autenticación
  * @returns Respuesta del servidor con los datos actualizados
  */
 export const updateClinicDataByTenant = async (
-    tenantId: string,
     clinicData: UpdateClinicRequest,
     accessToken: string
 ) => {
@@ -162,26 +163,27 @@ export const updateClinicDataByTenant = async (
     serviceHandler.logClinicData(clinicData)
     
     try {
-        const endpoint = ENDPOINTS_SERVICES.DASHBOARD.ADMIN.PUT_UPDATE_CLINIC.replace(':tenantId', tenantId)
-        const hasFile = serviceHandler.hasFile(clinicData)
+        const updateLogoEndpoint = ENDPOINTS_SERVICES.DASHBOARD.ADMIN.PUT_UPDATE_LOGO_CLINIC
+        const updateGeneralDataEndpoint = ENDPOINTS_SERVICES.DASHBOARD.ADMIN.PUT_UPDATE_CLINIC
+        const hasLogoFile = serviceHandler.hasFile(clinicData)
 
-        if(hasFile){
-            // Construir FormData usando serviceHelper
-            const formData = serviceHandler.buildFormData(clinicData)
+        if(hasLogoFile){
+            // Actualizar logo: usar endpoint de logo con FormData (solo el archivo logo)
+            const formData = serviceHandler.buildLogoFormData(clinicData)
             // Log de información del archivo
             serviceHandler.logFileInfo(clinicData.logoFile as File)
             // Construir headers para multipart/form-data
             const headers = serviceHandler.buildHeaders(accessToken, { hasFile: true })
             
-            const response = await API.put(endpoint, formData, { headers })
-            console.log('Respuesta del backend ', response)
+            const response = await API.put(updateLogoEndpoint, formData, { headers })
+            console.log('✅ Logo actualizado correctamente:', response)
             return response
             
         } else {
-            // Enviar como JSON (sin archivo)
+            // Actualizar datos generales y colores: usar endpoint general con JSON
             const headers = serviceHandler.buildHeaders(accessToken, { hasFile: false })
-            const response = await API.put(endpoint, clinicData, { headers })
-            console.log('Respuesta del backend ', response)
+            const response = await API.put(updateGeneralDataEndpoint, clinicData, { headers })
+            console.log('✅ Datos generales actualizados correctamente:', response)
             return response
         }
     } catch (error) {

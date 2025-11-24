@@ -1,6 +1,6 @@
 // src/adapters/Dashboard/Admin/AdminDashboardAdapter.ts
 
-import { createHealthProfessional, createHealthUser, createAdminUser, getSpecialities, getHealthUsers, getHealthProfessionals, getAdminUser, getClinicInfoByTenant, updateClinicDataByTenant } from "../../../services/Dashboard";
+import { createHealthProfessional, createHealthUser, createAdminUser, getSpecialities, getHealthUsers, getHealthProfessionals, getAdminUser, getClinicInfo, updateClinicDataByTenant } from "../../../services/Dashboard";
 import type { AdminUserListResponse, AdminUserRegisterResponse, AdminUserRequest, HealthProfessionalRegisterResponse, HealthProfessionalRequest, HealthUserListResponse, HealthUserRegisterResponse, HealthUserRequest, ProfessionalInfoResponse } from "../../../types/User";
 import type { SpecialityResponse } from "../../../types/Specialty";
 import type { UpdateClinicRequest, ClinicResponse } from "../../../types";
@@ -73,17 +73,17 @@ export const AdminDashboardAdapter = {
             throw new Error('Error al obtener los usuariso administradores: ' + error)
         }
     },
-    getClinicInfo: async (tenantId: string, accessToken: string) => {
+    getClinicInfo: async (accessToken: string) => {
         try {
-            const clinicData = await getClinicInfoByTenant(tenantId, accessToken)
+            const clinicData = await getClinicInfo(accessToken)
             return clinicData?.data
         } catch (error) {
             throw new Error('Error al obtener la información de la clínica ' + error)
         }
     },
-    updateClinic: async (tenantId: string, clinicData: UpdateClinicRequest, accessToken: string): Promise<ClinicResponse> => {
+    updateClinic: async (clinicData: UpdateClinicRequest, accessToken: string): Promise<ClinicResponse> => {
         try{
-            const updateData = await updateClinicDataByTenant(tenantId,clinicData,accessToken);
+            const updateData = await updateClinicDataByTenant(clinicData,accessToken);
             return updateData?.data as ClinicResponse
         }catch(error){
             throw new Error('Error al actualizar la información de la clínica '+ error);
