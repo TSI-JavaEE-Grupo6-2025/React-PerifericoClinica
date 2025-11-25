@@ -1,23 +1,8 @@
 
-const PUBLIC_DOMAINS: string[] = [
-    'gmail.com',
-    'yahoo.com',
-    'hotmail.com',
-    'outlook.com',
-    'icloud.com',
-    'live.com',
-    'msn.com',
-    'aol.com',
-    'yahoo.es',
-]
-
-
-
 /**
  * Email Value Object
  * @description: Validación de correo electrónico acorde a las reglas de negocio.
  * - El correo electrónico debe ser válido.
- * - El correo electrónico debe ser corporativo de la clinica
  */
 
 export class Email {
@@ -35,9 +20,7 @@ export class Email {
         if(!emailRegex.test(value)){
             throw new Error('Correo electrónico no válido');
         }
-        if(this.isPublicDomain()){
-            throw new Error('El correo electrónico debe ser HCEN');
-        }
+        // Validación de dominio público removida - se permite cualquier email válido
     }
 
     toString(): string {
@@ -47,10 +30,6 @@ export class Email {
     // obtenemos el dominio del email.
     getDomain(): string {
         return this.value.split('@')[1].toLowerCase();
-    }
-
-    private isPublicDomain(): boolean {
-        return PUBLIC_DOMAINS.includes(this.getDomain());
     }
 
     getValue(): string { return this.value;}
