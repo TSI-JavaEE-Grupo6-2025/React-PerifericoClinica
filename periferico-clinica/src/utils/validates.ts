@@ -6,7 +6,12 @@
  * Convierte fecha YYYY-MM-DD a formato dd/mm/AAAA
  */
 export function formatDateToDDMMYYYY(isoDate: string): string {
-  return new Date(isoDate).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+  if (!isoDate) return "";
+  
+  const dateOnly = isoDate.split('T')[0];
+  const [year, month, day] = dateOnly.split('-');
+  
+  return `${day}/${month}/${year}`;
 }
 
 /**
