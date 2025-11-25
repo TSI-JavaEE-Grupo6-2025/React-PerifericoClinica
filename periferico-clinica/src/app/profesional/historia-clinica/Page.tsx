@@ -9,13 +9,12 @@ import { Input } from "../../../components/ui/Input"
 import { Label } from "../../../components/ui/Label"
 import { Badge } from "../../../components/ui/Badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
-import { Search, FilePlus, Eye, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, FilePlus, Eye, Loader2, AlertCircle, ChevronLeft, ChevronRight, CheckCircle2, Lock, RefreshCw } from "lucide-react"
 import { ROUTES } from "../../../routes/constants/routes"
 import type { PatientBasicInfo } from "../../../types/clinical-document"
 import { useHealthUsers } from "../../../hooks/use-healthUser"
 import { useProfessionalSpecialty } from "../../../hooks/document/use-ProfessionalSpecialty"
 import { useClinicalHistory } from "../../../hooks/use-clinical-history"
-import type { ClinicalHistoryResponse } from "../../../types/clinical-history"
 
 export default function HistoryClinicPage() {
   const navigate = useNavigate()
@@ -24,10 +23,10 @@ export default function HistoryClinicPage() {
   const [loadHistoryLoading, setLoadHistoryLoading] = useState<boolean>(false)
 
   const [patient, setPatient] = useState<PatientBasicInfo | null>(null)
-  const [documents, setDocuments] = useState<ClinicalHistoryResponse[]>([])
   const [hasTriedToLoad, setHasTriedToLoad] = useState<boolean>(false)
 
   const [error, setError] = useState<string | null>(null)
+  const [requestSuccessMessage, setRequestSuccessMessage] = useState<string | null>(null)
 
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("")
   const { specialties, loading: loadingSpecialties } = useProfessionalSpecialty()
@@ -40,7 +39,17 @@ export default function HistoryClinicPage() {
     refetchOnMount: false,
   })
 
-  const { getClinicalHistoryPatient, loading: loadingHistory, error: historyError } = useClinicalHistory()
+  const { 
+    getClinicalHistoryPatient, 
+    loading: loadingHistory, 
+    error: historyError,
+    documents,
+    restrictedDocumentsCount,
+    hasPendingRequest,
+    requestingAccess,
+    requestAccess,
+    refetch
+  } = useClinicalHistory()
 
   useEffect(() => {
     console.log("Estado del botón:", {
@@ -84,7 +93,6 @@ export default function HistoryClinicPage() {
     setSearchLoading(true)
     setError(null)
     clearPatient()
-    setDocuments([])
     setHasTriedToLoad(false)
     setCurrentPage(1)
 
@@ -116,10 +124,9 @@ export default function HistoryClinicPage() {
 
     try {
       console.log("Llamando a getClinicalHistoryPatient con:", patient.documentNumber, selectedSpecialty)
-      const historyData = await getClinicalHistoryPatient(Number(patient.documentNumber), selectedSpecialty)
-      console.log("Datos recibidos:", historyData)
-      setDocuments(historyData)
+      await getClinicalHistoryPatient(Number(patient.documentNumber), selectedSpecialty)
       setCurrentPage(1)
+      setRequestSuccessMessage(null)
     } catch (err) {
       console.error("Error en handleLoadClinicalHistory:", err)
       const errorMessage = historyError || "Error al cargar la historia clínica"
@@ -127,6 +134,41 @@ export default function HistoryClinicPage() {
       console.error("Error cargando documentos:", err)
     } finally {
       setLoadHistoryLoading(false)
+    }
+  }
+
+  const handleRequestAccess = async () => {
+    if (!patient) return
+
+    setError(null)
+    setRequestSuccessMessage(null)
+
+    try {
+      await requestAccess(patient.documentNumber)
+      setRequestSuccessMessage("Solicitud de acceso enviada exitosamente. El paciente recibirá una notificación.")
+      
+      setTimeout(async () => {
+        await refetch()
+      }, 2000)
+    } catch (err) {
+      console.error("Error al solicitar acceso:", err)
+      const errorMessage = err instanceof Error ? err.message : "Error al solicitar acceso temporal"
+      setError(errorMessage)
+    }
+  }
+
+  const handleRefresh = async () => {
+    if (!patient || !selectedSpecialty) return
+
+    setError(null)
+    setRequestSuccessMessage(null)
+
+    try {
+      await refetch()
+    } catch (err) {
+      console.error("Error al refrescar historia clínica:", err)
+      const errorMessage = historyError || "Error al refrescar la historia clínica"
+      setError(errorMessage)
     }
   }
 
@@ -196,10 +238,10 @@ export default function HistoryClinicPage() {
               </div>
             </form>
 
-            {error && (
+            {(error || historyError) && (
               <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center gap-2 text-red-800 text-sm">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{error}</span>
+                <span>{error || historyError}</span>
               </div>
             )}
           </CardContent>
@@ -301,15 +343,80 @@ export default function HistoryClinicPage() {
           </Card>
         )}
 
+        {hasTriedToLoad && restrictedDocumentsCount > 0 && (
+          <div className="p-3 bg-orange-50 border border-orange-200 rounded-md">
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4 text-orange-600 flex-shrink-0" />
+              <div className="flex-1 flex items-center justify-between gap-3">
+                <p className="text-xs text-orange-800">
+                  {restrictedDocumentsCount} documento{restrictedDocumentsCount !== 1 ? 's' : ''} restringido{restrictedDocumentsCount !== 1 ? 's' : ''}
+                </p>
+                {hasPendingRequest ? (
+                  <div className="flex items-center gap-1.5 text-xs text-orange-700">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Solicitud pendiente</span>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={handleRequestAccess}
+                    disabled={requestingAccess}
+                    className="bg-orange-600 hover:bg-orange-700 text-white h-7 px-3 text-xs"
+                    size="sm"
+                  >
+                    {requestingAccess ? (
+                      <>
+                        <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />
+                        Solicitando...
+                      </>
+                    ) : (
+                      <>
+                        <FilePlus className="w-3 h-3 mr-1.5" />
+                        Solicitar acceso
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {requestSuccessMessage && (
+          <div className="p-2.5 bg-green-50 border border-green-200 rounded-md">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+              <p className="text-xs text-green-800">{requestSuccessMessage}</p>
+            </div>
+          </div>
+        )}
+
         {hasTriedToLoad && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">Documentos Clínicos ({documents.length})</CardTitle>
-              <CardDescription className="text-sm">
-                {documents.length > 0
-                  ? `Historial completo de documentos del paciente - Mostrando ${indexOfFirstDocument + 1} a ${Math.min(indexOfLastDocument, documents.length)} de ${documents.length}`
-                  : "No se encontraron documentos clínicos para este paciente"}
-              </CardDescription>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1">
+                  <CardTitle className="text-lg sm:text-xl">Documentos Clínicos ({documents.length})</CardTitle>
+                  <CardDescription className="text-sm">
+                    {documents.length > 0
+                      ? `Historial completo de documentos del paciente - Mostrando ${indexOfFirstDocument + 1} a ${Math.min(indexOfLastDocument, documents.length)} de ${documents.length}`
+                      : "No se encontraron documentos clínicos para este paciente"}
+                  </CardDescription>
+                </div>
+                <Button
+                  onClick={handleRefresh}
+                  disabled={loadingHistory || !patient || !selectedSpecialty}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-2"
+                  title="Refrescar historia clínica"
+                >
+                  {loadingHistory ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {documents.length === 0 ? (

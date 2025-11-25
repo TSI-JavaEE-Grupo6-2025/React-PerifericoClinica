@@ -56,3 +56,15 @@ export interface ClinicalHistoryResponse {
         tenantId: string,
         createdAt: string   
 }
+
+/**
+ * Interfaz para el wrapper de la respuesta de la historia clínica
+ * @property {ClinicalHistoryResponse[]} documents - Lista de documentos clínicos
+ * @property {number} restrictedDocumentsCount - Cantidad de documentos restringidos
+ * @property {boolean} hasPendingRequest - Indica si hay una solicitud pendiente
+ */
+export interface ClinicalHistoryResponseWrapper {
+    documents: ClinicalHistoryResponse[]
+    restrictedDocumentsCount: number
+    hasPendingRequest: boolean
+}

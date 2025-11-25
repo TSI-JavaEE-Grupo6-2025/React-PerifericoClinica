@@ -1,7 +1,7 @@
-import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById, getPatientBasicInfo, getClinicHistoryPatientByDocumentAndSpecialty } from "../../../services/Dashboard";
+import { createDocument, getConsultationReasons, getProblemsStatus, getCertaintyLevels, getProfessionalInfo, getClinicalDocumentById, getPatientBasicInfo, getClinicHistoryPatientByDocumentAndSpecialty, requestTemporaryAccess } from "../../../services/Dashboard";
 import type { ClinicalDocumentResponse, SnomedCatalogListResponse, CreateClinicalDocumentRequest, ClinicalDocumentXMLResponse, PatientBasicInfo } from "../../../types/clinical-document";
 import type { ProfessionalInfoResponse } from "../../../types/User";
-import type { ClinicalHistoryResponse } from "../../../types/clinical-history";
+import type { ClinicalHistoryResponseWrapper } from "../../../types/clinical-history";
 
 import { handleServiceCall } from "../../helper/handleservice";
 
@@ -67,11 +67,19 @@ export const ProfessionalDashboardAdapter = {
         }
     },
 
-    getClinicHistoryPatient: async (documentNumber: number, specialtyId: string, accessToken: string): Promise<ClinicalHistoryResponse[]> => {
+    getClinicHistoryPatient: async (documentNumber: number, specialtyId: string, accessToken: string): Promise<ClinicalHistoryResponseWrapper> => {
         return handleServiceCall({
             serviceFunction: getClinicHistoryPatientByDocumentAndSpecialty,
             errorMessage: 'Error al obtener la historia clínica del paciente',
             params: [documentNumber, specialtyId, accessToken],
+        })
+    },
+
+    requestTemporaryAccess: async (patientDocumentNumber: string, accessToken: string): Promise<void> => {
+        await handleServiceCall({
+            serviceFunction: requestTemporaryAccess,
+            errorMessage: 'Error al solicitar acceso temporal',
+            params: [patientDocumentNumber, accessToken],
         })
     }
 

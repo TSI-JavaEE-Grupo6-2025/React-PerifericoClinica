@@ -63,6 +63,8 @@ export const ENDPOINTS_SERVICES = {
             VIEW_CLINIC_DOCUMENT: '/documents/view/:id',
             //obtiene la historia clínica por id del paciente
             GET_CLINIC_HISTORY:'/documents/history/:patientDocumentNumber/:specialtyId',
+            //solicita acceso temporal a documentos clinicos restringidos
+            GET_TEMPORARY_ACCESS: '/documents/request-access/:patientDocumentNumber',
 
             
         },

@@ -8,6 +8,9 @@ interface ClinicalHistoryState {
   success: boolean
   error: string | null
   documents: ClinicalHistoryResponse[]
+  restrictedDocumentsCount: number
+  hasPendingRequest: boolean
+  requestingAccess: boolean
 }
 
 interface ClinicalHistoryActions {
@@ -15,6 +18,7 @@ interface ClinicalHistoryActions {
     documentNumber: number,
     specialtyId: string
   ) => Promise<ClinicalHistoryResponse[]>
+  requestAccess: (patientDocumentNumber: string) => Promise<void>
   clearError: () => void
   clearDocuments: () => void
   refetch: () => Promise<ClinicalHistoryResponse[] | void>
@@ -30,6 +34,9 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
     success: false,
     error: null,
     documents: [],
+    restrictedDocumentsCount: 0,
+    hasPendingRequest: false,
+    requestingAccess: false,
   })
 
   const currentParamsRef = useRef<{
@@ -43,8 +50,8 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
     setState((prev) => ({ ...prev, success }))
   const setError = (error: string | null) =>
     setState((prev) => ({ ...prev, error }))
-  const setDocuments = (documents: ClinicalHistoryResponse[]) =>
-    setState((prev) => ({ ...prev, documents }))
+  const setRequestingAccess = (requestingAccess: boolean) =>
+    setState((prev) => ({ ...prev, requestingAccess }))
 
   const fetchHistory = useCallback(
     async (documentNumber: number, specialtyId: string) => {
@@ -75,16 +82,20 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
 
         console.log("Respuesta recibida:", response)
 
-        let documents: ClinicalHistoryResponse[] = [];
-        
-        if(Array.isArray(response)){
-            documents = response;
-        }else{
-            documents = [response]
-        }
+        const documents = response.documents || []
+        const restrictedCount = response.restrictedDocumentsCount || 0
+        const hasPending = response.hasPendingRequest || false
 
         console.log("Documentos procesados:", documents)
-        setDocuments(documents)
+        console.log("Documentos restringidos:", restrictedCount)
+        console.log("Solicitud pendiente:", hasPending)
+        
+        setState((prev) => ({
+          ...prev,
+          documents,
+          restrictedDocumentsCount: restrictedCount,
+          hasPendingRequest: hasPending,
+        }))
         setSuccess(true)
 
         return documents
@@ -106,6 +117,42 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
     [accessToken]
   )
 
+  const requestAccess = useCallback(
+    async (patientDocumentNumber: string) => {
+      if (!accessToken) {
+        const message = 'No hay token de acceso, por favor inicie sesión'
+        setError(message)
+        throw new Error(message)
+      }
+
+      setRequestingAccess(true)
+      setError(null)
+
+      try {
+        await ProfessionalDashboardAdapter.requestTemporaryAccess(
+          patientDocumentNumber,
+          accessToken
+        )
+        
+        setState((prev) => ({
+          ...prev,
+          hasPendingRequest: true,
+        }))
+      } catch (error) {
+        console.error("Error en requestAccess:", error)
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Error al solicitar acceso temporal'
+        setError(message)
+        throw error instanceof Error ? error : new Error(message)
+      } finally {
+        setRequestingAccess(false)
+      }
+    },
+    [accessToken]
+  )
+
   const refetch = useCallback(async () => {
     if (!currentParamsRef.current) return
     const { documentNumber, specialtyId } = currentParamsRef.current
@@ -115,15 +162,21 @@ export const useClinicalHistory = (): UseClinicalHistoryReturn => {
   const clearError = () => setError(null)
 
   const clearDocuments = () => {
-    setDocuments([])
-    setSuccess(false)
-    setError(null)
+    setState((prev) => ({
+      ...prev,
+      documents: [],
+      restrictedDocumentsCount: 0,
+      hasPendingRequest: false,
+      success: false,
+      error: null,
+    }))
     currentParamsRef.current = null
   }
 
   return {
     ...state,
     getClinicalHistoryPatient: fetchHistory,
+    requestAccess,
     clearError,
     clearDocuments,
     refetch,

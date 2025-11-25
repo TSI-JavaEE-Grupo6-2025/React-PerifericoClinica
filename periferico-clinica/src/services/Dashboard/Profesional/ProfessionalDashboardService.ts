@@ -226,3 +226,29 @@ export const getClinicHistoryPatientByDocumentAndSpecialty = async (documentNumb
         throw new Error('Error al obtener la historia clínica por documento de paciente y especialidad de la consulta: ' + error)
     }
 }
+
+// solicita acceso temporal a documentos clínicos restringidos
+export const requestTemporaryAccess = async (patientDocumentNumber: string, accessToken: string) => {
+    try {
+        const url = ENDPOINTS_SERVICES.DASHBOARD.PROFESIONAL.GET_TEMPORARY_ACCESS.
+            replace(':patientDocumentNumber', patientDocumentNumber)
+        
+        console.log(' Llamada HTTP para solicitar acceso temporal:', url)
+        console.log(' Parámetros:', { patientDocumentNumber })
+        
+        const response = await API.post(url, {}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+
+        console.log(' Respuesta del backend:', response.data)
+        console.log(' Status:', response.status)
+
+        return response
+
+    } catch (error) {
+        console.error(' Error al solicitar acceso temporal: ', error);
+        throw new Error('Error al solicitar acceso temporal: ' + error)
+    }
+}
