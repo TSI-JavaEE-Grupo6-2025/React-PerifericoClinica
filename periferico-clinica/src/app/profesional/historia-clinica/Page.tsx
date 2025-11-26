@@ -367,7 +367,7 @@ export default function HistoryClinicPage() {
               <Lock className="w-4 h-4 text-orange-600 flex-shrink-0" />
               <div className="flex-1 flex items-center justify-between gap-3">
                 <p className="text-xs text-orange-800">
-                  {restrictedDocumentsCount} documento{restrictedDocumentsCount !== 1 ? 's' : ''} restringido{restrictedDocumentsCount !== 1 ? 's' : ''}
+                  {restrictedDocumentsCount} documento{restrictedDocumentsCount === 1 ? '' : 's'} restringido{restrictedDocumentsCount === 1 ? '' : 's'}
                 </p>
                 {hasPendingRequest ? (
                   <div className="flex items-center gap-1.5 text-xs text-orange-700">
