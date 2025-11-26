@@ -43,7 +43,6 @@ export const ENDPOINTS_SERVICES = {
 
            
             // GET
-            GET_DOCUMENTS: '',
             // todos los motivos de consulta
             GET_CONSULTATION_REASONS: '/snomed/consultation-reasons',
             //snomed/consultation-reasons?search={search}

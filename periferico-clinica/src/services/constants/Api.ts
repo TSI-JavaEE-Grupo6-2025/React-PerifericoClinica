@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 
-const apiString: string = 'http://localhost:8081/api'; // luego sera la url del backend
+const apiBaseUrl = import.meta.env.MODE === 'development' 
+  ? 'http://localhost:8081'
+  : (import.meta.env.VITE_API_BASE_URL || 'https://periferico-clinica-g6-2132940f4c98.herokuapp.com');
+
+const apiString: string = `${apiBaseUrl}/api`;
 
 /**
  * API Instance 
