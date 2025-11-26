@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import { ProfessionalLayout } from "../../../components/profesional"
 import { Button } from "../../../components/ui/Button"
@@ -15,6 +15,7 @@ import type { PatientBasicInfo } from "../../../types/clinical-document"
 import { useHealthUsers } from "../../../hooks/use-healthUser"
 import { useProfessionalSpecialty } from "../../../hooks/document/use-ProfessionalSpecialty"
 import { useClinicalHistory } from "../../../hooks/use-clinical-history"
+import { useTenantStore } from "../../../store/TenantStore"
 
 export default function HistoryClinicPage() {
   const navigate = useNavigate()
@@ -50,6 +51,23 @@ export default function HistoryClinicPage() {
     requestAccess,
     refetch
   } = useClinicalHistory()
+
+  const { tenant } = useTenantStore()
+  const tenantData = useMemo(() => {
+    if (!tenant) return null
+    return {
+      colors: tenant.colors,
+    }
+  }, [tenant])
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9'
+  const textButtonColor = tenantData?.colors?.text || '#ffffff'
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor)
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor)
+  }, [primaryColor, textButtonColor])
 
   useEffect(() => {
     console.log("Estado del botón:", {
@@ -212,7 +230,7 @@ export default function HistoryClinicPage() {
                     value={documentNumber}
                     onChange={(e) => setDocumentNumber(e.target.value)}
                     placeholder="Ej: 12345678"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     disabled={searchLoading}
                   />
                 </div>
@@ -220,7 +238,7 @@ export default function HistoryClinicPage() {
                   <Button
                     type="submit"
                     disabled={searchLoading}
-                    className="bg-[#3498db] hover:bg-[#2980b9] w-full sm:w-auto"
+                    className="w-full sm:w-auto !bg-[var(--clinic-primary)] !text-[var(--clinic-text-button)] hover:!opacity-90"
                   >
                     {searchLoading ? (
                       <>
@@ -303,7 +321,7 @@ export default function HistoryClinicPage() {
                       value={selectedSpecialty}
                       onChange={(e) => setSelectedSpecialty(e.target.value)}
                       disabled={loadingSpecialties || !specialties || Object.entries(specialties).length === 0}
-                      className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-[#2980b9]/50 focus:border-[#2980b9]"
+                      className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-[var(--clinic-primary)]/50 focus:border-[var(--clinic-primary)]"
                       required
                     >
                       <option value="">Seleccionar especialidad</option>
@@ -323,7 +341,7 @@ export default function HistoryClinicPage() {
                       handleLoadClinicalHistory()
                     }}
                     disabled={loadHistoryLoading || loadingHistory || !selectedSpecialty || selectedSpecialty.trim() === ""}
-                    className="bg-[#27ae60] hover:bg-[#229954] w-full sm:w-auto sm:mb-0"
+                    className="w-full sm:w-auto sm:mb-0 !bg-[var(--clinic-primary)] !text-[var(--clinic-text-button)] hover:!opacity-90"
                   >
                     {loadHistoryLoading || loadingHistory ? (
                       <>
@@ -454,7 +472,7 @@ export default function HistoryClinicPage() {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => handleViewDocumentDetail(doc.id)}
-                                  className="text-[#3498db] hover:text-[#2980b9] hover:bg-[#3498db]/10 whitespace-nowrap"
+                                  className="whitespace-nowrap !text-[var(--clinic-primary)] hover:!bg-[var(--clinic-primary)]/10"
                                 >
                                   <Eye className="w-4 h-4 mr-1" />
                                   Ver
@@ -501,7 +519,9 @@ export default function HistoryClinicPage() {
                               size="sm"
                               onClick={() => handlePageClick(pageNum)}
                               className={`h-8 w-8 p-0 ${
-                                currentPage === pageNum ? "bg-[#3498db] hover:bg-[#2980b9]" : ""
+                                currentPage === pageNum
+                                  ? '!bg-[var(--clinic-primary)] !text-[var(--clinic-text-button)] hover:!opacity-90'
+                                  : ''
                               }`}
                             >
                               {pageNum}
