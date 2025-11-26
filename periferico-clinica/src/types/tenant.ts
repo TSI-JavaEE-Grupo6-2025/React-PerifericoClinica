@@ -50,7 +50,7 @@
 export interface TenantResponse { // respuesta del backend en get by domain
     id: string;
     tenantId: string;
-    name: string;
+    name: string; 
     email?: string;
     domain: string;
     logoBase64?: string;
