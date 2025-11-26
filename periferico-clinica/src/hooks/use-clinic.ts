@@ -126,13 +126,13 @@ export const useClinic = ({
                         ...tenant,
                         name: res.name ?? tenant.name,
                         logoBase64: res.logoBase64 ?? tenant.logoBase64,
-                        color: res.colors ? {
+                        colors: res.colors ? {
                             sidebar: res.colors.sidebar,
                             primary: res.colors.primary,
                             secondary: res.colors.secondary,
                             background: res.colors.background,
                             text: res.colors.text
-                        }: tenant.color
+                        }: tenant.colors
                     })
                 }
 

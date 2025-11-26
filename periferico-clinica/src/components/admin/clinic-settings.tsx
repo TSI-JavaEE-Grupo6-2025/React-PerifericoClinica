@@ -45,11 +45,39 @@ export function ClinicSettings() {
     primary: "#2980b9",
     text: "#ffffff",
   })
+  // Estados temporales para los inputs de texto de colores (permiten valores parciales)
+  const [colorTextInputs, setColorTextInputs] = useState({
+    sidebar: "#2c3e50",
+    primary: "#2980b9",
+    text: "#ffffff",
+  })
 
   const [isSavingGeneral, setIsSavingGeneral] = useState(false)
   const [isSavingAppearance, setIsSavingAppearance] = useState(false)
 
   const [showColor, setShowColor] = useState(false)
+
+  // Función helper para validar si un color hexadecimal es válido
+  const isValidHexColor = (color: string): boolean => {
+    return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)
+  }
+
+  // Función para manejar cambios en los inputs de texto de colores
+  const handleColorTextChange = (colorKey: "sidebar" | "primary" | "text", value: string) => {
+    // Actualizar siempre el input de texto (permite valores parciales)
+    setColorTextInputs((prev) => ({ ...prev, [colorKey]: value }))
+    
+    // Solo actualizar el estado de colors (que controla el color picker) si es válido
+    if (isValidHexColor(value)) {
+      setColors((prev) => ({ ...prev, [colorKey]: value }))
+    }
+  }
+
+  // Función para manejar cambios en los color pickers
+  const handleColorPickerChange = (colorKey: "sidebar" | "primary" | "text", value: string) => {
+    setColors((prev) => ({ ...prev, [colorKey]: value }))
+    setColorTextInputs((prev) => ({ ...prev, [colorKey]: value }))
+  }
 
   useEffect(() => {
     if (clinicData) {
@@ -60,11 +88,13 @@ export function ClinicSettings() {
       setLogoPreview(clinicData.logoBase64 ?? null)
 
       if (clinicData.colors) {
-        setColors((prev) => ({
-          sidebar: clinicData.colors?.sidebar ?? prev.sidebar,
-          primary: clinicData.colors?.primary ?? prev.primary,
-          text: clinicData.colors?.text ?? prev.text,
-        }))
+        const newColors = {
+          sidebar: clinicData.colors?.sidebar ?? "#2c3e50",
+          primary: clinicData.colors?.primary ?? "#2980b9",
+          text: clinicData.colors?.text ?? "#ffffff",
+        }
+        setColors(newColors)
+        setColorTextInputs(newColors)
       }
     } else if (tenant) {
       // Si no hay clinicData pero hay tenant, usar datos del tenant
@@ -372,12 +402,12 @@ export function ClinicSettings() {
                             id="sidebar-color"
                             type="color"
                             value={colors.sidebar}
-                            onChange={(e) => setColors((prev) => ({ ...prev, sidebar: e.target.value }))}
+                            onChange={(e) => handleColorPickerChange("sidebar", e.target.value)}
                             className="w-20 h-10 cursor-pointer"
                           />
                           <Input
-                            value={colors.sidebar}
-                            onChange={(e) => setColors((prev) => ({ ...prev, sidebar: e.target.value }))}
+                            value={colorTextInputs.sidebar}
+                            onChange={(e) => handleColorTextChange("sidebar", e.target.value)}
                             className="flex-1"
                             placeholder="#2c3e50"
                           />
@@ -392,12 +422,12 @@ export function ClinicSettings() {
                             id="primary-color"
                             type="color"
                             value={colors.primary}
-                            onChange={(e) => setColors((prev) => ({ ...prev, primary: e.target.value }))}
+                            onChange={(e) => handleColorPickerChange("primary", e.target.value)}
                             className="w-20 h-10 cursor-pointer"
                           />
                           <Input
-                            value={colors.primary}
-                            onChange={(e) => setColors((prev) => ({ ...prev, primary: e.target.value }))}
+                            value={colorTextInputs.primary}
+                            onChange={(e) => handleColorTextChange("primary", e.target.value)}
                             className="flex-1"
                             placeholder="#2980b9"
                           />
@@ -412,12 +442,12 @@ export function ClinicSettings() {
                             id="text-color"
                             type="color"
                             value={colors.text}
-                            onChange={(e) => setColors((prev) => ({ ...prev, text: e.target.value }))}
+                            onChange={(e) => handleColorPickerChange("text", e.target.value)}
                             className="w-20 h-10 cursor-pointer"
                           />
                           <Input
-                            value={colors.text}
-                            onChange={(e) => setColors((prev) => ({ ...prev, text: e.target.value }))}
+                            value={colorTextInputs.text}
+                            onChange={(e) => handleColorTextChange("text", e.target.value)}
                             className="flex-1"
                             placeholder="#ffffff"
                           />

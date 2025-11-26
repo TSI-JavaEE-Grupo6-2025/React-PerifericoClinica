@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react"
+import { useTenantStore } from "../../../store/TenantStore"
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Button, Input } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
@@ -17,6 +18,24 @@ export function HealthUsersList() {
 
   // Hook para obtener usuarios de salud
   const { users, loading, error, refetch } = useHealthUserList()
+  const { tenant } = useTenantStore();
+
+  // Obtener colores dinámicos del tenant
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      colors: tenant.colors
+    }
+  }, [tenant]);
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9';
+  const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+  }, [primaryColor, textButtonColor]);
 
   // Filtrar usuarios de forma escalable
   const filteredUsers = useMemo(() => {
@@ -74,7 +93,8 @@ export function HealthUsersList() {
             </Button>
             <Button
               onClick={() => navigate(ROUTES.ADMIN_REGISTER_USERS)}
-              className="bg-[#2980b9] hover:bg-[#21618c] text-white cursor-pointer"
+              className="hover:opacity-90 cursor-pointer"
+              style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Nuevo Usuario
@@ -93,7 +113,7 @@ export function HealthUsersList() {
                 placeholder="Buscar por nombre, documento o email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                className="pl-10 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
               />
             </div>
 
@@ -124,7 +144,7 @@ export function HealthUsersList() {
         {loading && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
             <div className="flex items-center justify-center">
-              <RefreshCw className="w-6 h-6 animate-spin text-[#2980b9] mr-3" />
+              <RefreshCw className="w-6 h-6 animate-spin text-[var(--clinic-primary)] mr-3" />
               <span className="text-gray-600">Cargando usuarios...</span>
             </div>
           </div>
@@ -184,7 +204,8 @@ export function HealthUsersList() {
                         variant={currentPage === page ? "default" : "outline"}
                         size="sm"
                         onClick={() => setCurrentPage(page)}
-                        className={currentPage === page ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
+                        style={currentPage === page ? { backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' } : {}}
+                        className={currentPage === page ? "hover:opacity-90" : ""}
                       >
                         {page}
                       </Button>

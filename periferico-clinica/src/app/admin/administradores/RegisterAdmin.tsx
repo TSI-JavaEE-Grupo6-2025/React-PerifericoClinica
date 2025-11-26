@@ -1,7 +1,8 @@
 // src/app/admin/administradores/RegisterAdmin.tsx
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTenantStore } from "../../../store/TenantStore"
 import { ArrowLeft, Shield, Mail } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
@@ -13,7 +14,25 @@ import { useToast } from "../../../hooks/use-toast"
 
 export const RegisterAdminPage: React.FC = () => {
   const navigate = useNavigate()
+  const { tenant } = useTenantStore();
 
+  // Obtener colores dinámicos del tenant
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      colors: tenant.colors,
+      logoBase64: tenant.logoBase64
+    }
+  }, [tenant]);
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9';
+  const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+  }, [primaryColor, textButtonColor]);
 
   const { registerAdmin, loading, error, success } = useRegisterFactory('admin-user', {
     onSuccess: () => {
@@ -73,7 +92,8 @@ export const RegisterAdminPage: React.FC = () => {
     <div className={GlobalStyles.layout.main}>
       <Button
         onClick={handleGoBack}
-        className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 text-[${GlobalStyles.colors.primary}] ${GlobalStyles.animations.transition} cursor-pointer`}
+        className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 ${GlobalStyles.animations.transition} cursor-pointer`}
+        style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
       >
         <ArrowLeft className="w-4 h-4" />
         <span className={GlobalStyles.typography.sm}>Volver al dashboard</span>
@@ -82,14 +102,20 @@ export const RegisterAdminPage: React.FC = () => {
       <Card className="w-full max-w-3xl">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div
-              className={`w-16 h-16 bg-[${GlobalStyles.colors.primary}] rounded-full flex items-center justify-center`}
-            >
-              <Shield className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-[var(--clinic-primary)] rounded-full flex items-center justify-center overflow-hidden">
+              {tenantData?.logoBase64 ? (
+                <img
+                  src={tenantData.logoBase64}
+                  alt="Logo de la clínica"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Shield className="w-8 h-8 text-[var(--clinic-text-button)]" />
+              )}
             </div>
           </div>
           <CardTitle
-            className={`${GlobalStyles.typography["2xl"]} ${GlobalStyles.typography.bold} text-[${GlobalStyles.colors.sidebarBg}]`}
+            className={`${GlobalStyles.typography["2xl"]} ${GlobalStyles.typography.bold} text-[#2c3e50]`}
           >
             Registro de Administrador
           </CardTitle>
@@ -110,7 +136,7 @@ export const RegisterAdminPage: React.FC = () => {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     placeholder="María"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -122,7 +148,7 @@ export const RegisterAdminPage: React.FC = () => {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     placeholder="Rodríguez"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -150,7 +176,7 @@ export const RegisterAdminPage: React.FC = () => {
                     value={formData.document}
                     onChange={handleInputChange}
                     placeholder="12345678"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -173,7 +199,8 @@ export const RegisterAdminPage: React.FC = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
+              className={`w-full ${GlobalStyles.components.button.base} cursor-pointer`}
+              style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
               disabled={loading}
             >
               {loading ? "Registrando..." : "Registrar Administrador"}
