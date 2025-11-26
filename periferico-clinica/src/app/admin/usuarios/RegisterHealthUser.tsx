@@ -1,7 +1,8 @@
 // src/app/admin/usuarios/RegisterHealthUser.tsx
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTenantStore } from "../../../store/TenantStore"
 import { ArrowLeft, Users, Mail, Phone, Calendar, Globe, FileText, MapPin } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
@@ -17,6 +18,25 @@ import { useToast } from "../../../hooks/use-toast"
 export const RegisterHealthUserPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
+  const { tenant } = useTenantStore();
+
+  // Obtener colores dinámicos del tenant
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      colors: tenant.colors,
+      logoBase64: tenant.logoBase64
+    }
+  }, [tenant]);
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9';
+  const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+  }, [primaryColor, textButtonColor]);
 
   const { registerHealthUser, loading, error, success } = useRegisterFactory('health-user', {
     onSuccess: () => {
@@ -117,7 +137,8 @@ export const RegisterHealthUserPage: React.FC = () => {
     <div className={GlobalStyles.layout.main}>
       <Button
         onClick={handleGoBack}
-        className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 text-[${GlobalStyles.colors.primary}] ${GlobalStyles.animations.transition} cursor-pointer`}
+        className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 ${GlobalStyles.animations.transition} cursor-pointer`}
+        style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
       >
         <ArrowLeft className="w-4 h-4" />
         <span className={GlobalStyles.typography.sm}>Volver al dashboard</span>
@@ -126,14 +147,20 @@ export const RegisterHealthUserPage: React.FC = () => {
       <Card className="w-full max-w-3xl">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div
-              className={`w-16 h-16 bg-[${GlobalStyles.colors.primary}] rounded-full flex items-center justify-center`}
-            >
-              <Users className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-[var(--clinic-primary)] rounded-full flex items-center justify-center overflow-hidden">
+              {tenantData?.logoBase64 ? (
+                <img
+                  src={tenantData.logoBase64}
+                  alt="Logo de la clínica"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Users className="w-8 h-8 text-[var(--clinic-text-button)]" />
+              )}
             </div>
           </div>
           <CardTitle
-            className={`${GlobalStyles.typography["2xl"]} ${GlobalStyles.typography.bold} text-[${GlobalStyles.colors.sidebarBg}]`}
+            className={`${GlobalStyles.typography["2xl"]} ${GlobalStyles.typography.bold} text-[#2c3e50]`}
           >
             Registro de Usuario de Salud
           </CardTitle>
@@ -154,7 +181,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     placeholder="Juan"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -166,7 +193,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     placeholder="Pérez"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -202,7 +229,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                       transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground 
                       placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring 
                       disabled:cursor-not-allowed disabled:opacity-50 md:text-sm 
-                      focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                      focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                       required
                     >
                       <option value="CI">CI - Cédula de Identidad</option>
@@ -220,7 +247,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                     value={formData.documentNumber}
                     onChange={handleInputChange}
                     placeholder="12345678"
-                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -232,7 +259,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                     name="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   >
                     <option value="">Seleccionar sexo</option>
@@ -306,7 +333,7 @@ export const RegisterHealthUserPage: React.FC = () => {
                       value={formData.address}
                       onChange={handleInputChange}
                       placeholder="Av. Principal 123"
-                      className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b4]"
+                      className="pl-10 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
 
                     />
                   </div>
@@ -336,7 +363,8 @@ export const RegisterHealthUserPage: React.FC = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
+              className={`w-full ${GlobalStyles.components.button.base} cursor-pointer`}
+              style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
               disabled={loading}
             >
               {loading ? "Registrando..." : "Registrar Usuario de Salud"}

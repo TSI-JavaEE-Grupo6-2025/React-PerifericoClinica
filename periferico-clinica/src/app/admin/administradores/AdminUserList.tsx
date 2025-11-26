@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
+import { useTenantStore } from "../../../store/TenantStore"
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Button, Input } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
@@ -15,6 +16,24 @@ export function AdminsList() {
   const itemsPerPage = 10
 
   const { users, loading, error, refetch } = useAdminUserList()
+  const { tenant } = useTenantStore();
+
+  // Obtener colores dinámicos del tenant
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      colors: tenant.colors
+    }
+  }, [tenant]);
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9';
+  const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+  }, [primaryColor, textButtonColor]);
 
   const fullName = (firstName: string, lastName: string) => {
     if (firstName && lastName) {
@@ -62,7 +81,8 @@ export function AdminsList() {
           </div>
           <Button
             onClick={() => navigate(ROUTES.ADMIN_REGISTER_ADMIN_USERS)}
-            className="bg-[#2980b9] hover:bg-[#21618c] text-white"
+            className="hover:opacity-90"
+            style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
           >
             <UserPlus className="w-4 h-4 mr-2" />
             Nuevo Administrador
@@ -80,7 +100,7 @@ export function AdminsList() {
                 placeholder="Buscar por nombre, documento o email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                className="pl-10 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
               />
             </div>
 
@@ -173,7 +193,8 @@ export function AdminsList() {
                       variant={currentPage === page ? "default" : "outline"}
                       size="sm"
                       onClick={() => setCurrentPage(page)}
-                      className={currentPage === page ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
+                      style={currentPage === page ? { backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' } : {}}
+                      className={currentPage === page ? "hover:opacity-90" : ""}
                     >
                       {page}
                     </Button>

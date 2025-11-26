@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
+import { useTenantStore } from "../../../store/TenantStore"
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Button, Input, Badge } from "../../../components/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/Table"
@@ -46,6 +47,24 @@ export function HealthProfessionalList() {
     const itemsPerPage = 10
 
     const { users, loading, error, refetch } = useHealthProfessionalList()
+    const { tenant } = useTenantStore();
+
+    // Obtener colores dinámicos del tenant
+    const tenantData = useMemo(() => {
+        if (!tenant) return null;
+        return {
+            colors: tenant.colors
+        }
+    }, [tenant]);
+
+    const primaryColor = tenantData?.colors?.primary || '#2980b9';
+    const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+    // Aplicar colores dinámicos mediante CSS variables
+    useEffect(() => {
+        document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+        document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+    }, [primaryColor, textButtonColor]);
 
     // Filtrar profesionales
     const filteredProfessionals = useMemo(() => {
@@ -95,7 +114,8 @@ export function HealthProfessionalList() {
                     </div>
                     <Button
                         onClick={() => navigate(ROUTES.ADMIN_REGISTER_PROFESSIONALS)}
-                        className="bg-[#1e2021] hover:bg-[#21618c] text-white cursor-pointer"
+                        className="hover:opacity-90 cursor-pointer"
+                        style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
                     >
                         <UserPlus className="w-4 h-4 mr-2" />
                         Nuevo Profesional
@@ -113,7 +133,7 @@ export function HealthProfessionalList() {
                                 placeholder="Buscar por nombre, documento, email o especialidad..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                className="pl-10 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                             />
                         </div>
 
@@ -122,21 +142,24 @@ export function HealthProfessionalList() {
                             <Button
                                 variant={statusFilter === "all" ? "default" : "outline"}
                                 onClick={() => setStatusFilter("all")}
-                                className={statusFilter === "all" ? "bg-[#2980b9] hover:bg-[#21618c] cursor-pointer" : ""}
+                                style={statusFilter === "all" ? { backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' } : {}}
+                                className={statusFilter === "all" ? "hover:opacity-90 cursor-pointer" : ""}
                             >
                                 Todos
                             </Button>
                             <Button
                                 variant={statusFilter === "active" ? "default" : "outline"}
                                 onClick={() => setStatusFilter("active")}
-                                className={statusFilter === "active" ? "bg-[#2980b9] hover:bg-[#21618c] cursor-pointer" : ""}
+                                style={statusFilter === "active" ? { backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' } : {}}
+                                className={statusFilter === "active" ? "hover:opacity-90 cursor-pointer" : ""}
                             >
                                 Activos
                             </Button>
                             <Button
                                 variant={statusFilter === "inactive" ? "default" : "outline"}
                                 onClick={() => setStatusFilter("inactive")}
-                                className={statusFilter === "inactive" ? "bg-[#2980b9] hover:bg-[#21618c] cursor-pointer" : ""}
+                                style={statusFilter === "inactive" ? { backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' } : {}}
+                                className={statusFilter === "inactive" ? "hover:opacity-90 cursor-pointer" : ""}
                             >
                                 Inactivos
                             </Button>
@@ -255,7 +278,8 @@ export function HealthProfessionalList() {
                                             variant={currentPage === page ? "default" : "outline"}
                                             size="sm"
                                             onClick={() => setCurrentPage(page)}
-                                            className={currentPage === page ? "bg-[#2980b9] hover:bg-[#21618c]" : ""}
+                                            style={currentPage === page ? { backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' } : {}}
+                                            className={currentPage === page ? "hover:opacity-90" : ""}
                                         >
                                             {page}
                                         </Button>

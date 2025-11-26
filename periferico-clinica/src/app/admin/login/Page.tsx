@@ -16,7 +16,8 @@ import {
 import { GlobalStyles } from '../../../styles/styles';
 
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useTenantStore } from '../../../store/TenantStore';
 
 // iconos necesarios
 import { ArrowLeft, Building2, Lock, User } from 'lucide-react';
@@ -31,6 +32,25 @@ export default function AdminLoginPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const { handleLogin, error, loading } = useLogin('ADMIN_CLINIC');
+    const { tenant } = useTenantStore();
+
+    // Obtener colores dinámicos del tenant
+    const tenantData = useMemo(() => {
+        if (!tenant) return null;
+        return {
+            colors: tenant.colors,
+            logoBase64: tenant.logoBase64
+        }
+    }, [tenant]);
+
+    const primaryColor = tenantData?.colors?.primary || '#2980b9';
+    const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+    // Aplicar colores dinámicos mediante CSS variables
+    useEffect(() => {
+        document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+        document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+    }, [primaryColor, textButtonColor]);
 
     const handleGoBack = () => {
         navigate(ROUTES.HOME)
@@ -40,8 +60,6 @@ export default function AdminLoginPage(){
         e.preventDefault();
         
         try {
-            console.log('Email enviado a handleSubmit: ', email)
-            console.log('Password enviado a handleSubmit: ', password)
             await handleLogin(email, password); 
         } catch (error) {
             // El error ya se maneja en el hook
@@ -54,15 +72,27 @@ export default function AdminLoginPage(){
     return (
         
         <div className={GlobalStyles.layout.main}>
-            <Button onClick={handleGoBack} className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 text-[${GlobalStyles.colors.primary}] ${GlobalStyles.animations.transition} cursor-pointer`}>
+            <Button 
+                onClick={handleGoBack} 
+                className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 ${GlobalStyles.animations.transition} cursor-pointer`}
+                style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
+            >
                 <ArrowLeft className="w-4 h-4" />
                 <span className={GlobalStyles.typography.sm}>Volver al inicio</span>
             </Button>
             <Card className="w-full max-w-md">
                 <CardHeader className={`${GlobalStyles.spacing.space.xs_1} text-center`}>
                     <div className="flex justify-center mb-4">
-                        <div className={`w-16 h-16 bg-[${GlobalStyles.colors.primary}] rounded-full flex items-center justify-center`}>
-                            <Building2 className="w-8 h-8 text-white" />
+                        <div className="w-16 h-16 bg-[var(--clinic-primary)] rounded-full flex items-center justify-center overflow-hidden">
+                            {tenantData?.logoBase64 ? (
+                                <img
+                                    src={tenantData.logoBase64 || "/placeholder.svg"}
+                                    alt="Logo de la clínica"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <Building2 className="w-8 h-8 text-[var(--clinic-text-button)]" />
+                            )}
                         </div>
                     </div>
 
@@ -82,7 +112,7 @@ export default function AdminLoginPage(){
                                     placeholder='admin@clinica.com'
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                    className="pl-10 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                     required
                                 />
                             </div>
@@ -98,12 +128,17 @@ export default function AdminLoginPage(){
                                     placeholder='••••••••'
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className='pl-10 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]'
+                                    className='pl-10 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]'
                                     required
                                 />
                             </div>
                         </div>
-                        <Button type="submit" className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`} disabled={loading}>
+                        <Button 
+                            type="submit" 
+                            className={`w-full ${GlobalStyles.components.button.base} cursor-pointer`}
+                            style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
+                            disabled={loading}
+                        >
                             {loading ? "Ingresando..." : "Ingresar como Administrador"}
                         </Button>
                         {error && <p className={`text-red-500 ${GlobalStyles.typography.sm}`}>{error}</p>}

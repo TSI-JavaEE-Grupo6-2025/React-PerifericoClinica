@@ -1,7 +1,8 @@
 // src/pages/Admin/RegisterProfessionalPage.tsx
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTenantStore } from "../../../store/TenantStore"
 import { ArrowLeft, UserCog, Mail, Award, X } from "lucide-react"
 import { Label } from "@radix-ui/react-label"
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "../../../components"
@@ -16,6 +17,25 @@ import { useToast } from "../../../hooks/use-toast"
 export const RegisterProfessionalPage: React.FC = () => {
   const navigate = useNavigate()
   const tenantId = useTenantId()
+  const { tenant } = useTenantStore();
+
+  // Obtener colores dinámicos del tenant
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      colors: tenant.colors,
+      logoBase64: tenant.logoBase64
+    }
+  }, [tenant]);
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9';
+  const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+  }, [primaryColor, textButtonColor]);
 
   const { registerProfessional, loading, error, success } = useRegisterFactory('health-professional',{
     onSuccess: () => {
@@ -100,7 +120,8 @@ export const RegisterProfessionalPage: React.FC = () => {
     <div className={GlobalStyles.layout.main}>
       <Button
         onClick={handleGoBack}
-        className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 text-[${GlobalStyles.colors.primary}] ${GlobalStyles.animations.transition} cursor-pointer`}
+        className={`${GlobalStyles.layout.absolute_tl_4} flex items-center gap-2 ${GlobalStyles.animations.transition} cursor-pointer`}
+        style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
       >
         <ArrowLeft className="w-4 h-4" />
         <span className={GlobalStyles.typography.sm}>Volver al dashboard </span>
@@ -109,14 +130,20 @@ export const RegisterProfessionalPage: React.FC = () => {
       <Card className="w-full max-w-3xl">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div
-              className={`w-16 h-16 bg-[${GlobalStyles.colors.primary}] rounded-full flex items-center justify-center`}
-            >
-              <UserCog className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-[var(--clinic-primary)] rounded-full flex items-center justify-center overflow-hidden">
+              {tenantData?.logoBase64 ? (
+                <img
+                  src={tenantData.logoBase64}
+                  alt="Logo de la clínica"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <UserCog className="w-8 h-8 text-[var(--clinic-text-button)]" />
+              )}
             </div>
           </div>
           <CardTitle
-            className={`${GlobalStyles.typography["2xl"]} ${GlobalStyles.typography.bold} text-[${GlobalStyles.colors.sidebarBg}]`}
+            className={`${GlobalStyles.typography["2xl"]} ${GlobalStyles.typography.bold} text-[#2c3e50]`}
           >
             Registro de Profesional de Salud
           </CardTitle>
@@ -137,7 +164,7 @@ export const RegisterProfessionalPage: React.FC = () => {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     placeholder="Carlos"
-                    className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -149,7 +176,7 @@ export const RegisterProfessionalPage: React.FC = () => {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     placeholder="González"
-                    className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -177,7 +204,7 @@ export const RegisterProfessionalPage: React.FC = () => {
                     value={formData.document}
                     onChange={handleInputChange}
                     placeholder="12345678"
-                    className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -190,7 +217,7 @@ export const RegisterProfessionalPage: React.FC = () => {
                     value={formData.healthProfessionalNumber}
                     onChange={handleInputChange}
                     placeholder="12345678"
-                    className=" focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                     required
                   />
                 </div>
@@ -211,7 +238,7 @@ export const RegisterProfessionalPage: React.FC = () => {
                         id="specialty"
                         value={selectedSpecialtyCode}
                         onChange={(e) => setSelectedSpecialtyCode(e.target.value)}
-                        className="pl-10 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="pl-10 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={loadingSpecialities}
                       >
                         <option value="">
@@ -228,7 +255,8 @@ export const RegisterProfessionalPage: React.FC = () => {
                       type="button"
                       onClick={handleAddSpecialty}
                       disabled={!selectedSpecialtyCode || loadingSpecialities}
-                      className="bg-[#2980b9] hover:bg-[#21618c] text-white px-4"
+                      className="hover:opacity-90 px-4"
+                      style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
                     >
                       Agregar
                     </Button>
@@ -241,13 +269,14 @@ export const RegisterProfessionalPage: React.FC = () => {
                       {formData.specialtyIds.map((code) => (
                         <div
                           key={code} 
-                          className="flex items-center gap-2 bg-[#2980b9] text-white px-3 py-1 rounded-full text-sm"
+                          className="flex items-center gap-2 px-3 py-1 rounded-full text-sm"
+                          style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
                         >
                           <span>{specialties?.[code as keyof typeof specialties] ?? code}</span>
                           <button
                             type="button"
                             onClick={() => handleRemoveSpecialty(code)}
-                            className="hover:bg-[#21618c] rounded-full p-0.5 transition-colors"
+                            className="hover:opacity-80 rounded-full p-0.5 transition-colors"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -281,7 +310,8 @@ export const RegisterProfessionalPage: React.FC = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              className={`w-full ${GlobalStyles.components.button.primary} cursor-pointer`}
+              className={`w-full ${GlobalStyles.components.button.base} cursor-pointer`}
+              style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
               disabled={loading || !formData.specialtyIds || formData.specialtyIds.length === 0}
             >
               {loading ? "Registrando..." : "Registrar Profesional de Salud"}

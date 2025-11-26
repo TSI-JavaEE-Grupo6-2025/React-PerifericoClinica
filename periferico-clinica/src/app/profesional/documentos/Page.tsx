@@ -23,6 +23,7 @@ import { formatDateToDDMMYYYY } from "../../../utils"
 import { useProfessionalSpecialty } from "../../../hooks/document/use-ProfessionalSpecialty"
 
 import { useToast } from "../../../hooks/use-toast"
+import { useTenantStore } from "../../../store/TenantStore"
 
 
 export default function NewClinicalDocumentPage() {
@@ -113,6 +114,24 @@ export default function NewClinicalDocumentPage() {
             showErrorToast("Error al cargar especialidades", errorSpecialties)
         }
     }, [errorSpecialties, showErrorToast])
+
+    // Obtener colores dinámicos del tenant
+    const { tenant } = useTenantStore();
+    const tenantData = useMemo(() => {
+        if (!tenant) return null;
+        return {
+            colors: tenant.colors
+        }
+    }, [tenant]);
+
+    const primaryColor = tenantData?.colors?.primary || '#2980b9';
+    const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+    // Aplicar colores dinámicos mediante CSS variables
+    useEffect(() => {
+        document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+        document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+    }, [primaryColor, textButtonColor]);
 
     // ===============================================================
     //          ESTADOS
@@ -565,7 +584,7 @@ export default function NewClinicalDocumentPage() {
                                 value={patientId}
                                 onChange={(e) => setPatientId(e.target.value)}
                                 placeholder="Ingrese cédula de identidad del paciente"
-                                className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9] mt-2"
+                                className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)] mt-2"
                                 required
                             ></Input>
                         </div>
@@ -707,7 +726,7 @@ export default function NewClinicalDocumentPage() {
                                             id={`diagnosisDisplayName-${index}`}
                                             value={diagnosis.displayName}
                                             onChange={(e) => updateDiagnosis(index, "displayName", e.target.value)}
-                                            className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                            className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                             required
                                         ></Input>
                                     </div>
@@ -724,7 +743,7 @@ export default function NewClinicalDocumentPage() {
                                         onChange={(e) => updateDiagnosis(index, "notes", e.target.value)}
                                         placeholder="Información adicional sobre el diagnóstico"
                                         rows={2}
-                                        className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                        className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                     />
                                 </div>
 
@@ -737,7 +756,7 @@ export default function NewClinicalDocumentPage() {
                                         value={diagnosis.startDate}
                                         onChange={(e) => updateDiagnosis(index, "startDate", e.target.value)}
                                         required
-                                        className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                        className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                     />
                                 </div>
                                 {/* estado del diagnostico */}
@@ -787,7 +806,14 @@ export default function NewClinicalDocumentPage() {
                             variant="outline"
                             size="sm"
                             onClick={handleAddDiagnosis}
-                            className="w-full bg-[#2c3e50] hover:bg-[#344953] cursor-pointer"
+                            className="w-full cursor-pointer"
+                            style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.opacity = '0.9';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.opacity = '1';
+                            }}
                         >
                             <Plus className="h-4 w-4 mr-2" />
                             Agregar diagnóstico
@@ -816,7 +842,7 @@ export default function NewClinicalDocumentPage() {
                                             nextConsultationDate: e.target.value,
                                         })
                                     }
-                                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                 />
                             </div>
 
@@ -834,7 +860,7 @@ export default function NewClinicalDocumentPage() {
                                         })
                                     }
                                     placeholder="Ej: Próxima consulta en noviembre"
-                                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                 />
                             </div>
 
@@ -852,7 +878,7 @@ export default function NewClinicalDocumentPage() {
                                         })
                                     }
                                     placeholder="Ej: Sugiero consulta con traumatólogo"
-                                    className="focus-visible:ring-[#2980b9]/50 focus-visible:border-[#2980b9]"
+                                    className="focus-visible:ring-[var(--clinic-primary)]/50 focus-visible:border-[var(--clinic-primary)]"
                                 />
                             </div>
                         </div>
@@ -865,7 +891,14 @@ export default function NewClinicalDocumentPage() {
                         type="button"
                         variant="default"
                         size="lg"
-                        className="bg-[#2c3e50] hover:bg-[#34495e] px-8 cursor-pointer"
+                        className="px-8 cursor-pointer"
+                        style={{ backgroundColor: 'var(--clinic-primary)', color: 'var(--clinic-text-button)' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.opacity = '0.9';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.opacity = '1';
+                        }}
                         onClick={handleSave}
                         disabled={loading}
                     >

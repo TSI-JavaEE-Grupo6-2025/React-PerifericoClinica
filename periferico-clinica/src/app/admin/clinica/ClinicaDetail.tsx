@@ -1,7 +1,9 @@
+import { useEffect, useMemo } from "react"
 import { AdminLayout } from "../../../components/admin/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui"
 import { Building2, Mail, Globe } from "lucide-react"
 import { useClinic } from "../../../hooks/use-clinic"
+import { useTenantStore } from "../../../store/TenantStore"
 
 
 export function ClinicDetails() {
@@ -12,7 +14,24 @@ export function ClinicDetails() {
   const clinicWebsite = clinicData?.domain || ''
   const clinicLogo = clinicData?.logoBase64 || ''
 
+  const { tenant } = useTenantStore();
 
+  // Obtener colores dinámicos del tenant
+  const tenantData = useMemo(() => {
+    if (!tenant) return null;
+    return {
+      colors: tenant.colors
+    }
+  }, [tenant]);
+
+  const primaryColor = tenantData?.colors?.primary || '#2980b9';
+  const textButtonColor = tenantData?.colors?.text || '#ffffff';
+
+  // Aplicar colores dinámicos mediante CSS variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--clinic-primary', primaryColor);
+    document.documentElement.style.setProperty('--clinic-text-button', textButtonColor);
+  }, [primaryColor, textButtonColor]);
 
   // Valores presentables (evita ternarios anidados en JSX)
   let displayEmail: string
@@ -45,14 +64,14 @@ export function ClinicDetails() {
         </div>
 
         {/* Main Info Card */}
-        <Card className="border-[#2980b9] border-t-4">
+        <Card className="border-t-4" style={{ borderTopColor: 'var(--clinic-primary)' }}>
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-[#2980b9] rounded-lg">
+              <div className="w-16 h-16 bg-[var(--clinic-primary)] rounded-lg flex items-center justify-center overflow-hidden">
                 {clinicLogo ? (
-                  <img src={clinicLogo} alt="Logo de la clínica" className="w-8 h-8 object-cover rounded-lg"/>
+                  <img src={clinicLogo} alt="Logo de la clínica" className="w-full h-full object-cover"/>
                 ): (
-                  <Building2 className="w-8 h-8 text-white" />
+                  <Building2 className="w-8 h-8 text-[var(--clinic-text-button)]" />
                 )}
               </div>
               <div>
@@ -72,7 +91,7 @@ export function ClinicDetails() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <Mail className="w-5 h-5 text-[#2980b9]" />
+                <Mail className="w-5 h-5 text-[var(--clinic-primary)]" />
                 Información de Contacto
               </CardTitle>
             </CardHeader>
