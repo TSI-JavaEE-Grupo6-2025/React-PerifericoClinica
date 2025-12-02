@@ -143,8 +143,14 @@ export default function NewClinicalDocumentPage() {
     const [selectedSpecialityId, setSelectedSpecialityId] = useState<string>("")
 
     const [eventType, setEventType] = useState<EventType>('Policlinica')
-    // Obtener fecha actual en formato yyyy-mm-dd para el input type="date"
-    const getCurrentDate = () => new Date().toISOString().split("T")[0]
+    
+    const getCurrentDate = () => {
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const day = String(now.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+    }
 
     // Inicializar con un diagnóstico vacío para que se muestre el formulario
     const [diagnoses, setDiagnoses] = useState<Diagnosis[]>(() => [
@@ -408,8 +414,7 @@ export default function NewClinicalDocumentPage() {
 
         setValidationErrors([])
 
-        // La fecha de consulta siempre es la fecha actual
-        const currentConsultationDate = new Date().toISOString().split("T")[0]
+        const currentConsultationDate = getCurrentDate()
         const currentDate = currentConsultationDate
 
         const collectedErrors: string[] = []
@@ -503,8 +508,7 @@ export default function NewClinicalDocumentPage() {
             return
         }
 
-        // Obtener fecha actual en formato yyyy-mm-dd para el input type="date"
-        const currentDate = new Date().toISOString().split("T")[0]
+        const currentDate = getCurrentDate()
 
         setDiagnoses([
             ...diagnoses,

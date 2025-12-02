@@ -2,6 +2,7 @@
 import type { UserCredentials } from "../../value-objects/UserCredentials";
 import API from "../constants/Api";
 import { ENDPOINTS_SERVICES } from "../constants/Endpoints";
+import { AxiosError } from "axios";
 
 
 /**
@@ -16,7 +17,14 @@ export const login = async (userCredentials: UserCredentials) => {
         return response
     }catch(error){
         console.error('Error al iniciar sesión: ', error);
-        throw new Error('Error al iniciar sesión: ' + error)
+        
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 401) {
+                throw new Error('Credenciales incorrectas. Por favor, verifique su email y contraseña.');
+            }
+        }
+        
+        throw new Error('Error al iniciar sesión. Por favor, intente nuevamente.');
     }
 }
 
@@ -30,6 +38,6 @@ export const logout = async () => {
         console.log('Sesión cerrada correctamente');
     }catch(error){
         console.error('Error al cerrar sesión: ', error);
-        throw new Error('Error al cerrar sesión: ' + error)
+        throw new Error('Error al cerrar sesión. Por favor, intente nuevamente.');
     }
 }
