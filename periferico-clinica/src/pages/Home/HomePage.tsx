@@ -40,10 +40,7 @@ export const HomePage: React.FC = () => {
 
   
 
-  console.log('Paleta de colores de la clínica: ',JSON.stringify(tenantData?.colors,null,2))
-  console.log('Tenant data: ', JSON.stringify(tenantData, null, 2))
-
-  console.log('✅ HomePage renderizado - Todo funcionando correctamente');
+  
   
   const primaryColor = tenantData?.colors?.primary || '#2980b9'
   const textButtonColor = tenantData?.colors?.text || '#ffffff';

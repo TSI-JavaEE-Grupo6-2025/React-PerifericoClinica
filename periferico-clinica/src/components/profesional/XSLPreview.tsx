@@ -26,7 +26,7 @@ export const XSLPreview: React.FC<XSLPreviewProps> = ({ documentId, className = 
   useEffect(() => {
     if (!html && !fragment) return
 
-    console.log("📄 HTML transformado:", html)
+    
 
     if (fragment) {
       const serializer = new XMLSerializer()

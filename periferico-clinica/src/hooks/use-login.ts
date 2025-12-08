@@ -23,9 +23,7 @@ export const useLogin = (expectedRole?: UserRole) => {
         setError(null);
         try {
             const userCredentials = UserCredentials.fromForm(email, password, tenantIdStore, expectedRole); // acordarse de que tenantid viene del store
-            console.log('userCredentials creado: ', JSON.stringify(userCredentials, null, 2))
             const responseAuthData = await AuthAdapter.login(userCredentials);
-            console.log('Respuesta del adapter de autenticación: ', JSON.stringify(responseAuthData, null, 2))
             const { accessToken, tenantId, user } = responseAuthData;
 
             if (expectedRole && user.role !== expectedRole) {
